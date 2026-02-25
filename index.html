@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gal Bartouv — Unity Dev Blog</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #170f28;
+    --bg2: #1d1432;
+    --bg3: #23193c;
+    --panel: #291e46;
+    --border: rgba(160, 80, 255, 0.15);
+    --accent: #bf5fff;
+    --accent2: #e040fb;
+    --accent3: #ff4db8;
+    --text: #ede8ff;
+    --muted: #b09ad0;
+    --dim: #4a3070;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(160,80,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(160,80,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Ambient glow blobs */
+  .bg-glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-glow.g1 {
+    width: 600px; height: 600px;
+    top: -200px; left: -200px;
+    background: radial-gradient(circle, rgba(160,80,255,0.08), transparent 70%);
+  }
+  .bg-glow.g2 {
+    width: 500px; height: 500px;
+    bottom: 100px; right: -100px;
+    background: radial-gradient(circle, rgba(224,64,251,0.06), transparent 70%);
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 64px;
+    background: rgba(10,10,14,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .nav-logo span {
+    color: var(--muted);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0; right: 0;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+    transform-origin: left;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 48px 80px;
+    max-width: 900px;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-eyebrow::before {
+    content: '// ';
+    color: var(--muted);
+  }
+
+  .hero h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.35s forwards;
+  }
+
+  .hero h1 .name {
+    display: block;
+    color: #fff;
+  }
+
+  .hero h1 .role {
+    display: block;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--dim);
+  }
+
+  .hero-desc {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--muted);
+    max-width: 480px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.5s forwards;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.65s forwards;
+  }
+
+  .btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 12px 28px;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+
+  .btn-primary:hover {
+    background: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(191,95,255,0.35);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+    background: var(--bg2);
+  }
+
+  .stat {
+    flex: 1;
+    padding: 24px 32px;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 28px;
+    color: var(--accent);
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* POSTS SECTION */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 48px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: 0.05em;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  .section-count {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* POSTS GRID */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .post-card {
+    background: var(--panel);
+    padding: 32px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .post-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+    transform-origin: top;
+  }
+
+  .post-card:hover { background: var(--bg3); }
+  .post-card:hover::before { transform: scaleY(1); }
+
+  .post-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .post-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: #fff;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
+  .post-excerpt {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .post-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+  }
+
+  .post-date {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+  }
+
+  .post-arrow {
+    font-size: 18px;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.2s;
+  }
+
+  .post-card:hover .post-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* FEATURED (wide card) */
+  .post-card.featured {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .post-card.featured .post-title {
+    font-size: 32px;
+  }
+
+  .post-card.featured .post-tag {
+    color: var(--accent3);
+  }
+
+  .featured-badge {
+    display: inline-block;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    background: var(--accent3);
+    color: #000;
+    padding: 3px 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* ABOUT SECTION */
+  .about-section {
+    position: relative;
+    z-index: 1;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 80px 48px;
+  }
+
+  .about-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 64px;
+    align-items: start;
+  }
+
+  .about-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .about-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .about-body {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  .about-body p + p {
+    margin-top: 16px;
+  }
+
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 24px;
+  }
+
+  .skill-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 4px 12px;
+    border: 1px solid var(--border);
+    color: var(--text);
+    letter-spacing: 0.1em;
+  }
+
+  .skill-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 1;
+    padding: 40px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--accent); }
+
+  /* SCROLL INDICATOR */
+  .scroll-hint {
+    position: absolute;
+    bottom: 40px;
+    left: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s 1s forwards;
+  }
+
+  .scroll-hint span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 40px;
+    height: 1px;
+    background: var(--muted);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .scroll-line::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--accent);
+    animation: slide 2s infinite;
+  }
+
+  /* TERMINAL CURSOR */
+  .cursor {
+    display: inline-block;
+    width: 10px;
+    height: 1.1em;
+    background: var(--accent);
+    vertical-align: text-bottom;
+    animation: blink 1s step-end infinite;
+    margin-left: 4px;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slide {
+    to { left: 100%; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 0 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 80px; }
+    .section { padding: 60px 24px; }
+    .stats-bar { flex-wrap: wrap; }
+    .stat { flex: 1 1 50%; border-right: none; border-bottom: 1px solid var(--border); }
+    .post-card.featured { grid-template-columns: 1fr; }
+    .about-inner { grid-template-columns: 1fr; gap: 32px; }
+    .about-section { padding: 60px 24px; }
+    footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 32px 24px; }
+  }
+
+  /* THEME SWITCHER */
+  .theme-switcher {
+    position: relative;
+  }
+
+  .theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+
+  .theme-toggle-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .theme-icon {
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .theme-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 16px;
+    min-width: 200px;
+    z-index: 200;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+
+  .theme-panel.open {
+    display: block;
+    animation: fadeDown 0.15s ease;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .theme-panel-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+  }
+
+  .theme-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    text-align: left;
+    transition: all 0.15s;
+    margin-bottom: 4px;
+  }
+
+  .theme-option:hover, .theme-option.active {
+    color: var(--text);
+    border-color: var(--border);
+    background: var(--panel);
+  }
+
+  .theme-option.active {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .theme-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* AVATAR */
+  .hero-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 48px;
+  }
+
+  .hero-avatar {
+    flex-shrink: 0;
+    width: 160px;
+    height: 160px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    display: block;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  }
+
+  .hero-avatar::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    z-index: -1;
+    opacity: 0.6;
+  }
+
+  .hero-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    background: radial-gradient(circle, rgba(180,80,255,0.2), transparent 70%);
+    z-index: -2;
+  }
+
+  .hero-content {
+    flex: 1;
+  }
+
+  @media (max-width: 768px) {
+    .hero-inner { flex-direction: column; gap: 24px; }
+    .hero-avatar { width: 100px; height: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow g1"></div>
+<div class="bg-glow g2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">GB<span>/</span>DEV</div>
+  <ul class="nav-links">
+    <li><a href="#posts">Articles</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="https://medium.com/@galbartouv" target="_blank">Medium</a></li>
+  </ul>
+  <div class="theme-switcher" id="themeSwitcher">
+    <button class="theme-toggle-btn" onclick="toggleThemePanel()" title="Switch theme">
+      <span class="theme-icon">◑</span>
+      <span class="theme-label">Theme</span>
+    </button>
+    <div class="theme-panel" id="themePanel">
+      <div class="theme-panel-title">// SELECT THEME</div>
+      <button class="theme-option active" data-theme="p1" onclick="setTheme('p1')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#bf5fff,#e040fb)"></span>
+        <span>Neon Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p2" onclick="setTheme('p2')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"></span>
+        <span>Deep Amethyst</span>
+      </button>
+      <button class="theme-option" data-theme="p3" onclick="setTheme('p3')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#d946ef,#ec4899)"></span>
+        <span>Fuchsia Burn</span>
+      </button>
+      <button class="theme-option" data-theme="p4" onclick="setTheme('p4')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#818cf8,#6366f1)"></span>
+        <span>Indigo Pulse</span>
+      </button>
+      <button class="theme-option" data-theme="p5" onclick="setTheme('p5')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c084fc,#7e22ce)"></span>
+        <span>Royal Dusk</span>
+      </button>
+      <button class="theme-option" data-theme="p6" onclick="setTheme('p6')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#f0abfc,#c026d3)"></span>
+        <span>Orchid Haze</span>
+      </button>
+      <button class="theme-option" data-theme="p7" onclick="setTheme('p7')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#a78bfa,#4c1d95)"></span>
+        <span>Midnight Iris</span>
+      </button>
+      <button class="theme-option" data-theme="p8" onclick="setTheme('p8')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#e879f9,#9333ea)"></span>
+        <span>Plasma Storm</span>
+      </button>
+      <button class="theme-option" data-theme="p9" onclick="setTheme('p9')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7dd3fc,#818cf8)"></span>
+        <span>Aurora Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p10" onclick="setTheme('p10')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#fbbf24,#9333ea)"></span>
+        <span>Gold & Violet</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-avatar">
+      <img src="Avatar.png" alt="Gal Bartouv avatar">
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Client Team Lead @ Glaive · Unity Developer</div>
+      <h1>
+        <span class="name">Gal Bartouv</span>
+        <span class="role">Dev Blog</span>
+      </h1>
+      <p class="hero-desc">9+ years shipping mobile games in Unity. Currently leading client development at Glaive. Writing about the real-world patterns, systems, and hard-won lessons behind production Unity games.<span class="cursor"></span></p>
+      <div class="hero-cta">
+        <a href="#posts" class="btn btn-primary">Read Articles</a>
+        <a href="https://medium.com/@galbartouv" target="_blank" class="btn btn-ghost">Medium Profile</a>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-val">9+</span>
+    <span class="stat-label">Years in Unity</span>
+  </div>
+  <div class="stat">
+    <span class="stat-val">Glaive</span>
+    <span class="stat-label">Current Company</span>
+  </div>
+  <div class="stat">
+    <span class="stat-val">Mobile</span>
+    <span class="stat-label">Specialization</span>
+  </div>
+  <div class="stat">
+    <span class="stat-val">2016</span>
+    <span class="stat-label">Started Dev</span>
+  </div>
+</div>
+
+<!-- POSTS -->
+<div class="section" id="posts">
+  <div class="section-header">
+    <h2 class="section-title">Articles</h2>
+    <div class="section-line"></div>
+    <span class="section-count">// LATEST</span>
+  </div>
+
+  <div class="posts-grid">
+
+    <!-- Featured post -->
+    <a class="post-card featured" href="fighting-entropy-warnings.html">
+      <div>
+        <span class="featured-badge">Latest</span>
+        <div class="post-tag">// Fighting Entropy In Unity</div>
+        <div class="post-title">Fighting Entropy In Unity — Warnings</div>
+      </div>
+      <div>
+        <p class="post-excerpt">Over 600 compiler warnings at startup? The real problem isn't the noise — it's that you'll miss the one warning that actually matters. Here's how to use Pragmas and the csc.rsp file to take back control of your Unity console.</p>
+        <div class="post-footer">
+          <span class="post-date">2024 · 4 min read</span>
+          <span class="post-arrow">→</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Regular posts -->
+    <a class="post-card" href="https://medium.com/@galbartouv" target="_blank">
+      <div class="post-tag">// Performance</div>
+      <div class="post-title">Profiling Unity Games Like a Pro</div>
+      <p class="post-excerpt">Practical techniques to find and fix CPU/GPU bottlenecks using Unity's built-in profiler and external tools.</p>
+      <div class="post-footer">
+        <span class="post-date">2024</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="https://medium.com/@galbartouv" target="_blank">
+      <div class="post-tag">// Shaders</div>
+      <div class="post-title">URP Shader Graph Fundamentals</div>
+      <p class="post-excerpt">From zero to custom shaders — a visual approach to writing shaders in Unity's Universal Render Pipeline.</p>
+      <div class="post-footer">
+        <span class="post-date">2024</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="https://medium.com/@galbartouv" target="_blank">
+      <div class="post-tag">// C#</div>
+      <div class="post-title">Coroutines vs Async/Await in Unity</div>
+      <p class="post-excerpt">When to use each, how they differ under the hood, and which patterns lead to maintainable async code in Unity projects.</p>
+      <div class="post-footer">
+        <span class="post-date">2024</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="https://medium.com/@galbartouv" target="_blank">
+      <div class="post-tag">// Patterns</div>
+      <div class="post-title">The Observer Pattern for Game Events</div>
+      <p class="post-excerpt">Decouple your game logic with a clean event system that keeps components talking without direct references.</p>
+      <div class="post-footer">
+        <span class="post-date">2024</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="https://medium.com/@galbartouv" target="_blank">
+      <div class="post-tag">// Physics</div>
+      <div class="post-title">Predictive Movement &amp; Input Buffering</div>
+      <p class="post-excerpt">Make your player controls feel responsive and forgiving — the techniques behind tight, professional-feeling game feel.</p>
+      <div class="post-footer">
+        <span class="post-date">2024</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div style="margin-top: 32px; text-align: center;">
+    <a href="https://medium.com/@galbartouv" target="_blank" class="btn btn-ghost">View All on Medium →</a>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<div class="section" id="experience" style="padding-top: 0;">
+  <div class="section-header">
+    <h2 class="section-title">Experience</h2>
+    <div class="section-line"></div>
+    <span class="section-count">// CAREER</span>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot current"></div>
+      <div class="timeline-content">
+        <div class="timeline-meta">
+          <span class="timeline-company">Glaive</span>
+          <span class="timeline-period">Jan 2023 — Present · 3 yrs+</span>
+        </div>
+        <div class="timeline-role">Client Team Lead</div>
+        <p class="timeline-desc">Leading the client development team full-time. On-site in Tel Aviv District, Israel.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-meta">
+          <span class="timeline-company">Jelly Button</span>
+          <span class="timeline-period">Jul 2022 — Jan 2023 · 7 mos</span>
+        </div>
+        <div class="timeline-role">Client Team Lead</div>
+        <p class="timeline-desc">Returned to Jelly Button leading the client team before transitioning to Glaive.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-meta">
+          <span class="timeline-company">Jelly Button</span>
+          <span class="timeline-period">Apr 2019 — Feb 2022 · 2 yrs 11 mos</span>
+        </div>
+        <div class="timeline-role">Client Team Lead</div>
+        <p class="timeline-desc">Led the client side development team on mobile titles. Israel.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-meta">
+          <span class="timeline-company">Jelly Button</span>
+          <span class="timeline-period">Apr 2016 — Apr 2019 · 3 yrs</span>
+        </div>
+        <div class="timeline-role">Unity Developer</div>
+        <p class="timeline-desc">Mobile game development in Unity3D. Where it all started.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+  .timeline-item {
+    position: relative;
+    padding: 0 0 40px 32px;
+  }
+  .timeline-item:last-child { padding-bottom: 0; }
+  .timeline-dot {
+    position: absolute;
+    left: -5px;
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    border: 1px solid var(--muted);
+    background: var(--bg);
+    transform: rotate(45deg);
+  }
+  .timeline-dot.current {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(191,95,255,0.6);
+  }
+  .timeline-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+  .timeline-company {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .timeline-period {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .timeline-role {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: #fff;
+    letter-spacing: 0.02em;
+    margin-bottom: 8px;
+  }
+  .timeline-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* THEME SWITCHER */
+  .theme-switcher {
+    position: relative;
+  }
+
+  .theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+
+  .theme-toggle-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .theme-icon {
+    font-size: 15px;
+    line-height: 1;
+  }
+
+  .theme-panel {
+    display: none;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    padding: 16px;
+    min-width: 200px;
+    z-index: 200;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  }
+
+  .theme-panel.open {
+    display: block;
+    animation: fadeDown 0.15s ease;
+  }
+
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .theme-panel-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    margin-bottom: 12px;
+  }
+
+  .theme-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
+    border: 1px solid transparent;
+    padding: 8px 10px;
+    cursor: pointer;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    text-align: left;
+    transition: all 0.15s;
+    margin-bottom: 4px;
+  }
+
+  .theme-option:hover, .theme-option.active {
+    color: var(--text);
+    border-color: var(--border);
+    background: var(--panel);
+  }
+
+  .theme-option.active {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .theme-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  /* AVATAR */
+  .hero-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 48px;
+  }
+
+  .hero-avatar {
+    flex-shrink: 0;
+    width: 160px;
+    height: 160px;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    image-rendering: pixelated;
+    display: block;
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  }
+
+  .hero-avatar::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+    z-index: -1;
+    opacity: 0.6;
+  }
+
+  .hero-avatar::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    background: radial-gradient(circle, rgba(180,80,255,0.2), transparent 70%);
+    z-index: -2;
+  }
+
+  .hero-content {
+    flex: 1;
+  }
+
+  @media (max-width: 768px) {
+    .hero-inner { flex-direction: column; gap: 24px; }
+    .hero-avatar { width: 100px; height: 100px; }
+  }
+</style>
+
+<!-- ABOUT -->
+<div class="about-section" id="about">
+  <div class="about-inner">
+    <div>
+      <div class="about-label">// Who I am</div>
+      <div class="about-name">Gal<br>Bartouv</div>
+      <div style="margin-top:24px;">
+        <img src="Avatar.png" alt="Gal Bartouv" style="width:90px;height:90px;object-fit:cover;image-rendering:pixelated;clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));border:2px solid var(--accent);opacity:0.9;">
+      </div>
+    </div>
+    <div class="about-body">
+      <p>Unity developer with 9+ years of experience shipping mobile games. Currently Client Team Lead at <strong style="color:#fff">Glaive</strong> (Jan 2023–Present), based in Tel Aviv. Previously spent nearly 6 years at <strong style="color:#fff">Jelly Button</strong> — growing from Unity Developer to Client Team Lead on their mobile titles.</p>
+      <p>I write about the things that actually matter in production Unity development: team-scale architecture, mobile performance, client-side systems design, and the lessons that only come from shipping real games with real players.</p>
+      <p>Based in Tel Aviv, Israel. Follow along on Medium for new articles.</p>
+      <div class="skills-list">
+        <span class="skill-tag">Unity</span>
+        <span class="skill-tag">C#</span>
+        <span class="skill-tag">URP/HDRP</span>
+        <span class="skill-tag">Shader Graph</span>
+        <span class="skill-tag">DOTween</span>
+        <span class="skill-tag">Addressables</span>
+        <span class="skill-tag">ECS/DOTS</span>
+        <span class="skill-tag">Game Design</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
+  <div class="footer-links">
+    <a href="https://medium.com/@galbartouv" target="_blank">Medium</a>
+    <a href="#posts">Articles</a>
+    <a href="#about">About</a>
+  </div>
+</footer>
+
+
+
+
+
+
+<script>
+const themes = {
+  p1:  { '--bg':'#170f28','--bg2':'#1d1432','--bg3':'#23193c','--panel':'#291e46','--border':'rgba(200,120,255,0.25)','--accent':'#d580ff','--accent2':'#ee60ff','--accent3':'#ff70cc','--text':'#f0e8ff','--muted':'#b09ad0','--dim':'#4a3070','--glow1':'rgba(180,80,255,0.12)','--glow2':'rgba(220,64,255,0.08)','--grid':'rgba(180,80,255,0.05)' },
+  p2:  { '--bg':'#130e28','--bg2':'#191434','--bg3':'#1f1a40','--panel':'#252050','--border':'rgba(150,100,255,0.25)','--accent':'#b89aff','--accent2':'#8b5cf6','--accent3':'#d4b8ff','--text':'#eeebff','--muted':'#a090c8','--dim':'#40306e','--glow1':'rgba(130,70,240,0.12)','--glow2':'rgba(170,130,255,0.06)','--grid':'rgba(130,70,240,0.05)' },
+  p3:  { '--bg':'#1c0e22','--bg2':'#23122c','--bg3':'#2a1636','--panel':'#311a40','--border':'rgba(230,80,240,0.25)','--accent':'#f580c8','--accent2':'#e040ef','--accent3':'#ff90e0','--text':'#ffe8f8','--muted':'#c080a8','--dim':'#501860','--glow1':'rgba(220,70,240,0.12)','--glow2':'rgba(250,120,200,0.06)','--grid':'rgba(220,70,240,0.05)' },
+  p4:  { '--bg':'#101028','--bg2':'#161638','--bg3':'#1c1c44','--panel':'#222254','--border':'rgba(120,125,255,0.25)','--accent':'#9098ff','--accent2':'#7478f0','--accent3':'#b8bcff','--text':'#eaeaff','--muted':'#8888c8','--dim':'#303070','--glow1':'rgba(100,105,245,0.12)','--glow2':'rgba(140,145,255,0.06)','--grid':'rgba(100,105,245,0.05)' },
+  p5:  { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#281a4c','--border':'rgba(170,60,240,0.25)','--accent':'#cc88ff','--accent2':'#a040ee','--accent3':'#bb70ff','--text':'#f5e8ff','--muted':'#a870c8','--dim':'#3e1860','--glow1':'rgba(150,40,220,0.12)','--glow2':'rgba(200,130,255,0.06)','--grid':'rgba(150,40,220,0.05)' },
+  p6:  { '--bg':'#1e1028','--bg2':'#261430','--bg3':'#2e183a','--panel':'#361c44','--border':'rgba(210,60,230,0.25)','--accent':'#f0b0ff','--accent2':'#d030e0','--accent3':'#ff90f8','--text':'#fff0ff','--muted':'#c888d0','--dim':'#501068','--glow1':'rgba(200,40,220,0.12)','--glow2':'rgba(245,175,255,0.06)','--grid':'rgba(200,40,220,0.05)' },
+  p7:  { '--bg':'#0e0c28','--bg2':'#131034','--bg3':'#181440','--panel':'#1d184c','--border':'rgba(100,60,200,0.28)','--accent':'#b898ff','--accent2':'#7840e0','--accent3':'#9060f0','--text':'#eeeaff','--muted':'#8878bc','--dim':'#281858','--glow1':'rgba(80,40,180,0.14)','--glow2':'rgba(170,140,255,0.08)','--grid':'rgba(80,40,180,0.06)' },
+  p8:  { '--bg':'#1a0c28','--bg2':'#210f34','--bg3':'#281240','--panel':'#2f154c','--border':'rgba(180,60,240,0.25)','--accent':'#f080ff','--accent2':'#a030e8','--accent3':'#e060f0','--text':'#ffe8ff','--muted':'#b060c8','--dim':'#441060','--glow1':'rgba(160,50,230,0.12)','--glow2':'rgba(240,130,255,0.08)','--grid':'rgba(160,50,230,0.05)' },
+  p9:  { '--bg':'#0e1230','--bg2':'#121840','--bg3':'#161e4e','--panel':'#1a245c','--border':'rgba(120,130,255,0.25)','--accent':'#b0bcff','--accent2':'#8890f8','--accent3':'#90d8ff','--text':'#eaecff','--muted':'#7888c0','--dim':'#202860','--glow1':'rgba(130,210,255,0.1)','--glow2':'rgba(140,150,255,0.1)','--grid':'rgba(110,120,245,0.05)' },
+  p10: { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#28194c','--border':'rgba(180,60,240,0.22)','--accent':'#ffc840','--accent2':'#a030ea','--accent3':'#ffaa20','--text':'#fff8e8','--muted':'#b09868','--dim':'#3c2828','--glow1':'rgba(255,190,40,0.08)','--glow2':'rgba(160,50,234,0.08)','--grid':'rgba(160,50,234,0.04)' }
+};
+
+function setTheme(name) {
+  const t = themes[name] || themes['p1'];
+  const root = document.documentElement;
+  Object.entries(t).forEach(([k, v]) => {
+    if (!k.startsWith('--glow') && !k.startsWith('--grid')) {
+      root.style.setProperty(k, v);
+    }
+  });
+  const style = document.getElementById('gridStyle') || (() => {
+    const s = document.createElement('style');
+    s.id = 'gridStyle';
+    document.head.appendChild(s);
+    return s;
+  })();
+  style.textContent = 'body::before{background-image:linear-gradient(' + t['--grid'] + ' 1px,transparent 1px),linear-gradient(90deg,' + t['--grid'] + ' 1px,transparent 1px);background-size:40px 40px;}';
+  const g1 = document.querySelector('.bg-glow.g1');
+  const g2 = document.querySelector('.bg-glow.g2');
+  if (g1) g1.style.background = 'radial-gradient(circle,' + t['--glow1'] + ',transparent 70%)';
+  if (g2) g2.style.background = 'radial-gradient(circle,' + t['--glow2'] + ',transparent 70%)';
+  document.querySelectorAll('.theme-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === name);
+  });
+  localStorage.setItem('gb-theme', name);
+  toggleThemePanel(false);
+}
+
+function toggleThemePanel(forceClose) {
+  const panel = document.getElementById('themePanel');
+  if (forceClose === false) { panel.classList.remove('open'); return; }
+  panel.classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('themeSwitcher').contains(e.target)) {
+    document.getElementById('themePanel').classList.remove('open');
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('gb-theme') || 'p1';
+  setTheme(saved);
+});
+</script>
+
+</body>
+</html>
