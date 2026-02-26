@@ -27,6 +27,14 @@ body {
   overflow-x: hidden;
 }
 
+/* PAGE CONTAINER - Centers content on large screens */
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
 /* Grid texture overlay */
 body::before {
   content: '';
