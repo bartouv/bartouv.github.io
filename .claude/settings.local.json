@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:medium.com)",
+      "Bash(for slug in \"ui-shine-effect\" \"rectmask2d-performance\" \"input-locks\" \"optimizing-draw-calls\" \"turning-events-into-commands\" \"warnings\" \"cameras-and-rendering\")",
+      "Bash(do cp template.html \"$slug.html\")",
+      "Bash(done)",
+      "Bash(chmod:*)",
+      "Bash(./update-articles.sh)",
+      "Bash(/Users/galbar-touv/Blog/update-articles.sh:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turning Events into Commands — GB/DEV</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/shared.css">
+<link rel="stylesheet" href="../css/article.css">
+</head>
+<body>
+
+<div class="bg-glow g1"></div>
+<div class="bg-glow g2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">GB<span>/</span>DEV</div>
+  <ul class="nav-links">
+    <li><a href="../index.html#posts">Articles</a></li>
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="https://medium.com/@galbartouv" target="_blank">Medium</a></li>
+  </ul>
+  <div class="theme-switcher" id="themeSwitcher">
+    <button class="theme-toggle-btn" onclick="toggleThemePanel()" title="Switch theme">
+      <span class="theme-icon">◑</span>
+      <span class="theme-label">Theme</span>
+    </button>
+    <div class="theme-panel" id="themePanel">
+      <div class="theme-panel-title">// SELECT THEME</div>
+      <button class="theme-option active" data-theme="p1" onclick="setTheme('p1')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#bf5fff,#e040fb)"></span>
+        <span>Neon Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p2" onclick="setTheme('p2')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"></span>
+        <span>Deep Amethyst</span>
+      </button>
+      <button class="theme-option" data-theme="p3" onclick="setTheme('p3')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#d946ef,#ec4899)"></span>
+        <span>Fuchsia Burn</span>
+      </button>
+      <button class="theme-option" data-theme="p4" onclick="setTheme('p4')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#818cf8,#6366f1)"></span>
+        <span>Indigo Pulse</span>
+      </button>
+      <button class="theme-option" data-theme="p5" onclick="setTheme('p5')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c084fc,#7e22ce)"></span>
+        <span>Royal Dusk</span>
+      </button>
+      <button class="theme-option" data-theme="p6" onclick="setTheme('p6')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#f0abfc,#c026d3)"></span>
+        <span>Orchid Haze</span>
+      </button>
+      <button class="theme-option" data-theme="p7" onclick="setTheme('p7')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#a78bfa,#4c1d95)"></span>
+        <span>Midnight Iris</span>
+      </button>
+      <button class="theme-option" data-theme="p8" onclick="setTheme('p8')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#e879f9,#9333ea)"></span>
+        <span>Plasma Storm</span>
+      </button>
+      <button class="theme-option" data-theme="p9" onclick="setTheme('p9')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7dd3fc,#818cf8)"></span>
+        <span>Aurora Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p10" onclick="setTheme('p10')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#fbbf24,#9333ea)"></span>
+        <span>Gold & Violet</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ARTICLE HERO -->
+<section class="article-hero">
+  <div class="article-header">
+    <a href="../index.html#posts" class="back-link">← Back to Articles</a>
+    <div class="article-tag">// Architecture</div>
+    <h1 class="article-title">Turning Events into Commands</h1>
+    <div class="article-meta">
+      <span class="article-date">January 2023</span>
+      <span class="article-read-time">6 min read</span>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE BODY -->
+<article class="article-body">
+  <div class="article-container">
+
+    <!-- ARTICLE CONTENT GOES HERE -->
+    <div class="read-on-medium">
+      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
+      <a href="https://medium.com/@galbartouv/fighting-entropy-in-unity-turning-events-into-commands-2cf4be3d85f2" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
+    </div>
+
+  </div>
+</article>
+
+<!-- ARTICLE NAVIGATION -->
+<div class="article-nav">
+  <!-- Previous Article (remove if first) -->
+  <a href="optimizing-draw-calls.html" class="article-nav-prev">
+    <div class="nav-label">← Previous</div>
+    <div class="nav-title">Optimizing Draw Calls</div>
+  </a>
+
+  <!-- Next Article (remove if last) -->
+  <a href="warnings.html" class="article-nav-next">
+    <div class="nav-label">Next →</div>
+    <div class="nav-title">Warnings</div>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
+  <div class="footer-links">
+    <a href="https://medium.com/@galbartouv" target="_blank">Medium</a>
+    <a href="../index.html#posts">Articles</a>
+    <a href="../index.html#about">About</a>
+  </div>
+</footer>
+
+<!-- THEME SCRIPT -->
+<script>
+const themes = {
+  p1:  { '--bg':'#170f28','--bg2':'#1d1432','--bg3':'#23193c','--panel':'#291e46','--border':'rgba(200,120,255,0.25)','--accent':'#d580ff','--accent2':'#ee60ff','--accent3':'#ff70cc','--text':'#f0e8ff','--muted':'#b09ad0','--dim':'#4a3070','--glow1':'rgba(180,80,255,0.12)','--glow2':'rgba(220,64,255,0.08)','--grid':'rgba(180,80,255,0.05)' },
+  p2:  { '--bg':'#130e28','--bg2':'#191434','--bg3':'#1f1a40','--panel':'#252050','--border':'rgba(150,100,255,0.25)','--accent':'#b89aff','--accent2':'#8b5cf6','--accent3':'#d4b8ff','--text':'#eeebff','--muted':'#a090c8','--dim':'#40306e','--glow1':'rgba(130,70,240,0.12)','--glow2':'rgba(170,130,255,0.06)','--grid':'rgba(130,70,240,0.05)' },
+  p3:  { '--bg':'#1c0e22','--bg2':'#23122c','--bg3':'#2a1636','--panel':'#311a40','--border':'rgba(230,80,240,0.25)','--accent':'#f580c8','--accent2':'#e040ef','--accent3':'#ff90e0','--text':'#ffe8f8','--muted':'#c080a8','--dim':'#501860','--glow1':'rgba(220,70,240,0.12)','--glow2':'rgba(250,120,200,0.06)','--grid':'rgba(220,70,240,0.05)' },
+  p4:  { '--bg':'#101028','--bg2':'#161638','--bg3':'#1c1c44','--panel':'#222254','--border':'rgba(120,125,255,0.25)','--accent':'#9098ff','--accent2':'#7478f0','--accent3':'#b8bcff','--text':'#eaeaff','--muted':'#8888c8','--dim':'#303070','--glow1':'rgba(100,105,245,0.12)','--glow2':'rgba(140,145,255,0.06)','--grid':'rgba(100,105,245,0.05)' },
+  p5:  { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#281a4c','--border':'rgba(170,60,240,0.25)','--accent':'#cc88ff','--accent2':'#a040ee','--accent3':'#bb70ff','--text':'#f5e8ff','--muted':'#a870c8','--dim':'#3e1860','--glow1':'rgba(150,40,220,0.12)','--glow2':'rgba(200,130,255,0.06)','--grid':'rgba(150,40,220,0.05)' },
+  p6:  { '--bg':'#1e1028','--bg2':'#261430','--bg3':'#2e183a','--panel':'#361c44','--border':'rgba(210,60,230,0.25)','--accent':'#f0b0ff','--accent2':'#d030e0','--accent3':'#ff90f8','--text':'#fff0ff','--muted':'#c888d0','--dim':'#501068','--glow1':'rgba(200,40,220,0.12)','--glow2':'rgba(245,175,255,0.06)','--grid':'rgba(200,40,220,0.05)' },
+  p7:  { '--bg':'#0e0c28','--bg2':'#131034','--bg3':'#181440','--panel':'#1d184c','--border':'rgba(100,60,200,0.28)','--accent':'#b898ff','--accent2':'#7840e0','--accent3':'#9060f0','--text':'#eeeaff','--muted':'#8878bc','--dim':'#281858','--glow1':'rgba(80,40,180,0.14)','--glow2':'rgba(170,140,255,0.08)','--grid':'rgba(80,40,180,0.06)' },
+  p8:  { '--bg':'#1a0c28','--bg2':'#210f34','--bg3':'#281240','--panel':'#2f154c','--border':'rgba(180,60,240,0.25)','--accent':'#f080ff','--accent2':'#a030e8','--accent3':'#e060f0','--text':'#ffe8ff','--muted':'#b060c8','--dim':'#441060','--glow1':'rgba(160,50,230,0.12)','--glow2':'rgba(240,130,255,0.08)','--grid':'rgba(160,50,230,0.05)' },
+  p9:  { '--bg':'#0e1230','--bg2':'#121840','--bg3':'#161e4e','--panel':'#1a245c','--border':'rgba(120,130,255,0.25)','--accent':'#b0bcff','--accent2':'#8890f8','--accent3':'#90d8ff','--text':'#eaecff','--muted':'#7888c0','--dim':'#202860','--glow1':'rgba(130,210,255,0.1)','--glow2':'rgba(140,150,255,0.1)','--grid':'rgba(110,120,245,0.05)' },
+  p10: { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#28194c','--border':'rgba(180,60,240,0.22)','--accent':'#ffc840','--accent2':'#a030ea','--accent3':'#ffaa20','--text':'#fff8e8','--muted':'#b09868','--dim':'#3c2828','--glow1':'rgba(255,190,40,0.08)','--glow2':'rgba(160,50,234,0.08)','--grid':'rgba(160,50,234,0.04)' }
+};
+
+function setTheme(name) {
+  const t = themes[name] || themes['p1'];
+  const root = document.documentElement;
+  Object.entries(t).forEach(([k, v]) => {
+    if (!k.startsWith('--glow') && !k.startsWith('--grid')) {
+      root.style.setProperty(k, v);
+    }
+  });
+  const style = document.getElementById('gridStyle') || (() => {
+    const s = document.createElement('style');
+    s.id = 'gridStyle';
+    document.head.appendChild(s);
+    return s;
+  })();
+  style.textContent = 'body::before{background-image:linear-gradient(' + t['--grid'] + ' 1px,transparent 1px),linear-gradient(90deg,' + t['--grid'] + ' 1px,transparent 1px);background-size:40px 40px;}';
+  const g1 = document.querySelector('.bg-glow.g1');
+  const g2 = document.querySelector('.bg-glow.g2');
+  if (g1) g1.style.background = 'radial-gradient(circle,' + t['--glow1'] + ',transparent 70%)';
+  if (g2) g2.style.background = 'radial-gradient(circle,' + t['--glow2'] + ',transparent 70%)';
+  document.querySelectorAll('.theme-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === name);
+  });
+  localStorage.setItem('gb-theme', name);
+  toggleThemePanel(false);
+}
+
+function toggleThemePanel(forceClose) {
+  const panel = document.getElementById('themePanel');
+  if (forceClose === false) { panel.classList.remove('open'); return; }
+  panel.classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('themeSwitcher').contains(e.target)) {
+    document.getElementById('themePanel').classList.remove('open');
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('gb-theme') || 'p1';
+  setTheme(saved);
+});
+</script>
+
+</body>
+</html>
