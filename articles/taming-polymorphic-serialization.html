@@ -68,6 +68,26 @@
         <span class="theme-swatch" style="background:linear-gradient(135deg,#fbbf24,#9333ea)"></span>
         <span>Gold & Violet</span>
       </button>
+      <button class="theme-option" data-theme="p11" onclick="setTheme('p11')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#50e6f6,#ff6b9d)"></span>
+        <span>Cyan & Rose</span>
+      </button>
+      <button class="theme-option" data-theme="p12" onclick="setTheme('p12')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff8c50,#20e8c0)"></span>
+        <span>Copper & Teal</span>
+      </button>
+      <button class="theme-option" data-theme="p13" onclick="setTheme('p13')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#50f0a0,#ff4080)"></span>
+        <span>Emerald & Crimson</span>
+      </button>
+      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c8ff64,#6040ff)"></span>
+        <span>Lime & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
+        <span>Coral & Aqua
+      </button>
     </div>
   </div>
 </nav>
@@ -148,7 +168,12 @@ const themes = {
   p7:  { '--bg':'#0e0c28','--bg2':'#131034','--bg3':'#181440','--panel':'#1d184c','--border':'rgba(100,60,200,0.28)','--accent':'#b898ff','--accent2':'#7840e0','--accent3':'#9060f0','--text':'#eeeaff','--muted':'#8878bc','--dim':'#281858','--glow1':'rgba(80,40,180,0.14)','--glow2':'rgba(170,140,255,0.08)','--grid':'rgba(80,40,180,0.06)' },
   p8:  { '--bg':'#1a0c28','--bg2':'#210f34','--bg3':'#281240','--panel':'#2f154c','--border':'rgba(180,60,240,0.25)','--accent':'#f080ff','--accent2':'#a030e8','--accent3':'#e060f0','--text':'#ffe8ff','--muted':'#b060c8','--dim':'#441060','--glow1':'rgba(160,50,230,0.12)','--glow2':'rgba(240,130,255,0.08)','--grid':'rgba(160,50,230,0.05)' },
   p9:  { '--bg':'#0e1230','--bg2':'#121840','--bg3':'#161e4e','--panel':'#1a245c','--border':'rgba(120,130,255,0.25)','--accent':'#b0bcff','--accent2':'#8890f8','--accent3':'#90d8ff','--text':'#eaecff','--muted':'#7888c0','--dim':'#202860','--glow1':'rgba(130,210,255,0.1)','--glow2':'rgba(140,150,255,0.1)','--grid':'rgba(110,120,245,0.05)' },
-  p10: { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#28194c','--border':'rgba(180,60,240,0.22)','--accent':'#ffc840','--accent2':'#a030ea','--accent3':'#ffaa20','--text':'#fff8e8','--muted':'#b09868','--dim':'#3c2828','--glow1':'rgba(255,190,40,0.08)','--glow2':'rgba(160,50,234,0.08)','--grid':'rgba(160,50,234,0.04)' }
+  p10: { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#28194c','--border':'rgba(180,60,240,0.22)','--accent':'#ffc840','--accent2':'#a030ea','--accent3':'#ffaa20','--text':'#fff8e8','--muted':'#b09868','--dim':'#3c2828','--glow1':'rgba(255,190,40,0.08)','--glow2':'rgba(160,50,234,0.08)','--grid':'rgba(160,50,234,0.04)' },
+  p11: { '--bg':'#0e1e28','--bg2':'#121e2e','--bg3':'#162634','--panel':'#1a2e3c','--border':'rgba(80,230,240,0.22)','--accent':'#50e6f6','--accent2':'#ff6b9d','--accent3':'#80f0ff','--text':'#e8f8ff','--muted':'#88b0c8','--dim':'#283840','--glow1':'rgba(80,230,246,0.1)','--glow2':'rgba(255,107,157,0.08)','--grid':'rgba(80,180,200,0.04)' },
+  p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
+  p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
+  p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' }
 };
 
 function setTheme(name) {

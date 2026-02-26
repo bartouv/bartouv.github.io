@@ -9,7 +9,8 @@
       "Bash(chmod:*)",
       "Bash(./update-articles.sh)",
       "Bash(/Users/galbar-touv/Blog/update-articles.sh:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ]
   }
 }
