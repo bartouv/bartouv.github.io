@@ -10,7 +10,14 @@
       "Bash(./update-articles.sh)",
       "Bash(/Users/galbar-touv/Blog/update-articles.sh:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(python3:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(node -c:*)",
+      "Bash(for file in /Users/galbar-touv/Blog/articles/*.html)",
+      "Bash(do)",
+      "Bash(if grep -q \"toggleThemePanel\\(false\\);\" \"$file\")"
     ]
   }
 }

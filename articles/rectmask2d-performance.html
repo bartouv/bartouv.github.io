@@ -86,7 +86,15 @@
       </button>
       <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
-        <span>Coral & Aqua
+        <span>Coral & Aqua</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#b050f0)"></span>
+        <span>Gold & Violet Mid</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb820,#c060ff)"></span>
+        <span>Gold & Violet Light</span>
       </button>
     </div>
   </div>
@@ -112,30 +120,85 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="https://medium.com/@galbartouv/fighting-entropy-in-unity-the-hidden-performance-killer-rectmask2d-1f81e30c1a7f" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/0*NG8fxb_CmUTFaEs7" alt=""></figure><h2>Fighting Entropy In Unity — The Hidden Performance Killer: RectMask2D</h2>
+
+<p>Performance optimization in Unity is like being a detective. Sometimes the culprit is right there in front of you, laughing at your frame drops. Other times, it’s hiding in plain sight, doing terrible things when you least expect it. Today’s story is about one of those sneaky criminals: RectMask2D.</p>
+
+<h2 class="section-heading">The Problem</h2>
+
+<p>Picture this: You’re working on your UI-heavy game, everything looks great, but the editor is struggling with terrible frame rates. You fire up the profiler, expecting to find the usual suspects — complex shaders, too many draw calls, maybe some garbage collection spikes. But instead, you see something that makes you question everything you know about Unity: RectMask2D. PerformClipping() is eating up a giant chunck of my performance.</p>
+
+<p>In my case, a scene with multiple large UI panels that display one at a time — inventory screens, character menus, settings panels. Several innocent-looking RectMask2D components were sitting there, attached to canvases that were… disabled. That’s right, disabled canvases. You know, the ones that aren’t supposed to be doing anything because they’re, well, disabled.</p>
+
+<h2 class="section-heading">The Unexpected Behavior</h2>
+
+<p>Here’s where Unity’s logic becomes counterintuitive: Disabling a Canvas component doesn’t stop RectMask2D from running its clipping calculations. Even when the canvas isn’t rendering anything, RectMask2D continues performing its expensive clipping operations every single frame.</p>
+
+<h2 class="section-heading">The Root Cause</h2>
+
+<p>Here’s what’s actually happening under the hood:</p>
+
+Canvas.enabled = false tells Unity “don’t render this canvas”</li>
+RectMask2D doesn’t get the memo and continues performing clipping calculations</li>
+PerformClipping() runs every frame, even when there’s nothing to clip</li>
+Your performance goes down the drain while Unity pretends everything is fine</li>
+<p>This behavior violates one of the most basic expectations we have as developers: disabled components shouldn’t consume resources.</p>
+
+<p>What makes this particularly frustrating is that Unity’s own documentation recommends disabling Canvas components rather than deactivating entire GameObjects when hiding UI. The reasoning is sound — it avoids GameObject activation overhead and maintains component state. But here’s the twist: following this best practice leads you straight into a performance trap that Unity itself created. You’re literally being punished for doing what the documentation tells you to do.</p>
+
+<h2 class="section-heading">The Solution</h2>
+
+<p>I turned off those RectMask2D components and boom — instant 1ms performance gain. That’s 6.67% of our frame budget in a 60fps game, just sitting there, wasted on masks that weren’t even supposed to be active.</p>
+
+<p>The fix is embarrassingly simple, but you need to remember to do it:</p>
+
+<pre><code class="language-csharp">// Instead of just this:
+canvas.enabled = false;
+
+// Do this:
+public void ToggleCanvas(Canvas canvas, List<RectMask2D> cachedMasks)
+{        
+    bool newState = !canvas.enabled;
+    canvas.enabled = newState;
+    foreach (var mask in cachedMasks)
+    {
+        mask.enabled = newState;
+    }
+}</code></pre>
+
+<p>The pain is that you have to remember to cache the masks and manage this coupling manually.</p>
+
+<h2 class="section-heading">Prevention and Best Practices</h2>
+
+<p>This issue highlights a fundamental problem with Unity’s component system: implicit dependencies and unexpected behaviors. To avoid similar traps:</p>
+
+<strong>Always profile regularly</strong>— Performance issues love to hide in plain sight</li>
+<strong>Test your assumptions</strong>— “Disabled” doesn’t always mean what you think it means in Unity</li>
+<strong>Audit existing projects</strong>— Search for RectMask2D components on canvases you disable</li>
+<p>Without opening the profiler, I would have never caught this. The performance impact was significant enough to be noticeable, but subtle enough that I might have blamed it on other factors.</p>
+
+<h2 class="section-heading">The Takeaway</h2>
+
+<p>Unity’s UI system is powerful, but it’s full of these gotchas. RectMask2D’s behavior is just one example of how following best practices can sometimes lead you into performance traps.</p>
+
+<p>Remember, fighting entropy in Unity is an ongoing battle. Sometimes the enemy is right there in the profiler, masquerading as a helpful UI component, quietly stealing your precious milliseconds. Stay vigilant, profile often, and never assume that Unity’s component relationships work the way you’d logically expect them to.</p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
   <a href="ui-shine-effect.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
     <div class="nav-title">UI Shine Effect</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
   <a href="input-locks.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
     <div class="nav-title">Input Locks</div>
   </a>
-</div>
-
-</main>
+</div></main>
 
 <!-- FOOTER -->
 <footer>
@@ -164,7 +227,9 @@ const themes = {
   p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
   p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
   p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
-  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' }
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' },
+  p16: { '--bg':'#2a1c40','--bg2':'#342254','--bg3':'#3e2868','--panel':'#48307c','--border':'rgba(180,60,240,0.3)','--accent':'#ffc840','--accent2':'#b050f0','--accent3':'#ffaa20','--text':'#f8f0ff','--muted':'#9878a8','--dim':'#1a0e28','--glow1':'rgba(255,190,40,0.12)','--glow2':'rgba(176,80,240,0.12)','--grid':'rgba(176,80,240,0.06)' },
+  p17: { '--bg':'#4a3868','--bg2':'#58447c','--bg3':'#665090','--panel':'#7458a0','--border':'rgba(180,100,240,0.35)','--accent':'#ffb820','--accent2':'#c060ff','--accent3':'#ffa020','--text':'#2a1840','--muted':'#685080','--dim':'#f0e8ff','--glow1':'rgba(255,200,60,0.15)','--glow2':'rgba(200,100,255,0.15)','--grid':'rgba(200,100,255,0.08)' }
 };
 
 function setTheme(name) {

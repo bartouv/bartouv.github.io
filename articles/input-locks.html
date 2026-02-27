@@ -86,7 +86,15 @@
       </button>
       <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
-        <span>Coral & Aqua
+        <span>Coral & Aqua</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#b050f0)"></span>
+        <span>Gold & Violet Mid</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb820,#c060ff)"></span>
+        <span>Gold & Violet Light</span>
       </button>
     </div>
   </div>
@@ -112,30 +120,414 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="https://medium.com/@galbartouv/fighting-entropy-in-unity-input-locks-17bda7b1d844" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BaW1yio88GdvdfG4MMdPYg.png" alt=""></figure><h2>Fighting Entropy in Unity — Input Locks</h2>
+
+<p>In this post, I will show you how to create an efficient Input lock service for Unity that follow SOLID principles. You can take a look at the example project.<a href="https://github.com/bartouv/InputLockExampleProject" target="_blank" rel="noopener">https://github.com/bartouv/InputLockExampleProject</a></p>
+
+<p>Input locks are a crucial aspect of game development that allows you to control user input in various ways. For example, you might need to prevent a button from being clickable or block the use of a raycaster at certain points in the game. There are numerous elements that can receive input and may need to be locked in specific game flows.</p>
+
+<p>Input locks have several common problems:</p>
+
+<ul><li>Race conditions when somewhere in the code a request to lock input is sent and in another, a request to unlock input is sent right after unlocking the first request by accident.</li>
+<li>When something new is added to the scene it ignores the input lock which is running.</li>
+<li>There is no way to lock only some of the things in the scene.</li>
+<li>Hard to debug if the input is locked and what locked it.</li>
+<li>The locking mechanism is implemented per lockable object</li>
+</ul>
+
+<p>To solve this issue:</p>
+
+<ul><li>We want each lock to only be opened by a specific key. If something is locked with two locks and a key is used to unlock one of the locks then the other lock will remain.</li>
+<li>We want new lockable elements that are added to the scene to check on initialization if they need to be locked.</li>
+<li>We want the code which is responsible for locking input to also be responsible for unlocking it.</li>
+</ul>
+
+<p>So let’s together now build an input lock service that follows the<a href="https://www.wikiwand.com/en/SOLID" target="_blank" rel="noopener">SOLID</a>principles.</p>
+
+<h2 class="section-heading">The Lock</h2>
+
+<p>So let’s start with the lock:</p>
+
+<pre><code class="language-csharp">public class InputLock
+    {
+        public readonly string Guid;
+        public readonly InputLockTag[] InputLockTags;
+        public readonly string LockOwner;
+        
+        public InputLock(InputLockTag[] inputLockTags,[CallerFilePath] string callerName = "")
+        {
+            Guid = System.Guid.NewGuid().ToString();
+            InputLockTags = inputLockTags;
+            LockOwner = Path.GetFileNameWithoutExtension(callerName);
+        }
+        public override string ToString()
+        {   
+            return string.Join( ",", InputLockTags);
+        }
+    }</code></pre>
+
+<p>We want each lock to be unique, and so on creation, we will give the lock a GUID (globally unique identifier). C# provides us with a simple way to do this, you can check out the documentation<a href="https://docs.microsoft.com/en-us/dotnet/api/system.guid.newguid?view=net-6.0" target="_blank" rel="noopener">here</a>. This insures that each lock we create will be easily identified and different from the rest.</p>
+
+<p>We want to give the lock Tags which it will be responsible to lock. This way we can mark lockable objects with tags and decide which of these tags we want to lock. In the case where an object has two locking tags and two different locks are each locking a different tag, it will remain locked until both locks are unlocked.</p>
+
+<p>We want to know which part of our code created the lock and for this C# also gives us a simple ability to do this, we will use the attribute [<a href="https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.callerfilepathattribute?view=net-6.0" target="_blank" rel="noopener">CallerFilePath</a>] which allows us to obtain the path of the caller class in compile time. We will be able to use this info later to easily debug where the input lock came from. We will also use<a href="https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getfilenamewithoutextension?view=net-6.0" target="_blank" rel="noopener">Path.GetFileNameWithoutExtension</a>a functionality that C# provides us in order to take the file path we got from the caller and reduce it to only the class name which is all we really want.</p>
+
+<h2 class="section-heading">Subscribing the lockable objects to the Input Lock Service</h2>
+
+<p>We want our input lock service to have a subscription functionality. That means that we want the lockable object to be responsible for subscribing to the service when it is created and unsubscribing when it is destroyed. Since the lockable objects will be a<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html" target="_blank" rel="noopener"><strong>MonoBehaviour</strong></a><strong>,</strong>and MonoBehaviours have unity event functions Awake and OnDestroy which are called during the creation and destruction of the object, we will let the lockable object decide when to subscribe and unsubscribe. This way we make sure that there will be no<a href="https://www.wikiwand.com/en/Memory_leak" target="_blank" rel="noopener">memory leaks</a>.</p>
+
+<p>So we will create the following interface for the input lock service. This interface will only be relevant for the lockable objects and not the code which will be responsible for creating the locks themselves. This follows the<a href="https://www.wikiwand.com/en/Interface_segregation_principle#:~:text=In%20the%20field%20of%20software,are%20of%20interest%20to%20them." target="_blank" rel="noopener">interface segregation</a>principle of SOLID, as we do not force the lockable object to be dependent on functions it doesn’t need.</p>
+
+<pre><code class="language-csharp">public interface IInputLockServiceSubscription
+{
+    void SubscribeLockable(BaseInputLockable inputLockable);
+    void UnsubscribeLockable(BaseInputLockable inputLockable);
+}</code></pre>
+
+<p>Another thing we want to do on subscription is look at all the locks that are locked and see if the lockable object we are subscribing should be locked and if so, lock it. This is what the Update Lockable function is doing. This will also be called on each new lock that is added and each time a lock will be unlocked.</p>
+
+<pre><code class="language-csharp">public void SubscribeLockable(BaseInputLockable inputLockable)
+{
+    _inputLockSubscribers.Add(inputLockable);
+    UpdateLockable(inputLockable);
+
+public void UnsubscribeLockable(BaseInputLockable inputLockable)
+{
+    _inputLockSubscribers.Remove(inputLockable);
+}</code></pre>
+
+<h2 class="section-heading">The lockable object</h2>
+
+<p>Now let’s look at the lockable object:</p>
+
+<pre><code class="language-csharp">public abstract class BaseInputLockable : MonoBehaviour
+    {
+        [SerializeField] public List<InputLockTag> Tags;
+        private IInputLockServiceSubscription _inputLockServiceSubscription;
+        public bool IsLocked { get; private set; }
+        
+        [Inject]
+        private void Inject(IInputLockServiceSubscription inputLockServiceSubscription)
+        {
+            _inputLockServiceSubscription = inputLockServiceSubscription;
+        }
+        protected virtual void Awake()
+        {
+            _inputLockServiceSubscription.SubscribeLockable(this);
+        }
+        public void Lock()
+        {
+            if (IsLocked) return;
+            LockInternal();
+            IsLocked = true;
+        }
+        public void Unlock()
+        {
+            if (!IsLocked) return;
+            UnlockInternal();
+            IsLocked = false;
+        }
+        
+        private void OnDestroy()
+        {
+            _inputLockServiceSubscription.UnsubscribeLockable(this);
+        }
+        
+        protected abstract void LockInternal();
+        protected abstract void UnlockInternal();
+    }</code></pre>
+
+<p>So let’s look at the above code. The class has Tags, as serialized fields. The user can configure the specific lockable with whichever locking Tags are relevant. Notice that we are Injecting only the IInputLockServiceSubscription interface since the rest of the input lock service doesn’t interest us here. On creation of the object, the awake function is called and subscribes itself to the Input Lock Service. On destruction, the object unsubscribes itself from the service preventing memory leaks. This class will be the base class for all lockables and as such lock and unlock functions are generic all they do is all internal abstract functions, update the IsLocked state, and prevent the functions from being called if the current state is already applied.</p>
+
+<p>let’s look at two examples of implementing the base class:</p>
+
+<p>bellow is an example of a button lockable</p>
+
+<pre><code class="language-csharp">[RequireComponent(typeof(Button))]
+public class ButtonInputLocker : BaseInputLockable
+{
+    private Button _button;
+
+    protected override void Awake()
+    {
+        _button = GetComponent<Button>();
+        base.Awake();
+    }
+    
+    protected override void LockInternal()
+    {
+        _button.enabled = false;
+    }
+    protected override void UnlockInternal()
+    {
+        _button.enabled = true;
+    }
+}</code></pre>
+
+<p>And bellow here is an example of a raycaster inputlock</p>
+
+<pre><code class="language-csharp">[RequireComponent(typeof(BaseRaycaster))]
+public class RaycasterInputLocker : BaseInputLockable
+{
+    private BaseRaycaster _baseRaycaster;
+    
+    protected override void Awake()
+    {
+        _baseRaycaster = GetComponent<BaseRaycaster>();
+        base.Awake();
+    }
+    
+    protected override void LockInternal()
+    {
+        _baseRaycaster.enabled = false;
+    }
+    protected override void UnlockInternal()
+    {
+        _baseRaycaster.enabled = true;
+    }
+}</code></pre>
+
+<p>Note how simple it is to add new types of lockables with different functionality. The service itself is agnostic to the type of lockable, this follows the<a href="https://www.wikiwand.com/en/Open%E2%80%93closed_principle" target="_blank" rel="noopener">Open/Closed</a>principle of solid, as the code is easily extendable without the need for modification.</p>
+
+<h2 class="section-heading">The Input Lock Service</h2>
+
+<p>Let’s look at the input lock service interface</p>
+
+<pre><code class="language-csharp">public interface IInputLockService
+    {
+        InputLock LockInput(InputLockTag[] inputLockTags);
+        void UnlockInput(InputLock inputLock);
+        bool IsTagLocked(InputLockTag tag);
+        InputLock LockAllInputs();
+        InputLock LockAllExcept(InputLockTag[] inputLockTagsExcept);
+    }</code></pre>
+
+<p>let’s look at the implementation of the input lock service</p>
+
+<pre><code class="language-csharp">public class InputLockService : IInputLockService, IInputLockServiceSubscription
+    {
+        private readonly Dictionary<InputLockTag, HashSet<string>> _locks = new Dictionary<InputLockTag, HashSet<string>>();
+        private readonly Dictionary<string, InputLock> _idToInputLock = new Dictionary<string, InputLock>();
+        private readonly HashSet<BaseInputLockable> _inputLockSubscribers = new HashSet<BaseInputLockable>();
+        
+        public InputLockService()
+        {
+            foreach (var tags in Enum.GetValues(typeof(InputLockTag)))
+            {
+                _locks.Add((InputLockTag)tags, new HashSet<string>());
+            }
+        }
+
+        public List<InputLock> GetInputLocks()
+        {
+            return _idToInputLock.Values.ToList();
+        }
+
+        public void SubscribeLockable(BaseInputLockable inputLockable)
+        {
+            if(_inputLockSubscribers.Contains(inputLockable)) return;
+            
+            _inputLockSubscribers.Add(inputLockable);
+            UpdateLockable(inputLockable);
+        }
+
+        public void UnsubscribeLockable(BaseInputLockable inputLockable)
+        {
+            if(!_inputLockSubscribers.Contains(inputLockable)) return;
+            
+            _inputLockSubscribers.Remove(inputLockable);
+        }
+
+        public bool IsTagLocked(InputLockTag tag)
+        {
+            try
+            {
+                return _locks[tag].Count > 0;
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                Debug.Log($"IsTagLocked {tag.ToString()} is out of bounds");
+            }
+            return false;
+        }
+
+        public InputLock LockAllInputs()
+        {
+            var inputLockTags = Enum.GetValues(typeof(InputLockTag)).OfType<InputLockTag>().ToList();
+            return LockInput(inputLockTags.ToArray());;
+        }
+
+        public InputLock LockAllExcept(InputLockTag[] inputLockTagsExcept)
+        {
+            var inputLockTags = Enum.GetValues(typeof(InputLockTag)).OfType<InputLockTag>().ToList();
+            foreach (var exceptionTag in inputLockTagsExcept)
+            {
+                inputLockTags.Remove(exceptionTag);
+            }
+            return LockInput(inputLockTags.ToArray());
+        }
+
+        public InputLock LockInput(InputLockTag[] inputLockTags)
+        {
+            var inputLock = new InputLock(inputLockTags);
+            foreach (var lockType in inputLock.InputLockTags)
+            {
+                if (_locks[lockType].Contains(inputLock.Guid))
+                {
+                    Debug.Log($"The lock {inputLock.Guid} is already locked");
+                    return null;
+                }
+                _locks[lockType].Add(inputLock.Guid);
+            }
+            _idToInputLock.Add(inputLock.Guid,inputLock);
+            UpdateLockables();
+            return inputLock;
+        }
+
+        public void UnlockInput(InputLock inputLock)
+        {
+            foreach (var lockType in inputLock.InputLockTags)
+            {
+                if (!_locks[lockType].Contains(inputLock.Guid))
+                {
+                    Debug.Log($"You are trying to unlock {inputLock.ToString()} but no such inputlock exists");
+                    return;
+                }
+                _locks[lockType].Remove(inputLock.Guid);
+            }
+            _idToInputLock.Remove(inputLock.Guid);
+            UpdateLockables();
+        }
+
+        private void UpdateLockables()
+        {
+            foreach (var inputLockable in _inputLockSubscribers)
+            {
+                UpdateLockable(inputLockable);
+            }
+        }
+
+        private void UpdateLockable(BaseInputLockable inputLockable)
+        {
+            var shouldLock = ShouldLockInputLockable(inputLockable);
+            if (shouldLock)
+            {
+                inputLockable.Lock();
+            }
+            else
+            {
+                inputLockable.Unlock();
+            }
+        }
+
+        private bool ShouldLockInputLockable(BaseInputLockable inputLockable)
+        {
+            var shouldLock = false;
+            foreach (var tag in inputLockable.Tags)
+            {
+                var isLocked = _locks[tag].Count != 0;
+                if (isLocked)
+                {
+                    shouldLock = true;
+                    break;
+                }
+            }
+            return shouldLock;
+        }
+    }</code></pre>
+
+<p>let’s check that the code works with some unit tests:</p>
+
+<pre><code class="language-csharp">public class InputServiceTest
+    {
+        private InputLockService _inputLockService;
+        
+        [SetUp]
+        public void Setup()
+        {
+            _inputLockService = new InputLockService();
+        }
+    
+        [Test]
+        public void LockInputTest()
+        {
+            var lockTags = new[] { InputLockTag.Cube };
+            _inputLockService.LockInput(lockTags);
+        
+            Assert.True(_inputLockService.IsTagLocked(InputLockTag.Cube));
+        }
+    
+        [Test]
+        public void LockInputUnlockTest()
+        {
+            var lockTags = new[] { InputLockTag.Cube };
+            var inputLock = _inputLockService.LockInput(lockTags);
+            _inputLockService.UnlockInput(inputLock);
+            Assert.False(_inputLockService.IsTagLocked(InputLockTag.Cube));
+        }
+    
+        [Test]
+        public void TwoLocksOneUnlockTest()
+        {
+            var lockTags1 = new[] {InputLockTag.Cube};
+            var lockTags2 = new[] { InputLockTag.Cube };
+            var inputLock1 = _inputLockService.LockInput(lockTags1);
+            var inputLock2 = _inputLockService.LockInput(lockTags2);
+            _inputLockService.UnlockInput(inputLock1);
+            Assert.True(_inputLockService.IsTagLocked(InputLockTag.Cube));
+        }
+        
+        [Test]
+        public void LockAllInputs()
+        {
+            _inputLockService.LockAllInputs();
+            var inputLockTags = Enum.GetValues(typeof(InputLockTag)).OfType<InputLockTag>().ToList();
+            var areAllTagsLocked = true;
+            foreach (var tag in inputLockTags)
+            {
+                areAllTagsLocked = _inputLockService.IsTagLocked(tag) && areAllTagsLocked;
+            }
+            Assert.True(areAllTagsLocked);
+        }
+        
+        [Test]
+        public void LockAllInputsExcept()
+        {
+            _inputLockService.LockAllExcept( new[] { InputLockTag.Cube });
+            var inputLockTags = Enum.GetValues(typeof(InputLockTag)).OfType<InputLockTag>().ToList();
+            inputLockTags.Remove(InputLockTag.Cube);
+            var areAllTagsLocked = true;
+            foreach (var tag in inputLockTags)
+            {
+                areAllTagsLocked = _inputLockService.IsTagLocked(tag) && areAllTagsLocked;
+            }
+            Assert.True(areAllTagsLocked && !_inputLockService.IsTagLocked(InputLockTag.Cube));
+        }
+        
+    }</code></pre>
+
+<p>we can run the test runner now to see if the tests work.</p>
+
+<p>Window → General → TestRunner</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*HU9RhvMUjlJtraVN.png" alt=""></figure><p>And now we can be confident that the code works :D.</p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
   <a href="rectmask2d-performance.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
     <div class="nav-title">The Hidden Performance Killer: RectMask2D</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
   <a href="optimizing-draw-calls.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
     <div class="nav-title">Optimizing Draw Calls</div>
   </a>
-</div>
-
-</main>
+</div></main>
 
 <!-- FOOTER -->
 <footer>
@@ -164,7 +556,9 @@ const themes = {
   p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
   p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
   p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
-  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' }
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' },
+  p16: { '--bg':'#2a1c40','--bg2':'#342254','--bg3':'#3e2868','--panel':'#48307c','--border':'rgba(180,60,240,0.3)','--accent':'#ffc840','--accent2':'#b050f0','--accent3':'#ffaa20','--text':'#f8f0ff','--muted':'#9878a8','--dim':'#1a0e28','--glow1':'rgba(255,190,40,0.12)','--glow2':'rgba(176,80,240,0.12)','--grid':'rgba(176,80,240,0.06)' },
+  p17: { '--bg':'#4a3868','--bg2':'#58447c','--bg3':'#665090','--panel':'#7458a0','--border':'rgba(180,100,240,0.35)','--accent':'#ffb820','--accent2':'#c060ff','--accent3':'#ffa020','--text':'#2a1840','--muted':'#685080','--dim':'#f0e8ff','--glow1':'rgba(255,200,60,0.15)','--glow2':'rgba(200,100,255,0.15)','--grid':'rgba(200,100,255,0.08)' }
 };
 
 function setTheme(name) {

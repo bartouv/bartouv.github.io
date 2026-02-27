@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>An Intro to rendering — GB/DEV</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/shared.css">
+<link rel="stylesheet" href="../css/article.css">
+</head>
+<body>
+
+<div class="bg-glow g1"></div>
+<div class="bg-glow g2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">GB<span>/</span>DEV</div>
+  <ul class="nav-links">
+    <li><a href="../index.html#posts">Articles</a></li>
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="https://medium.com/@galbartouv" target="_blank">Medium</a></li>
+  </ul>
+  <div class="theme-switcher" id="themeSwitcher">
+    <button class="theme-toggle-btn" onclick="toggleThemePanel()" title="Switch theme">
+      <span class="theme-icon">◑</span>
+      <span class="theme-label">Theme</span>
+    </button>
+    <div class="theme-panel" id="themePanel">
+      <div class="theme-panel-title">// SELECT THEME</div>
+      <button class="theme-option active" data-theme="p1" onclick="setTheme('p1')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#bf5fff,#e040fb)"></span>
+        <span>Neon Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p2" onclick="setTheme('p2')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"></span>
+        <span>Deep Amethyst</span>
+      </button>
+      <button class="theme-option" data-theme="p3" onclick="setTheme('p3')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#d946ef,#ec4899)"></span>
+        <span>Fuchsia Burn</span>
+      </button>
+      <button class="theme-option" data-theme="p4" onclick="setTheme('p4')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#818cf8,#6366f1)"></span>
+        <span>Indigo Pulse</span>
+      </button>
+      <button class="theme-option" data-theme="p5" onclick="setTheme('p5')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c084fc,#7e22ce)"></span>
+        <span>Royal Dusk</span>
+      </button>
+      <button class="theme-option" data-theme="p6" onclick="setTheme('p6')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#f0abfc,#c026d3)"></span>
+        <span>Orchid Haze</span>
+      </button>
+      <button class="theme-option" data-theme="p7" onclick="setTheme('p7')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#a78bfa,#4c1d95)"></span>
+        <span>Midnight Iris</span>
+      </button>
+      <button class="theme-option" data-theme="p8" onclick="setTheme('p8')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#e879f9,#9333ea)"></span>
+        <span>Plasma Storm</span>
+      </button>
+      <button class="theme-option" data-theme="p9" onclick="setTheme('p9')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7dd3fc,#818cf8)"></span>
+        <span>Aurora Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p10" onclick="setTheme('p10')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#fbbf24,#9333ea)"></span>
+        <span>Gold & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p11" onclick="setTheme('p11')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#50e6f6,#ff6b9d)"></span>
+        <span>Cyan & Rose</span>
+      </button>
+      <button class="theme-option" data-theme="p12" onclick="setTheme('p12')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff8c50,#20e8c0)"></span>
+        <span>Copper & Teal</span>
+      </button>
+      <button class="theme-option" data-theme="p13" onclick="setTheme('p13')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#50f0a0,#ff4080)"></span>
+        <span>Emerald & Crimson</span>
+      </button>
+      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c8ff64,#6040ff)"></span>
+        <span>Lime & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
+        <span>Coral & Aqua</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#b050f0)"></span>
+        <span>Gold & Violet Mid</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb820,#c060ff)"></span>
+        <span>Gold & Violet Light</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ARTICLE HERO -->
+<section class="article-hero">
+  <div class="article-header">
+    <a href="../index.html#posts" class="back-link">← Back to Articles</a>
+    <div class="article-tag">// UNITY DEV</div>
+    <h1 class="article-title">An Intro to rendering</h1>
+    <div class="article-meta">
+      <span class="article-date">TBD</span>
+      <span class="article-read-time">5 min read</span>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE BODY -->
+<article class="article-body">
+  <div class="article-container">
+
+    <!-- ARTICLE CONTENT GOES HERE -->
+    <h2>An Intro to rendering</h2>
+
+<h2 class="section-heading">What is a frame?</h2>
+
+<p></p>
+
+<h2 class="section-heading">What is a shader?</h2>
+
+<p>A shader is a piece of code that runs on the GPU and decides what color to render the pixels on your screen with the use of math. There are different types of shaders, each with its own quirks and uses. While coloring pixels with colors sounds like a mundane task, the more you learn the more you realize it's like doing magic.</p>
+
+<h2 class="section-heading">Where did shaders come from?</h2>
+
+<p>This use of the term “shader” was coined by Pixar in version 3.0 of their RenderMan Interface Specification in 1988.</p>
+
+<h2 class="section-heading">Why do we need shaders?</h2>
+
+<p>We can use C# script to modify the color of the pixels, but shaders are a better option due to the sheer number of pixels on the screen. Modern displays, such as retina displays, have a resolution of 2880x1800 and update over 311 million pixels every second at 60 frames per second, a task that cannot be efficiently handled by a conventional CPU alone. In contrast, GPUs have numerous small processors that can operate concurrently, making them better equipped to handle this high volume of calculations. Thruther more, the GPU has been optimized for executing multiple operations simultaneously, making it well-suited for the mathematical computations required by shaders.</p>
+
+<h2 class="section-heading">What does a shader draw?</h2>
+
+<p>Shaders draw 3d objects. These 3d objects are comprised of many points called vertices. The vertices together make up a Mesh. In order to draw the 3d object the shader needs information on each vertex and it also needs the shader properties which are in the material that the 3d object has.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*2jxZ9FYn6ZRtqObSZ7D2Mw.png" alt=""></figure><h2 class="section-heading">What data does a vertex have?</h2>
+
+<p>The Vertex is comprised of a Vertex Position, Vertex Color, Vertex Normal, and UV.</p>
+
+<ul><li>Vertex position — The x, y, and z coordinates of the vertex in the world.</li>
+<li>Vertex Color — Holds a color for the vertex though it can be used for other shader tricks.</li>
+<li>Vertex Normal — Each vertex has a vector that tells us the direction that that vertex is looking at. Since vectors are composed of x,y, and z values we can translate them to R.G.B values and display them as colors:</li>
+</ul>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*8nxDAw8VFdqY0P0uk5GusA.png" alt=""></figure><ul><li>UV — is a set of coordinates for mapping  a 2D texture onto a 3D object. This is achieved by mapping each vertex of the 3D object to a specific location on the texture. The UV coordinates range from (0,0) to (1,1) and define the position of a vertex on the texture. The name “UV Mapping” comes from the use of the letters “U” and “V” to denote the axes of the 2D texture. This is because the axes of the 3D object are already defined as “X”, “Y”, and “Z” in model space, and “W” is used for calculating quaternion rotations, a common operation in computer graphics.</li>
+</ul>
+
+<h2 class="section-heading">What Is A Material?</h2>
+
+<p>A material’s relationship to a shader is similar to the relationship between a class and an object in object-oriented programming. The material contains the parameters for the shader, and one shader can be associated with multiple materials. Every 3D model in Unity has a material, which can consist of various properties such as textures or vectors, as defined in the shader.</p>
+
+<h2 class="section-heading">What Is the queue on the material?</h2>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*u9Xda0ugL0p3IoHEQHvFiQ.png" alt=""></figure><p>The render queue in Unity determines the order in which objects are drawn in the scene. Objects are drawn from lowest to highest render queue value, allowing for control over the draw order and achieving various visual effects:</p>
+
+<ul><li>Background (1000) — Used for skybox and backgrounds.</li>
+<li>Geometry (2000) — Opaque geometry uses this queue.</li>
+<li>AlphaTest (2450) — Alpha-tested geometry uses this queue. shaders that don’t write to the depth buffer should go here (glass, particle effects).</li>
+<li>GeometryLast (2500) — Last render queue that is considered “opaque”.</li>
+<li>Transparent (3000) — This render queue is rendered after Geometry and AlphaTest, in back-to-front order.</li>
+<li>Overlay (4000) — This render queue is meant for overlay effects .e.g. lens flares.</li>
+</ul>
+
+<p>We can also categorize the queues as opaque and transparent. Opaques are objects that have no transparency like walls and solid objects. Transparent is for the ings with an alpha value that can be seen through.This has important implications.</p>
+
+<p>In opaque geometry, anything rendered between 0–2500 is rendered front To back, this way the ZTest is rejecting pixels where the depth has already been written too.</p>
+
+<p>The Transparent geometry, anything between 2501–5000 is rendered back to front, this is to get proper blending. This works like a Bob Ross painting, where he first draws the mountains then the trees then the lake this is called the<a href="https://www.wikiwand.com/en/Painter%27s_algorithm" target="_blank" rel="noopener">painter’s algorithm</a>. For this reason, it is more performant to draw opaque objects.</p>
+
+<h2 class="section-heading">What is overdraw?</h2>
+
+<p></p>
+
+<h2 class="section-heading">What Is a sorting order?</h2>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*rGiZRkn_wTPoX3AQQqux8g.png" alt=""></figure><p>You might have noticed that canvases in unity have sorting order. If you’ll look closely you'll see that renderers also have this Renderer.sortingOrder. The sorting order is another step in the order of rendering. Things are drawn from the lowest to the highest order of that queue. So an object of sorting order 1 on queue 3000 will be drawn before an object of sorting order 12 on queue 3000, but an object of sorting order 33 on queue 3000 will be drawn before an object of sorting order 2 on queue 3003.</p>
+
+<h2 class="section-heading"></h2>
+
+<h2 class="section-heading">How does the GPU know that it needs to use a shader to draw something?</h2>
+
+<p>In a previous<a href="https://medium.com/@galbartouv/fighting-entropy-in-unity-optimizing-draw-calls-c98230aa9ad3" target="_blank" rel="noopener">post</a>I explained this, but ill recap. In each frame draw calls are requested between the CPU to the GPU. The draw call contains the vertex data and the shader properties of the object that needs to be drawn. some times several of these calls are batched and sent together.</p>
+
+<h2 class="section-heading">I</h2>
+
+<p>Shader Object — A Shader object is a Unity-specific way of working with shader programs; it is a wrapper for shader programs and other information. It lets you define multiple shader programs in the same file, and tell Unity how to use them.</p>
+
+<h2 class="section-heading">Types Of Shader Programs</h2>
+
+<ul><li><a href="https://vulkan-tutorial.com/Drawing_a_triangle/Graphics_pipeline_basics/Introduction" target="_blank" rel="noopener">In what order do the shader programs run?</a></li>
+</ul>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*LSGm4klFqcStzTh-" alt=""></figure><p>Vertex shader — All the data about the mesh that needs to be rendered is passed to the vertex shader also known as the vertex function. The vertex shader is responsible for the calculation of the vertex position in screen space. It can manipulate the mesh data for creating special effects. It can change the mesh position, color, vertex Normals, and texture mapping.</p>
+
+<p>Tessellation shaders — Are used to improve the quality of geometry by subdividing meshes according to rules. This is used to improve the look of things when you get up close to them like floors and walls.</p>
+
+<p>Geometry shader — The geometry shader is the step between the vertex shader and the fragment shader. It receives the vertex data and then allows you to manipulate it by generating new vertices or removing existing ones. This is used in cases like the generation of grass or fur. Note that geometry shaders have notoriously bad performance and are rarely used anymore.</p>
+
+<p>Fragment shader — The fragment shader is the last stage of the shader programs, it is also known as the pixel shader. It runs on each fragment that has a polygon covering it and chooses what color to display.</p>
+
+<p>[Compute shader](<a href="https://docs.unity3d.com/Manual/class-ComputeShader.html" target="_blank" rel="noopener">docs.unity3d.com/Manual/class-ComputeShader..</a>) — Compute shaders are unique in the fact that they can run outside the rendering pipeline. So they can be used to do calculations in parallel using the GPU power.</p>
+
+<h2 class="section-heading">The Languages</h2>
+
+<p>ShaderLab — is a declarative language that you use in shader source files. It uses a nested-braces syntax to describe a Shader object.</p>
+
+<p>HLSL — In Unity shaders are written in High-Level Shading Language or HLSL for short. HLSL was developed by Microsoft for their Direct3D 9 API. Even though this is the language used in Unity it’s good to know that there are other shader languages such as GLSL which was created for OpenGL, and others.</p>
+
+<h2 class="section-heading">The Visual Language</h2>
+
+<p>In Unity 2019+ if you use the<a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@11.0/manual/" target="_blank" rel="noopener">URP</a>or<a href="https://unity.com/srp/High-Definition-Render-Pipeline" target="_blank" rel="noopener">HDRP</a>you have the choice of using Shader Graph. Shader Graph is a visual scripting tool that lets you write shaders visually without complex syntax. While Shader Graph is missing features and cant replace writing shader in<a href="https://docs.unity3d.com/Manual/SL-ShadingLanguage.html" target="_blank" rel="noopener">HLSL</a>completely, it does make our lives much easier in kin to writing in C# and not Assembly. Under the hood, Shader Graph converts the Visual scripts of the shader to HLSL. It’s just much easier to understand. I’ll note that for best performance it’s probably best to write directly in HLSL since Shader Graph auto generation does not necessarily create the most optimized HLSL code.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*DPJvMCJqY7X0ZC_e" alt=""></figure><p>Shader Graph is not the only Visual Shader editor there are others like<a href="https://github.com/FreyaHolmer/ShaderForge" target="_blank" rel="noopener">Shader Forge</a>by<a href="https://twitter.com/FreyaHolmer" target="_blank" rel="noopener">Freya Holmer</a>and<a href="http://amplify.pt/unity/amplify-shader-editor/" target="_blank" rel="noopener">Amplify Shader</a>.</p>
+
+<p></p>
+
+<h2 class="section-heading">The Anatomy Of a Shader Object</h2>
+
+<p></p>
+
+<p>Sub Shaders — A shader can contain one or more sub-shaders. Each sub-shader lets you define different GPU settings and shader programs for different hardware, render pipelines, and runtime settings.</p>
+
+<p>Culling — When we have a 3d model of a cube we know that the sides of the cube which are facing away from our view can't be seen so why bother to draw them? This is where culling (also known as back face culling) comes in, it’s the act of reducing the number of vertices that need to be rendered. This is used as an optimization.</p>
+
+<p>There are several culling tags:</p>
+
+<ul><li>Back — Don’t render polygons facing away from the viewer (default).:</li>
+</ul>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*ktcBzFC2U4mYFqOg" alt=""></figure><ul><li>Front — Don’t render polygons facing toward the viewer. Used for turning objects inside-out.</li>
+</ul>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*fxDCgpU9vh7pCN7t" alt=""></figure><ul><li>Off — Disables culling — all faces are drawn. Used for special effects.</li>
+</ul>
+
+<p></p>
+
+<p>In opaque geometry, anything rendered between 0–2500 is rendered front To back, this way the ZTest is rejecting pixels where the depth has already been written too. This is to reduce the fill rate.</p>
+
+<p>And finally, Unity’s sorting doesn’t always sort how you expect due to batching, bounds calculations, and some other Unity oddness.</p>
+
+<p>Shader Pass — A shader can have one or more passes. A pass is a request to draw an image using the data that is passed to the shader. Each pass receives the content of the previous pass.</p>
+
+<p>In cases like an outline shader, we want to have more than one pass. One to draw the object and another one to draw the outline which is the object larger in a single color and rendering its front face.</p>
+
+<p>Shader graph doesn’t support multi-pass shaders.</p>
+
+<p><a href="https://docs.unity3d.com/Manual/SL-MultipleProgramVariants.html" target="_blank" rel="noopener">Keywords</a>-</p>
+
+<p>Keywords are useful for many reasons, such as:</p>
+
+<ul><li>Creating shaders with features that you can turn on or off for each Material instance.</li>
+<li>Creating shaders with features that behave differently on certain platforms.</li>
+<li>Creating shaders that scale in complexity based on various conditions.</li>
+</ul>
+
+<h2 class="section-heading">Shader Performance</h2>
+
+<p>There are several ways to optimize your shaders. To understand what will optimize our shader we need to remember that a shader is a function that does calculations, the less complex the calculation the faster and more optimized it will be.</p>
+
+<p><strong>Precision</strong></p>
+
+<p>The first thing we can do to reduce the complexity of the calculation reduces the precision of the calculations. Shaders do math calculations on floating point numbers. We can choose the precision of the calculations. We can choose either Floating precision which uses 32 bits or Half precision which for its name’s sake is 16 bits. Using the half-precision is faster due to improved GPU register allocation or due to “fast path” execution units for some lower precision math operations. The use of lower precision uses less power from the GPU and can increase battery life. If you build for PC in unity it makes no difference what precision you choose as it will always compute to 32-bit precision. The place where the precision does matter is on mobile GPUs.</p>
+
+<p><strong>Expansive functions</strong></p>
+
+<p>Some math mathematical operations are very expensive. For example pow, exp, log, cos, sin, and tan. These are<a href="https://www.wikiwand.com/en/Transcendental_function" target="_blank" rel="noopener">Transcendental</a>mathematical functions that may look simple but are very complex to calculate. As we said the less complex the calculation is the faster the shader, so avoid functions like this when possible. A trick that can be used as an alternative is baking calculations by looking up tables on textures.</p>
+
+<p><strong>Branches are expansive</strong></p>
+
+<p>Shader programs are stupid in a sense. In C# if you have an “if else” statement you only calculate either the if logic or the else logic, but shaders will calculate both and only use the result that is needed. This means that branches in shaders are expansive. To avoid this we can use Keywords. Keywords look like branches but what they do is create shader variants. One shader variant for the if true and one for the if false in this case.</p>
+
+
+
+  </div>
+</article>
+
+<!-- ARTICLE NAVIGATION -->
+<div class="article-nav">
+  <a href="fighting-entropy-in-unity-taming-git-chaos-with-custom-commands.html" class="article-nav-prev">
+    <div class="nav-label">← Previous</div>
+    <div class="nav-title">Taming Git Chaos with Custom Commands</div>
+  </a>
+  <a href="from-art-to-code-building-a-video-scrubber-to-match-unity-animations.html" class="article-nav-next">
+    <div class="nav-label">Next →</div>
+    <div class="nav-title">Building a Video Scrubber to Match Unity Animations</div>
+  </a>
+</div><!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
+  <div class="footer-links">
+    <a href="https://medium.com/@galbartouv" target="_blank">Medium</a>
+    <a href="../index.html#posts">Articles</a>
+    <a href="../index.html#about">About</a>
+  </div>
+</footer>
+
+<!-- THEME SCRIPT -->
+<script>
+const themes = {
+  p1:  { '--bg':'#170f28','--bg2':'#1d1432','--bg3':'#23193c','--panel':'#291e46','--border':'rgba(200,120,255,0.25)','--accent':'#d580ff','--accent2':'#ee60ff','--accent3':'#ff70cc','--text':'#f0e8ff','--muted':'#b09ad0','--dim':'#4a3070','--glow1':'rgba(180,80,255,0.12)','--glow2':'rgba(220,64,255,0.08)','--grid':'rgba(180,80,255,0.05)' },
+  p2:  { '--bg':'#130e28','--bg2':'#191434','--bg3':'#1f1a40','--panel':'#252050','--border':'rgba(150,100,255,0.25)','--accent':'#b89aff','--accent2':'#8b5cf6','--accent3':'#d4b8ff','--text':'#eeebff','--muted':'#a090c8','--dim':'#40306e','--glow1':'rgba(130,70,240,0.12)','--glow2':'rgba(170,130,255,0.06)','--grid':'rgba(130,70,240,0.05)' },
+  p3:  { '--bg':'#1c0e22','--bg2':'#23122c','--bg3':'#2a1636','--panel':'#311a40','--border':'rgba(230,80,240,0.25)','--accent':'#f580c8','--accent2':'#e040ef','--accent3':'#ff90e0','--text':'#ffe8f8','--muted':'#c080a8','--dim':'#501860','--glow1':'rgba(220,70,240,0.12)','--glow2':'rgba(250,120,200,0.06)','--grid':'rgba(220,70,240,0.05)' },
+  p4:  { '--bg':'#101028','--bg2':'#161638','--bg3':'#1c1c44','--panel':'#222254','--border':'rgba(120,125,255,0.25)','--accent':'#9098ff','--accent2':'#7478f0','--accent3':'#b8bcff','--text':'#eaeaff','--muted':'#8888c8','--dim':'#303070','--glow1':'rgba(100,105,245,0.12)','--glow2':'rgba(140,145,255,0.06)','--grid':'rgba(100,105,245,0.05)' },
+  p5:  { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#281a4c','--border':'rgba(170,60,240,0.25)','--accent':'#cc88ff','--accent2':'#a040ee','--accent3':'#bb70ff','--text':'#f5e8ff','--muted':'#a870c8','--dim':'#3e1860','--glow1':'rgba(150,40,220,0.12)','--glow2':'rgba(200,130,255,0.06)','--grid':'rgba(150,40,220,0.05)' },
+  p6:  { '--bg':'#1e1028','--bg2':'#261430','--bg3':'#2e183a','--panel':'#361c44','--border':'rgba(210,60,230,0.25)','--accent':'#f0b0ff','--accent2':'#d030e0','--accent3':'#ff90f8','--text':'#fff0ff','--muted':'#c888d0','--dim':'#501068','--glow1':'rgba(200,40,220,0.12)','--glow2':'rgba(245,175,255,0.06)','--grid':'rgba(200,40,220,0.05)' },
+  p7:  { '--bg':'#0e0c28','--bg2':'#131034','--bg3':'#181440','--panel':'#1d184c','--border':'rgba(100,60,200,0.28)','--accent':'#b898ff','--accent2':'#7840e0','--accent3':'#9060f0','--text':'#eeeaff','--muted':'#8878bc','--dim':'#281858','--glow1':'rgba(80,40,180,0.14)','--glow2':'rgba(170,140,255,0.08)','--grid':'rgba(80,40,180,0.06)' },
+  p8:  { '--bg':'#1a0c28','--bg2':'#210f34','--bg3':'#281240','--panel':'#2f154c','--border':'rgba(180,60,240,0.25)','--accent':'#f080ff','--accent2':'#a030e8','--accent3':'#e060f0','--text':'#ffe8ff','--muted':'#b060c8','--dim':'#441060','--glow1':'rgba(160,50,230,0.12)','--glow2':'rgba(240,130,255,0.08)','--grid':'rgba(160,50,230,0.05)' },
+  p9:  { '--bg':'#0e1230','--bg2':'#121840','--bg3':'#161e4e','--panel':'#1a245c','--border':'rgba(120,130,255,0.25)','--accent':'#b0bcff','--accent2':'#8890f8','--accent3':'#90d8ff','--text':'#eaecff','--muted':'#7888c0','--dim':'#202860','--glow1':'rgba(130,210,255,0.1)','--glow2':'rgba(140,150,255,0.1)','--grid':'rgba(110,120,245,0.05)' },
+  p10: { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#28194c','--border':'rgba(180,60,240,0.22)','--accent':'#ffc840','--accent2':'#a030ea','--accent3':'#ffaa20','--text':'#fff8e8','--muted':'#b09868','--dim':'#3c2828','--glow1':'rgba(255,190,40,0.08)','--glow2':'rgba(160,50,234,0.08)','--grid':'rgba(160,50,234,0.04)' },
+  p11: { '--bg':'#0e1e28','--bg2':'#121e2e','--bg3':'#162634','--panel':'#1a2e3c','--border':'rgba(80,230,240,0.22)','--accent':'#50e6f6','--accent2':'#ff6b9d','--accent3':'#80f0ff','--text':'#e8f8ff','--muted':'#88b0c8','--dim':'#283840','--glow1':'rgba(80,230,246,0.1)','--glow2':'rgba(255,107,157,0.08)','--grid':'rgba(80,180,200,0.04)' },
+  p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
+  p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
+  p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' },
+  p16: { '--bg':'#2a1c40','--bg2':'#342254','--bg3':'#3e2868','--panel':'#48307c','--border':'rgba(180,60,240,0.3)','--accent':'#ffc840','--accent2':'#b050f0','--accent3':'#ffaa20','--text':'#f8f0ff','--muted':'#9878a8','--dim':'#1a0e28','--glow1':'rgba(255,190,40,0.12)','--glow2':'rgba(176,80,240,0.12)','--grid':'rgba(176,80,240,0.06)' },
+  p17: { '--bg':'#4a3868','--bg2':'#58447c','--bg3':'#665090','--panel':'#7458a0','--border':'rgba(180,100,240,0.35)','--accent':'#ffb820','--accent2':'#c060ff','--accent3':'#ffa020','--text':'#2a1840','--muted':'#685080','--dim':'#f0e8ff','--glow1':'rgba(255,200,60,0.15)','--glow2':'rgba(200,100,255,0.15)','--grid':'rgba(200,100,255,0.08)' }
+};
+
+function setTheme(name) {
+  const t = themes[name] || themes['p1'];
+  const root = document.documentElement;
+  Object.entries(t).forEach(([k, v]) => {
+    if (!k.startsWith('--glow') && !k.startsWith('--grid')) {
+      root.style.setProperty(k, v);
+    }
+  });
+  const style = document.getElementById('gridStyle') || (() => {
+    const s = document.createElement('style');
+    s.id = 'gridStyle';
+    document.head.appendChild(s);
+    return s;
+  })();
+  style.textContent = 'body::before{background-image:linear-gradient(' + t['--grid'] + ' 1px,transparent 1px),linear-gradient(90deg,' + t['--grid'] + ' 1px,transparent 1px);background-size:40px 40px;}';
+  const g1 = document.querySelector('.bg-glow.g1');
+  const g2 = document.querySelector('.bg-glow.g2');
+  if (g1) g1.style.background = 'radial-gradient(circle,' + t['--glow1'] + ',transparent 70%)';
+  if (g2) g2.style.background = 'radial-gradient(circle,' + t['--glow2'] + ',transparent 70%)';
+  document.querySelectorAll('.theme-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === name);
+  });
+  localStorage.setItem('gb-theme', name);
+  toggleThemePanel(false);
+}
+
+function toggleThemePanel(forceClose) {
+  const panel = document.getElementById('themePanel');
+  if (forceClose === false) { panel.classList.remove('open'); return; }
+  panel.classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('themeSwitcher').contains(e.target)) {
+    document.getElementById('themePanel').classList.remove('open');
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('gb-theme') || 'p1';
+  setTheme(saved);
+});
+</script>
+
+</body>
+</html>

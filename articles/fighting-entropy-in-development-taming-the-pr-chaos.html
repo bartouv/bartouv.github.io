@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>[TITLE] — GB/DEV</title>
+<title>Fighting Entropy In Development — Taming the PR Chaos — GB/DEV</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/shared.css">
 <link rel="stylesheet" href="../css/article.css">
@@ -104,11 +104,11 @@
 <section class="article-hero">
   <div class="article-header">
     <a href="../index.html#posts" class="back-link">← Back to Articles</a>
-    <div class="article-tag">// [CATEGORY]</div>
-    <h1 class="article-title">[TITLE]</h1>
+    <div class="article-tag">// UNITY DEV</div>
+    <h1 class="article-title">Fighting Entropy In Development — Taming the PR Chaos</h1>
     <div class="article-meta">
-      <span class="article-date">[DATE]</span>
-      <span class="article-read-time">[X] min read</span>
+      <span class="article-date">TBD</span>
+      <span class="article-read-time">5 min read</span>
     </div>
   </div>
 </section>
@@ -118,30 +118,152 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="[MEDIUM_URL]" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <h2>Fighting Entropy In Development — Taming the PR Chaos</h2>
+
+<p>How a simple Python script saved our team from drowning in forgotten PRs and turned chaos into clarity</p>
+
+<p>As a development team grows, so does the chaos. Pull requests pile up, reviewers forget to respond, authors lose track of feedback, and that critical bug fix sits in limbo for days. Sound familiar? If you've ever found yourself scrolling through endless GitHub notifications trying to figure out which PRs need attention, you're not alone.</p>
+
+<p>In this post, I'll show you how we built a custom PR notification system that transforms GitHub chaos into organized Slack clarity — and how a few hundred lines of Python can save your team hours of confusion every week.</p>
+
+<h2 class="section-heading">Why GitHub's Built-in Notifications Fail Teams</h2>
+
+<p>GitHub's notification system works fine for individual developers, but it crumbles under team pressure. Here's what we were dealing with:</p>
+
+<p><strong>The Scattered Information Problem</strong>: PR status is spread across multiple places — the PR page, review comments, check statuses, and draft flags. No single view shows you what actually needs your attention.</p>
+
+<p><strong>The Context Switching Nightmare</strong>: Team members constantly switch between GitHub, Slack, and their IDE trying to understand what needs to be done. Each context switch costs precious mental bandwidth.</p>
+
+<p><strong>The Forgotten PR Syndrome</strong>: PRs get stuck in review limbo. Authors don't know their reviewer requested changes weeks ago, and reviewers forget they even reviewed something.</p>
+
+<p><strong>The Status Guessing Game</strong>: Is this PR ready for review? Waiting for changes? Ready to merge? You have to detective your way through comments and reviews to figure it out.</p>
+
+<p>If you've experienced any of these pain points, you understand why we needed a better solution.</p>
+
+<h2 class="section-heading">What We Built: A Smart PR Orchestrator</h2>
+
+<p>Our solution is a Python script that runs daily, analyzing all our repositories and organizing PRs into meaningful categories. But unlike a simple parser, this system understandscontextand providesactionable intelligence.</p>
+
+<p>Here's what it does:</p>
+
+<h2 class="section-heading">1. Intelligent PR Classification</h2>
+
+<p>The script doesn't just list PRs — it categorizes them by actionable status:</p>
+
+<ul><li><strong>Ready for review</strong>: Fresh PRs that need initial attention</li>
+<li><strong>In review with feedback</strong>: PRs with comments but no formal review decision</li>
+<li><strong>Stuck in review</strong>: PRs with requested changes that need author action</li>
+<li><strong>Waiting to be merged</strong>: Approved PRs ready for the final step</li>
+<li><strong>Unknown status</strong>: Edge cases that need manual attention</li>
+</ul>
+
+<h2 class="section-heading">2. Smart Team Integration</h2>
+
+<p>Rather than generic notifications, the system:</p>
+
+<ul><li>Maps GitHub usernames to Slack IDs for proper mentions</li>
+<li>Uses custom emoji for each team member (because personality matters)</li>
+<li>Sends targeted DMs to authors of stuck PRs</li>
+<li>Identifies which reviewer requested changes</li>
+</ul>
+
+<h2 class="section-heading">3. Enhanced Context</h2>
+
+<p>The script enriches each PR with additional intelligence:</p>
+
+<ul><li>Failing test indicators (❌) for PRs with CI issues</li>
+<li>Reviewer identification for stuck PRs</li>
+<li>Repository names for multi-repo clarity</li>
+<li>Direct links for quick navigation</li>
+</ul>
+
+<h2 class="section-heading">The Technical Architecture</h2>
+
+<p>Let's dive into how this system works under the hood.</p>
+
+<h2 class="section-heading">Core Components</h2>
+
+<p>The script is built around several key functions that each handle a specific aspect of PR analysis:</p>
+
+<pre><code class="language-typescript">def get_change_requester(owner, repo, pr_number):
+    # Identifies who requested changes by parsing review history
+    # Returns the most recent reviewer who requested changes
+    
+def pr_has_failing_tests(owner, repo, pr_number):
+    # Checks CI status by examining check runs
+    # Looks for test/CI failures in the latest commit
+    
+def build_plaintext_section(title, emoji, pr_list, include_reviewer=False):
+    # Formats PR lists into readable Slack sections
+    # Groups by author and includes relevant context</code></pre>
+
+<h2 class="section-heading">The Classification Logic</h2>
+
+<p>The heart of the system is the PR classification algorithm. For each PR, we:</p>
+
+<strong>Check if it's a draft</strong>— Skip drafts entirely since they're not ready</li>
+<strong>Analyze review status</strong>— Look at the most recent review decision</li>
+<strong>Count comments</strong>— Differentiate between fresh PRs and those with feedback</li>
+<strong>Combine signals</strong>— Use multiple data points to determine true status</li>
+<pre><code class="language-typescript">if latest == "APPROVED":
+    waiting_to_be_merged.append(pr)
+elif latest == "CHANGES_REQUESTED":
+    stuck_in_review.append(pr)
+elif comments_count == 0:
+    ready_for_review.append(pr)
+elif comments_count > 0:
+    in_review_feedback.append(pr)</code></pre>
+
+<p>This logic handles the complex reality that a PR's status isn't just about its last review — it's about the combination of reviews, comments, and current state.</p>
+
+<h2 class="section-heading">The Proactive Messaging System</h2>
+
+<p>One of our favorite features is the automatic DM system for stuck PRs:</p>
+
+<pre><code class="language-typescript"># DM authors of stuck PRs with specific reviewer information
+for author, prs in stuck_by_author.items():
+    message_lines = [f"👋 Hey {mention}, you have {len(prs)} PR(s) stuck in review:"]
+    for pr in sort_prs(prs):
+        reviewer = get_change_requester(owner, repo, pr['number'])
+        if reviewer:
+            line += f" — reviewer: {emoji_icon}{slack_mention(reviewer)}"</code></pre>
+
+<p>Instead of letting PRs languish in review purgatory, we proactively notify authors and tell them exactly who requested changes. This simple feature alone has cut our average PR resolution time in half.</p>
+
+<h2 class="section-heading">The Results: From Chaos to Clarity</h2>
+
+<p>After running this system for several months, the results speak for themselves:</p>
+
+<p><strong>Faster PR Resolution</strong>: Our average time from PR creation to merge dropped from 3-4 days to 1-2 days. When people know exactly what needs their attention, they act on it.</p>
+
+<p><strong>Reduced Context Switching</strong>: Team members no longer need to dig through GitHub to understand PR status. Everything they need to know arrives in Slack with clear actionable steps.</p>
+
+<p><strong>Proactive Communication</strong>: The automatic DMs for stuck PRs eliminate the awkward "hey, did you see my review?" conversations. Authors know immediately when they need to take action.</p>
+
+<p><strong>Better Team Coordination</strong>: Reviewers can see at a glance which PRs need their attention, and authors can track their PRs through the review process without manual checking.</p>
+
+<p><strong>Visibility for Leadership</strong>: Engineering managers get a daily snapshot of team velocity and potential bottlenecks without having to ask for status updates.</p>
+
+<h2 class="section-heading">Beyond the Basics: Advanced Features</h2>
+
+<p>While the core functionality solves the main pain points, we've added several advanced features:</p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
-  <a href="[PREV_SLUG].html" class="article-nav-prev">
+  <a href="fighting-entropy-in-unity-seeded-random-for-debugging.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
-    <div class="nav-title">[PREV_TITLE]</div>
+    <div class="nav-title">Seeded Random for Debugging</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
-  <a href="[NEXT_SLUG].html" class="article-nav-next">
+  <a href="fighting-entropy-in-git-custom-commands-that-actually-save-time.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
-    <div class="nav-title">[NEXT_TITLE]</div>
+    <div class="nav-title">Git Custom Commands That Actually Save Time</div>
   </a>
-</div>
-
-<!-- FOOTER -->
+</div><!-- FOOTER -->
 <footer>
   <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
   <div class="footer-links">

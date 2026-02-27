@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fighting Entropy In Unity — Seeded Random for Debugging — GB/DEV</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/shared.css">
+<link rel="stylesheet" href="../css/article.css">
+</head>
+<body>
+
+<div class="bg-glow g1"></div>
+<div class="bg-glow g2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">GB<span>/</span>DEV</div>
+  <ul class="nav-links">
+    <li><a href="../index.html#posts">Articles</a></li>
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="https://medium.com/@galbartouv" target="_blank">Medium</a></li>
+  </ul>
+  <div class="theme-switcher" id="themeSwitcher">
+    <button class="theme-toggle-btn" onclick="toggleThemePanel()" title="Switch theme">
+      <span class="theme-icon">◑</span>
+      <span class="theme-label">Theme</span>
+    </button>
+    <div class="theme-panel" id="themePanel">
+      <div class="theme-panel-title">// SELECT THEME</div>
+      <button class="theme-option active" data-theme="p1" onclick="setTheme('p1')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#bf5fff,#e040fb)"></span>
+        <span>Neon Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p2" onclick="setTheme('p2')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"></span>
+        <span>Deep Amethyst</span>
+      </button>
+      <button class="theme-option" data-theme="p3" onclick="setTheme('p3')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#d946ef,#ec4899)"></span>
+        <span>Fuchsia Burn</span>
+      </button>
+      <button class="theme-option" data-theme="p4" onclick="setTheme('p4')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#818cf8,#6366f1)"></span>
+        <span>Indigo Pulse</span>
+      </button>
+      <button class="theme-option" data-theme="p5" onclick="setTheme('p5')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c084fc,#7e22ce)"></span>
+        <span>Royal Dusk</span>
+      </button>
+      <button class="theme-option" data-theme="p6" onclick="setTheme('p6')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#f0abfc,#c026d3)"></span>
+        <span>Orchid Haze</span>
+      </button>
+      <button class="theme-option" data-theme="p7" onclick="setTheme('p7')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#a78bfa,#4c1d95)"></span>
+        <span>Midnight Iris</span>
+      </button>
+      <button class="theme-option" data-theme="p8" onclick="setTheme('p8')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#e879f9,#9333ea)"></span>
+        <span>Plasma Storm</span>
+      </button>
+      <button class="theme-option" data-theme="p9" onclick="setTheme('p9')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7dd3fc,#818cf8)"></span>
+        <span>Aurora Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p10" onclick="setTheme('p10')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#fbbf24,#9333ea)"></span>
+        <span>Gold & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p11" onclick="setTheme('p11')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#50e6f6,#ff6b9d)"></span>
+        <span>Cyan & Rose</span>
+      </button>
+      <button class="theme-option" data-theme="p12" onclick="setTheme('p12')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff8c50,#20e8c0)"></span>
+        <span>Copper & Teal</span>
+      </button>
+      <button class="theme-option" data-theme="p13" onclick="setTheme('p13')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#50f0a0,#ff4080)"></span>
+        <span>Emerald & Crimson</span>
+      </button>
+      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c8ff64,#6040ff)"></span>
+        <span>Lime & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
+        <span>Coral & Aqua</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#b050f0)"></span>
+        <span>Gold & Violet Mid</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb820,#c060ff)"></span>
+        <span>Gold & Violet Light</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ARTICLE HERO -->
+<section class="article-hero">
+  <div class="article-header">
+    <a href="../index.html#posts" class="back-link">← Back to Articles</a>
+    <div class="article-tag">// UNITY DEV</div>
+    <h1 class="article-title">Fighting Entropy In Unity — Seeded Random for Debugging</h1>
+    <div class="article-meta">
+      <span class="article-date">TBD</span>
+      <span class="article-read-time">5 min read</span>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE BODY -->
+<article class="article-body">
+  <div class="article-container">
+
+    <!-- ARTICLE CONTENT GOES HERE -->
+    <h2>Fighting Entropy In Unity — Seeded Random for Debugging</h2>
+
+<p>In this post, we will explore how we can enhance our debugging process by implementing seeded random number generation. We will demonstrate how this approach can lead to reproducible bugs that are easy to track down and fix, ultimately saving us hours of frustration and reducing the number of unfixable issues in our project.</p>
+
+<h2 class="section-heading">Why is randomness horrible for debugging?</h2>
+
+<p>Random number generation is a great way to create dynamic and engaging gameplay. Whether it’s enemy spawn patterns, loot drops, or AI behavior, randomness adds the unpredictability that makes games fun. Let’s look at a classic example. We have an enemy spawner that randomly selects enemy types and positions. When the game runs, different enemies spawn in different locations, creating varied gameplay experiences. This is exactly what we want and it works great for players. But let’s zoom out a little.</p>
+
+<p>When we’re debugging our game, we encounter a critical bug where the game crashes whenever a specific combination of enemies spawns near the player. However, this bug only happens “sometimes” — maybe one in every twenty playthroughs. We spend hours restarting the game, hoping to reproduce the exact conditions that trigger the crash. Each time we hit play, Unity generates different random numbers, creating different enemy configurations, and the bug remains elusive.</p>
+
+<p>If we simply rely on Unity’s standard random system, we will have a chaotic debugging experience that confuses and frustrates us as developers. Instead, we want to be able to reproduce the exact same sequence of random events that caused our bug. As it stands, this is nearly impossible to implement with standard randomness.</p>
+
+<p>We could try to log every random number generated and then replay them, but this creates massive log files that are hard to follow. Alternatively, we could try to force specific scenarios manually, but determining the exact sequence that triggers the bug is a challenge. How can we know which specific random values caused the issue?</p>
+
+<p>Imagine that your QA tester comes over and says they found a game-breaking bug, but they can’t tell you how to reproduce it because “it just happens sometimes.” They’ve seen it three times in fifty playthroughs, but each time the conditions were different. Now you must somehow find this needle in a haystack, and this is where you lean back in your chair and start wondering if there’s a better way.</p>
+
+<p>I believe you are beginning to understand the issue. Although debugging individual systems is straightforward, you will encounter much more complex scenarios when multiple random systems interact. The problem is that we are attempting to debug unpredictable behavior, but our current implementation makes bugs non-reproducible and challenging to isolate and fix. To resolve this, we must find a way to control randomness during development while maintaining unpredictability in production, allowing us to systematically debug issues.</p>
+
+<h2 class="section-heading">What is seeded random number generation?</h2>
+
+<p>Seeded random number generation is a way of controlling randomness by providing an initial value (called a seed) that determines the entire sequence of random numbers that follow. This allows for predictable randomness — the same seed will always produce the exact same sequence of “random” numbers, making bugs reproducible while maintaining the appearance of chaos for players.</p>
+
+<p>If we take a look at what seeded randomness looks like:</p>
+
+<pre><code class="language-scss">// Using the same seed always produces the same sequence
+Random.InitState(12345);
+Debug.Log(Random.Range(0, 100)); // Will always output: 64
+Debug.Log(Random.Range(0, 100)); // Will always output: 12
+Debug.Log(Random.Range(0, 100)); // Will always output: 89
+
+// Reset with the same seed - same sequence again
+Random.InitState(12345);
+Debug.Log(Random.Range(0, 100)); // 64 again
+Debug.Log(Random.Range(0, 100)); // 12 again
+Debug.Log(Random.Range(0, 100)); // 89 again</code></pre>
+
+<h2 class="section-heading">Why should we use seeded random instead of standard randomness?</h2>
+
+<p>Our problem is that we need control over our debugging environment while maintaining true randomness for players. Imagine that we’re creating a debugging system that has logic in it. In that way, we will be able to reproduce any bug scenario by simply using the same seed that caused the original issue.</p>
+
+<p>Let’s take a look at some example code. In the class below we have an example of a random service that can switch between development (seeded) and production (truly random) modes:</p>
+
+<pre><code class="language-csharp">public static class RandomService
+{
+    private static System.Random _random;
+    private static int _currentSeed;
+    private static bool _useFixedSeed;
+    
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void Initialize()
+    {
+        // Development builds use fixed seeds for debugging
+        // Production builds use true randomness
+        #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            SetFixedSeed(GetDevelopmentSeed());
+        #else
+            SetRandomSeed();
+        #endif
+    }
+    
+    private static int GetDevelopmentSeed()
+    {
+        // Load from PlayerPrefs to persist between sessions
+        return PlayerPrefs.GetInt("RandomService_DebugSeed", 12345);
+    }
+    
+    public static void SetFixedSeed(int seed)
+    {
+        _currentSeed = seed;
+        _useFixedSeed = true;
+        _random = new System.Random(seed);
+        UnityEngine.Random.InitState(seed);
+        
+        Debug.Log($"RandomService: Using fixed seed {seed}");
+        
+        #if UNITY_EDITOR
+            PlayerPrefs.SetInt("RandomService_DebugSeed", seed);
+        #endif
+    }
+    
+    public static void SetRandomSeed()
+    {
+        _currentSeed = (int)System.DateTime.Now.Ticks;
+        _useFixedSeed = false;
+        _random = new System.Random(_currentSeed);
+        UnityEngine.Random.InitState(_currentSeed);
+        
+        Debug.Log($"RandomService: Using random seed {_currentSeed}");
+    }
+    
+    public static int GetCurrentSeed() => _currentSeed;
+    public static bool IsUsingFixedSeed() => _useFixedSeed;
+    
+    // Use these instead of Unity's Random class
+    public static int Range(int min, int max) => _random.Next(min, max);
+    public static float Range(float min, float max) => 
+        (float)(_random.NextDouble() * (max - min) + min);
+    public static float Value => (float)_random.NextDouble();
+    public static bool Bool => _random.Next(2) == 0;
+    
+    public static T Choose<T>(params T[] choices)
+    {
+        if (choices.Length == 0) return default(T);
+        return choices[Range(0, choices.Length)];
+    }
+}</code></pre>
+
+<p>If we follow the logic this is what it does:</p>
+
+<ul><li>We check if we’re in development or production mode during initialization</li>
+<li>In development, we use a fixed seed that persists between Unity sessions</li>
+<li>In production, we generate a truly random seed based on the current time</li>
+<li>We provide wrapper methods that use our controlled randomness instead of Unity’s</li>
+<li>We log which seed is being used so we can reproduce issues later</li>
+</ul>
+
+<p>The code shows how we took control of the random number generation and encapsulated it in a service, making it easier to debug and maintain in the future. By using conditional compilation, we ensure that development builds are reproducible while production builds remain unpredictable.</p>
+
+<h2 class="section-heading">How do we make this system even more powerful?</h2>
+
+<p>In our RandomService, we can implement multiple random streams to prevent different systems from interfering with each other. We can do this for several reasons. Firstly, to decouple random systems from each other, avoiding situations where adding a random call to one system changes the behavior of another. Secondly, streams enable us to debug specific systems in isolation without worrying about cross-contamination from other parts of the code.</p>
+
+<pre><code class="language-csharp">public static class RandomService
+{
+    // ... previous code ...
+    
+    private static Dictionary<string, System.Random> _randomStreams = new();
+    
+    public static System.Random GetStream(string streamName)
+    {
+        if (!_randomStreams.ContainsKey(streamName))
+        {
+            // Create deterministic seed based on main seed + stream name
+            int streamSeed = _currentSeed + streamName.GetHashCode();
+            _randomStreams[streamName] = new System.Random(streamSeed);
+        }
+        return _randomStreams[streamName];
+    }
+    
+    public static int RangeFromStream(string streamName, int min, int max)
+    {
+        return GetStream(streamName).Next(min, max);
+    }
+    
+    public static T ChooseFromStream<T>(string streamName, params T[] choices)
+    {
+        if (choices.Length == 0) return default(T);
+        var stream = GetStream(streamName);
+        return choices[stream.Next(0, choices.Length)];
+    }
+    
+    // Weighted selection for loot systems
+    public static T WeightedChoice<T>(string streamName, T[] choices, float[] weights)
+    {
+        if (choices.Length != weights.Length || choices.Length == 0)
+            return default(T);
+            
+        float totalWeight = 0f;
+        foreach (float weight in weights)
+            totalWeight += weight;
+            
+        if (totalWeight <= 0f) return choices[0];
+        
+        var stream = GetStream(streamName);
+        float randomValue = (float)(stream.NextDouble() * totalWeight);
+        float currentWeight = 0f;
+        
+        for (int i = 0; i < choices.Length; i++)
+        {
+            currentWeight += weights[i];
+            if (randomValue <= currentWeight)
+                return choices[i];
+        }
+        
+        return choices[choices.Length - 1];
+    }
+}</code></pre>
+
+<h2 class="section-heading">How do we create debugging tools for this system?</h2>
+
+<p>Now that we have our seeded random system, we want to create editor tools that make it easy to test different scenarios and switch between seeds during development.</p>
+
+<pre><code class="language-cpp">#if UNITY_EDITOR
+using UnityEditor;
+using UnityEngine;</code></pre>
+
+<pre><code>public class RandomSeedWindow : EditorWindow
+{
+    private int _seedValue = 12345;
+    
+    [MenuItem("Tools/Random Debug/Open Seed Window")]
+    public static void ShowWindow()
+    {
+        GetWindow<RandomSeedWindow>("Random Debug");
+    }
+    
+    private void OnGUI()
+    {
+        GUILayout.Label("Random Seed Debugger", EditorStyles.boldLabel);
+        GUILayout.Space(10);
+        
+        if (Application.isPlaying)
+        {
+            EditorGUILayout.BeginVertical("box");
+            GUILayout.Label($"Current Seed: {RandomService.GetCurrentSeed()}");
+            GUILayout.Label($"Using Fixed Seed: {RandomService.IsUsingFixedSeed()}");
+            EditorGUILayout.EndVertical();
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("Enter Play mode to see current state", MessageType.Info);
+        }
+        
+        GUILayout.Space(10);
+        _seedValue = EditorGUILayout.IntField("New Seed:", _seedValue);
+        
+        GUI.enabled = Application.isPlaying;
+        if (GUILayout.Button("Set Fixed Seed"))
+        {
+            RandomService.SetFixedSeed(_seedValue);
+        }
+        
+        if (GUILayout.Button("Use Random Seed"))
+        {
+            RandomService.SetRandomSeed();
+        }
+        GUI.enabled = true;
+    }
+#endif</code></pre>
+
+<h2 class="section-heading">Real-world example: Enemy spawner system</h2>
+
+<p>Let’s look at how this system transforms a typical enemy spawner from an unpredictable debugging nightmare into a controlled, reproducible system:</p>
+
+<pre><code class="language-csharp">public class EnemySpawner : MonoBehaviour
+{
+    [SerializeField] private GameObject[] enemyPrefabs;
+    [SerializeField] private Transform[] spawnPoints;
+    [SerializeField] private float[] enemyWeights = { 50f, 30f, 15f, 5f }; // Common to rare
+    
+    private const string ENEMY_STREAM = "EnemySpawner";
+    
+    public void SpawnWave()
+    {
+        // This will be identical every time with the same seed
+        int enemyCount = RandomService.RangeFromStream(ENEMY_STREAM, 3, 8);
+        
+        Debug.Log($"Spawning {enemyCount} enemies with seed: {RandomService.GetCurrentSeed()}");
+        
+        for (int i = 0; i < enemyCount; i++)
+        {
+            // Choose spawn point using our seeded system
+            Transform spawnPoint = RandomService.ChooseFromStream(ENEMY_STREAM, spawnPoints);
+            
+            // Choose enemy type with proper weighting
+            GameObject enemyPrefab = RandomService.WeightedChoice(ENEMY_STREAM, enemyPrefabs, enemyWeights);
+            
+            GameObject spawnedEnemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+            
+            // This log sequence will be identical each run with the same seed
+            Debug.Log($"Enemy {i}: {enemyPrefab.name} at {spawnPoint.name}");
+            
+            // Even random variations are deterministic
+            Vector3 randomOffset = new Vector3(
+                RandomService.RangeFromStream(ENEMY_STREAM, -1f, 1f),
+                0,
+                RandomService.RangeFromStream(ENEMY_STREAM, -1f, 1f)
+            );
+            spawnedEnemy.transform.position += randomOffset;
+        }
+    }
+    
+    [ContextMenu("Test Current Seed")]
+    public void TestCurrentSeed()
+    {
+        if (!Application.isPlaying) return;
+        Debug.Log($"Testing spawn with seed: {RandomService.GetCurrentSeed()}");
+        SpawnWave();
+    }
+}</code></pre>
+
+<p>The beauty of doing it this way is that any time we encounter a bug, we can simply note the seed that was being used and instantly reproduce the exact same scenario. The enemy that crashed the game? It will spawn in the exact same position, with the same type, every single time we use that seed.</p>
+
+<h2 class="section-heading">How does this improve our debugging workflow?</h2>
+
+<p>A common mistake I have seen in many projects is the assumption that because something is hard to reproduce, it’s not worth fixing or is “just a rare edge case.” Unfortunately, these rare bugs often become critical issues in production when thousands of players encounter them.</p>
+
+<p>Good thing we have our seeded random system that controls all the randomness in our game.</p>
+
+<p>When we encounter a bug during development, we can note the seed and share it with our team. When QA finds an issue, they can report both the steps to reproduce AND the seed value. When players report bugs in production (if we’re logging seeds), we can instantly jump into the exact scenario they experienced.</p>
+
+<p>But we can’t just leave seeded random on in production because players want true unpredictability. Instead, we need to be strategic about when we use seeds. For development and testing, we use fixed seeds. For production builds, we generate truly random seeds but log them so we can reproduce player-reported issues.</p>
+
+<p>Here’s how we might handle different scenarios:</p>
+
+<pre><code class="language-csharp">public static class RandomService
+{
+    // ... previous code ...
+    
+    public static void HandleProductionBug(int reportedSeed)
+    {
+        #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            Debug.Log($"Reproducing production bug with seed: {reportedSeed}");
+            SetFixedSeed(reportedSeed);
+        #else
+            Debug.LogError("Cannot reproduce production bugs in production build");
+        #endif
+    }
+    
+    public static void LogSeedForCrashReport()
+    {
+        // Include seed in crash logs for production debugging
+        Debug.Log($"Crash report seed: {_currentSeed}");
+        // Send to analytics/crash reporting service
+    }
+}</code></pre>
+
+<h2 class="section-heading">When should we use seeded random and when should we use true random?</h2>
+
+<p>So, now that we understand the power of using seeded random, should we abandon true randomness altogether? The answer is no. In production builds where we want genuine unpredictability for players, true randomness is the appropriate option. However, during development, testing, and debugging phases where we need reproducible scenarios, seeded random is the better choice.</p>
+
+<p>The key is to use conditional compilation to automatically handle this decision:</p>
+
+<pre><code class="language-cpp">#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    // Use seeded random for debugging
+    SetFixedSeed(12345);
+#else
+    // Use true random for players
+    SetRandomSeed();
+#endif</code></pre>
+
+<h2 class="section-heading">Common pitfalls and how to avoid them</h2>
+
+<p>There are several mistakes that can break your seeded random system:</p>
+
+<p><strong>Mixing random systems</strong>: Don’t use Unity’s Random.Range() alongside your RandomService, as this will break reproducibility.</p>
+
+<p><strong>Order dependencies</strong>: Be careful about conditional random calls that might or might not execute, as this changes the sequence.</p>
+
+<pre><code class="language-csharp">// Bad - this breaks reproducibility
+void Update()
+{
+    if (someCondition)
+        int random1 = RandomService.Range(0, 100); // Sometimes called, sometimes not
+    
+    int random2 = RandomService.Range(0, 100); // This changes based on the above
+}</code></pre>
+
+<pre><code>// Good - use separate streams
+void Update()
+{
+    int random1 = RandomService.RangeFromStream("SystemA", 0, 100);
+    int random2 = RandomService.RangeFromStream("SystemB", 0, 100); // Always consistent
+}</code></pre>
+
+<p><strong>Performance considerations</strong>: Don’t create new Random instances frequently, as this is expensive. Use the stream system instead.</p>
+
+<h2 class="section-heading">Advanced applications</h2>
+
+<p>For more complex games, you might want to integrate seeded random with your save system:</p>
+
+<pre><code class="language-csharp">[System.Serializable]
+public class GameSaveData
+{
+    public int randomSeed;
+    // ... other save data
+    
+    public void SaveRandomState()
+    {
+        randomSeed = RandomService.GetCurrentSeed();
+    }
+    
+    public void LoadRandomState()
+    {
+        RandomService.SetFixedSeed(randomSeed);
+    }
+}</code></pre>
+
+<p>You might also want to create different stream categories for different types of systems:</p>
+
+<pre><code class="language-csharp">public static class RandomStreams
+{
+    public const string ENEMIES = "Enemies";
+    public const string LOOT = "Loot";
+    public const string WEATHER = "Weather";
+    public const string PROCEDURAL_GENERATION = "ProcGen";
+    public const string AI_BEHAVIOR = "AI";
+}</code></pre>
+
+<h2 class="section-heading">TL;DR</h2>
+
+<p>Create a seeded random service that uses fixed seeds during development and true randomness in production. Use separate random streams for different systems to prevent cross-contamination. Build editor tools to easily test different seeds and reproduce bugs. Always log the seed being used so you can reproduce issues later. Replace Unity’s Random class with your service throughout your project. This will transform your debugging process from guesswork into systematic problem-solving.</p>
+
+<p>That pretty much covers it. With seeded random number generation, you’ve gained control over one of the most chaotic aspects of game development, making debugging predictable and efficient while maintaining the unpredictability that makes games engaging for players.</p>
+
+
+
+  </div>
+</article>
+
+<!-- ARTICLE NAVIGATION -->
+<div class="article-nav">
+  <a href="fighting-entropy-in-unity-structure-based-on-domains.html" class="article-nav-prev">
+    <div class="nav-label">← Previous</div>
+    <div class="nav-title">Structure Based on Domains</div>
+  </a>
+  <a href="fighting-entropy-in-development-taming-the-pr-chaos.html" class="article-nav-next">
+    <div class="nav-label">Next →</div>
+    <div class="nav-title">Taming the PR Chaos</div>
+  </a>
+</div><!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
+  <div class="footer-links">
+    <a href="https://medium.com/@galbartouv" target="_blank">Medium</a>
+    <a href="../index.html#posts">Articles</a>
+    <a href="../index.html#about">About</a>
+  </div>
+</footer>
+
+<!-- THEME SCRIPT -->
+<script>
+const themes = {
+  p1:  { '--bg':'#170f28','--bg2':'#1d1432','--bg3':'#23193c','--panel':'#291e46','--border':'rgba(200,120,255,0.25)','--accent':'#d580ff','--accent2':'#ee60ff','--accent3':'#ff70cc','--text':'#f0e8ff','--muted':'#b09ad0','--dim':'#4a3070','--glow1':'rgba(180,80,255,0.12)','--glow2':'rgba(220,64,255,0.08)','--grid':'rgba(180,80,255,0.05)' },
+  p2:  { '--bg':'#130e28','--bg2':'#191434','--bg3':'#1f1a40','--panel':'#252050','--border':'rgba(150,100,255,0.25)','--accent':'#b89aff','--accent2':'#8b5cf6','--accent3':'#d4b8ff','--text':'#eeebff','--muted':'#a090c8','--dim':'#40306e','--glow1':'rgba(130,70,240,0.12)','--glow2':'rgba(170,130,255,0.06)','--grid':'rgba(130,70,240,0.05)' },
+  p3:  { '--bg':'#1c0e22','--bg2':'#23122c','--bg3':'#2a1636','--panel':'#311a40','--border':'rgba(230,80,240,0.25)','--accent':'#f580c8','--accent2':'#e040ef','--accent3':'#ff90e0','--text':'#ffe8f8','--muted':'#c080a8','--dim':'#501860','--glow1':'rgba(220,70,240,0.12)','--glow2':'rgba(250,120,200,0.06)','--grid':'rgba(220,70,240,0.05)' },
+  p4:  { '--bg':'#101028','--bg2':'#161638','--bg3':'#1c1c44','--panel':'#222254','--border':'rgba(120,125,255,0.25)','--accent':'#9098ff','--accent2':'#7478f0','--accent3':'#b8bcff','--text':'#eaeaff','--muted':'#8888c8','--dim':'#303070','--glow1':'rgba(100,105,245,0.12)','--glow2':'rgba(140,145,255,0.06)','--grid':'rgba(100,105,245,0.05)' },
+  p5:  { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#281a4c','--border':'rgba(170,60,240,0.25)','--accent':'#cc88ff','--accent2':'#a040ee','--accent3':'#bb70ff','--text':'#f5e8ff','--muted':'#a870c8','--dim':'#3e1860','--glow1':'rgba(150,40,220,0.12)','--glow2':'rgba(200,130,255,0.06)','--grid':'rgba(150,40,220,0.05)' },
+  p6:  { '--bg':'#1e1028','--bg2':'#261430','--bg3':'#2e183a','--panel':'#361c44','--border':'rgba(210,60,230,0.25)','--accent':'#f0b0ff','--accent2':'#d030e0','--accent3':'#ff90f8','--text':'#fff0ff','--muted':'#c888d0','--dim':'#501068','--glow1':'rgba(200,40,220,0.12)','--glow2':'rgba(245,175,255,0.06)','--grid':'rgba(200,40,220,0.05)' },
+  p7:  { '--bg':'#0e0c28','--bg2':'#131034','--bg3':'#181440','--panel':'#1d184c','--border':'rgba(100,60,200,0.28)','--accent':'#b898ff','--accent2':'#7840e0','--accent3':'#9060f0','--text':'#eeeaff','--muted':'#8878bc','--dim':'#281858','--glow1':'rgba(80,40,180,0.14)','--glow2':'rgba(170,140,255,0.08)','--grid':'rgba(80,40,180,0.06)' },
+  p8:  { '--bg':'#1a0c28','--bg2':'#210f34','--bg3':'#281240','--panel':'#2f154c','--border':'rgba(180,60,240,0.25)','--accent':'#f080ff','--accent2':'#a030e8','--accent3':'#e060f0','--text':'#ffe8ff','--muted':'#b060c8','--dim':'#441060','--glow1':'rgba(160,50,230,0.12)','--glow2':'rgba(240,130,255,0.08)','--grid':'rgba(160,50,230,0.05)' },
+  p9:  { '--bg':'#0e1230','--bg2':'#121840','--bg3':'#161e4e','--panel':'#1a245c','--border':'rgba(120,130,255,0.25)','--accent':'#b0bcff','--accent2':'#8890f8','--accent3':'#90d8ff','--text':'#eaecff','--muted':'#7888c0','--dim':'#202860','--glow1':'rgba(130,210,255,0.1)','--glow2':'rgba(140,150,255,0.1)','--grid':'rgba(110,120,245,0.05)' },
+  p10: { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#28194c','--border':'rgba(180,60,240,0.22)','--accent':'#ffc840','--accent2':'#a030ea','--accent3':'#ffaa20','--text':'#fff8e8','--muted':'#b09868','--dim':'#3c2828','--glow1':'rgba(255,190,40,0.08)','--glow2':'rgba(160,50,234,0.08)','--grid':'rgba(160,50,234,0.04)' },
+  p11: { '--bg':'#0e1e28','--bg2':'#121e2e','--bg3':'#162634','--panel':'#1a2e3c','--border':'rgba(80,230,240,0.22)','--accent':'#50e6f6','--accent2':'#ff6b9d','--accent3':'#80f0ff','--text':'#e8f8ff','--muted':'#88b0c8','--dim':'#283840','--glow1':'rgba(80,230,246,0.1)','--glow2':'rgba(255,107,157,0.08)','--grid':'rgba(80,180,200,0.04)' },
+  p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
+  p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
+  p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' },
+  p16: { '--bg':'#2a1c40','--bg2':'#342254','--bg3':'#3e2868','--panel':'#48307c','--border':'rgba(180,60,240,0.3)','--accent':'#ffc840','--accent2':'#b050f0','--accent3':'#ffaa20','--text':'#f8f0ff','--muted':'#9878a8','--dim':'#1a0e28','--glow1':'rgba(255,190,40,0.12)','--glow2':'rgba(176,80,240,0.12)','--grid':'rgba(176,80,240,0.06)' },
+  p17: { '--bg':'#4a3868','--bg2':'#58447c','--bg3':'#665090','--panel':'#7458a0','--border':'rgba(180,100,240,0.35)','--accent':'#ffb820','--accent2':'#c060ff','--accent3':'#ffa020','--text':'#2a1840','--muted':'#685080','--dim':'#f0e8ff','--glow1':'rgba(255,200,60,0.15)','--glow2':'rgba(200,100,255,0.15)','--grid':'rgba(200,100,255,0.08)' }
+};
+
+function setTheme(name) {
+  const t = themes[name] || themes['p1'];
+  const root = document.documentElement;
+  Object.entries(t).forEach(([k, v]) => {
+    if (!k.startsWith('--glow') && !k.startsWith('--grid')) {
+      root.style.setProperty(k, v);
+    }
+  });
+  const style = document.getElementById('gridStyle') || (() => {
+    const s = document.createElement('style');
+    s.id = 'gridStyle';
+    document.head.appendChild(s);
+    return s;
+  })();
+  style.textContent = 'body::before{background-image:linear-gradient(' + t['--grid'] + ' 1px,transparent 1px),linear-gradient(90deg,' + t['--grid'] + ' 1px,transparent 1px);background-size:40px 40px;}';
+  const g1 = document.querySelector('.bg-glow.g1');
+  const g2 = document.querySelector('.bg-glow.g2');
+  if (g1) g1.style.background = 'radial-gradient(circle,' + t['--glow1'] + ',transparent 70%)';
+  if (g2) g2.style.background = 'radial-gradient(circle,' + t['--glow2'] + ',transparent 70%)';
+  document.querySelectorAll('.theme-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === name);
+  });
+  localStorage.setItem('gb-theme', name);
+  toggleThemePanel(false);
+}
+
+function toggleThemePanel(forceClose) {
+  const panel = document.getElementById('themePanel');
+  if (forceClose === false) { panel.classList.remove('open'); return; }
+  panel.classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('themeSwitcher').contains(e.target)) {
+    document.getElementById('themePanel').classList.remove('open');
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('gb-theme') || 'p1';
+  setTheme(saved);
+});
+</script>
+
+</body>
+</html>

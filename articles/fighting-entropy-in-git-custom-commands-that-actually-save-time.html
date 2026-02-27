@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>[TITLE] — GB/DEV</title>
+<title>Fighting Entropy In Git — Custom Commands That Actually Save Time — GB/DEV</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/shared.css">
 <link rel="stylesheet" href="../css/article.css">
@@ -104,11 +104,11 @@
 <section class="article-hero">
   <div class="article-header">
     <a href="../index.html#posts" class="back-link">← Back to Articles</a>
-    <div class="article-tag">// [CATEGORY]</div>
-    <h1 class="article-title">[TITLE]</h1>
+    <div class="article-tag">// UNITY DEV</div>
+    <h1 class="article-title">Fighting Entropy In Git — Custom Commands That Actually Save Time</h1>
     <div class="article-meta">
-      <span class="article-date">[DATE]</span>
-      <span class="article-read-time">[X] min read</span>
+      <span class="article-date">TBD</span>
+      <span class="article-read-time">5 min read</span>
     </div>
   </div>
 </section>
@@ -118,30 +118,103 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="[MEDIUM_URL]" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <h2>Fighting Entropy In Git — Custom Commands That Actually Save Time</h2>
+
+<p>As developers, we spend countless hours typing the same Git commands over and over again. How many times have you typed<code>git reset --hard</code>,<code>git clean -fd</code>,<code>git checkout main</code>,<code>git pull</code>in sequence? If you're like me, it's probably hundreds of times. Each sequence takes 30-60 seconds to type, but more importantly, it breaks your flow and forces you to think about Git mechanics instead of the problem you're solving.</p>
+
+<p>The solution? Custom Git commands that reduce complex workflows to simple, memorable aliases.</p>
+
+<h2 class="section-heading">The Problem With Repetitive Git Workflows</h2>
+
+<p>I have often encountered projects where developers struggle with Git's verbosity. Sometimes you need to quickly switch to the develop branch and ensure it's clean. Other times you need to force checkout a specific branch while discarding all local changes. These operations require multiple commands, and typing them repeatedly creates friction in your development process.</p>
+
+<p>The problem is that when you need to context-switch quickly, you waste mental energy on Git syntax instead of focusing on your actual work. You'll miss the flow state that makes programming enjoyable and productive.</p>
+
+<p>So how do we resolve this issue?</p>
+
+<h2 class="section-heading">Custom Git Commands</h2>
+
+<p>Git allows you to create custom commands by adding executable scripts to your PATH with names starting with<code>git-</code>. When you run<code>git customcommand</code>, Git automatically looks for an executable named<code>git-customcommand</code>and runs it.</p>
+
+<p>Here are three custom commands I use daily that have transformed my Git workflow:</p>
+
+<h2 class="section-heading">git dev - Quick Development Branch Switch</h2>
+
+<pre><code class="language-typescript">#!/bin/bash
+# Usage: git dev
+
+git reset --hard
+git clean -fd
+git fetch
+git checkout develop
+git reset --hard
+git clean -fd
+git pull
+git status</code></pre>
+
+<p>This command forcefully switches to your development branch and ensures it's completely clean and up-to-date. No more worrying about uncommitted changes or stale branches.</p>
+
+<h2 class="section-heading">git cleancheckout - Nuclear Branch Switching</h2>
+
+<pre><code class="language-typescript">#!/bin/bash
+# Usage: git cleancheckout <branch-name>
+
+git reset --hard
+git clean -fd
+git checkout $1
+git fetch
+git reset --hard
+git clean -fd
+git pull</code></pre>
+
+<p>When you absolutely, positively need to switch to a specific branch and don't care about any local changes, this is your nuclear option. It's git dev's more flexible cousin.</p>
+
+<h2 class="section-heading">git sweep - Quick Cleanup</h2>
+
+<pre><code class="language-typescript">#!/bin/bash
+# Usage: git sweep
+
+git reset --hard
+git clean -fd</code></pre>
+
+<p>Sometimes you just need to throw away all your changes and start fresh. This command does exactly that, quickly and without questions.</p>
+
+<h2 class="section-heading">Why These Commands Are Game-Changers</h2>
+
+<p><strong>They eliminate decision fatigue.</strong>Instead of thinking "Should I stash? Should I commit? What about untracked files?", you just type<code>git dev</code>and move on.</p>
+
+<p><strong>They're safe by design.</strong>These commands assume you want to discard changes, which is perfect for development workflows where you experiment frequently.</p>
+
+<p><strong>They save significant time.</strong>What used to take 6-8 commands now takes one.</p>
+
+<p><strong>They're memorable.</strong><code>git dev</code>is easier to remember than the 7-line sequence it replaces.</p>
+
+<h2 class="section-heading">Implementation Guide</h2>
+
+<p>Here's how to set up custom Git commands on your system:</p>
+
+<h2 class="section-heading">Step 1: Create the Script Files</h2>
+
+<p>Create your custom command scripts in a directory that's in your PATH. I recommend creating a<code>~/bin</code>directory:</p>
+
+<p></p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
-  <a href="[PREV_SLUG].html" class="article-nav-prev">
+  <a href="fighting-entropy-in-development-taming-the-pr-chaos.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
-    <div class="nav-title">[PREV_TITLE]</div>
+    <div class="nav-title">Taming the PR Chaos</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
-  <a href="[NEXT_SLUG].html" class="article-nav-next">
+  <a href="fighting-entropy-in-unity-taming-git-chaos-with-custom-commands.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
-    <div class="nav-title">[NEXT_TITLE]</div>
+    <div class="nav-title">Taming Git Chaos with Custom Commands</div>
   </a>
-</div>
-
-<!-- FOOTER -->
+</div><!-- FOOTER -->
 <footer>
   <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
   <div class="footer-links">

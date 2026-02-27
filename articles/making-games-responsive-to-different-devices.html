@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>[TITLE] — GB/DEV</title>
+<title>Making Games Responsive to Different Devices — GB/DEV</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/shared.css">
 <link rel="stylesheet" href="../css/article.css">
@@ -104,11 +104,11 @@
 <section class="article-hero">
   <div class="article-header">
     <a href="../index.html#posts" class="back-link">← Back to Articles</a>
-    <div class="article-tag">// [CATEGORY]</div>
-    <h1 class="article-title">[TITLE]</h1>
+    <div class="article-tag">// UNITY DEV</div>
+    <h1 class="article-title">Making Games Responsive to Different Devices</h1>
     <div class="article-meta">
-      <span class="article-date">[DATE]</span>
-      <span class="article-read-time">[X] min read</span>
+      <span class="article-date">TBD</span>
+      <span class="article-read-time">5 min read</span>
     </div>
   </div>
 </section>
@@ -118,30 +118,131 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="[MEDIUM_URL]" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <h2>Making Games Responsive to Different Devices</h2>
+
+The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z9ecNiV1bQJxwJ0CvDOf9g.png" alt=""></figure><p>Your hero selection screen looks perfect on your mobile device. The character model sits perfectly to the right, and the UI elements are balanced on the left.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*4ov-6AvJl16dWrZfpwviJQ.png" alt=""></figure><p>Then you test it on your tablet and suddenly your hero is floating awkwardly in space, almost off-screen. What happened?</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*yaASULIEcN3LCdI8Pqbk4A.png" alt=""></figure><p>Unity’s UI system adapts to different screen sizes automatically using RectTransforms and Canvases. Your 3D content doesn’t. It lives in world space, oblivious to screen dimensions.</p>
+
+<p>You’ll encounter these problems in almost every project. Device-specific positioning code, lookup tables for different aspect ratios, and magic numbers for every new device. It’s a maintenance nightmare and not scalable. On last check, Google Play Console has 17,000+ Android devices, each with countless different aspect ratios.</p>
+
+<p>The root cause? Unity’s UI adapts automatically, but your 3D content doesn’t. It exists in world space, completely unaware of screen dimensions. The solution isn’t device-specific code or lookup tables — it’s one elegant mathematical concept.</p>
+
+<p>Math. You might not like it, but in game development, math is your friend. And good news — since you’re probably not writing a graphics engine from scratch, a lot of it isn’t as difficult as you’d think.</p>
+
+<p>In our case, we need just one simple formula: the remap function.</p>
+
+<h2 class="section-heading">The Remap Function</h2>
+
+<pre><code class="language-css">public static float RemapBetweenRange(float x, float a, float b, float c, float d)
+{
+    return (x - a) / (b - a) * (d - c) + c;
+}</code></pre>
+
+<p>This maps any value<code>x</code>from range<code>[a, b]</code>to the equivalent position in range<code>[c, d]</code>.</p>
+
+<p>If you’ve used Shader Graph, you’ll recognize this — it’s the same as the<a href="https://docs.unity3d.com/Packages/com.unity.shadergraph@6.9/manual/Remap-Node.html" target="_blank" rel="noopener">Remap Node</a>. Unity recognizes that this function is useful enough to warrant its own node.</p>
+
+<p>A simple use case for this would be converting temperature from Celsius [0, 100] to Fahrenheit [32, 212].</p>
+
+<pre><code class="language-cpp">float fahrenheit = RemapBetweenRange(25, 0, 100, 32, 212); // Returns 77°F</code></pre>
+
+<p>Here’s how it works visually:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*3LByjM0VFtXLuslIXDbRUA.png" alt=""></figure><p>That's all you have to do, and you can instantly know how to convert the two.</p>
+
+<h2 class="section-heading">How does it solve our problem?</h2>
+
+<p>We can treat aspect ratio as one range, and position/rotation/scale as another range. Here’s how we implement it:</p>
+
+<pre><code class="language-csharp">[ExecuteInEditMode]
+public class AspectRatioFitter : MonoBehaviour
+{
+    [Header("Position Settings")]
+    [SerializeField] private Vector3 minAspectRatioPosition;
+    [SerializeField] private Vector3 maxAspectRatioPosition;
+    
+    [Header("Rotation Settings")]
+    [SerializeField] private Vector3 minAspectRatioRotation;
+    [SerializeField] private Vector3 maxAspectRatioRotation;
+    
+    [Header("Scale Settings")]
+    [SerializeField] private Vector3 minAspectRatioScale = Vector3.one;
+    [SerializeField] private Vector3 maxAspectRatioScale = Vector3.one;
+    
+    [Header("Aspect Ratio Range")]
+    [SerializeField] private float minAspectRatio = 0.36f;  // (tall phones)
+    [SerializeField] private float maxAspectRatio = 0.75f;  // (tablets)
+    
+    // Note: Using height/width for standard aspect ratio notation
+    private float AspectRatio => (float)Screen.height / Screen.width;
+
+    private void Start()
+    {
+        UpdateTransform();
+    }
+
+    
+    private void UpdateTransform()
+    {
+        float currentAspectRatio = AspectRatio;
+        
+        transform.position = RemapVector3(currentAspectRatio, minAspectRatioPosition, maxAspectRatioPosition);
+        transform.rotation = Quaternion.Euler(RemapVector3(currentAspectRatio, minAspectRatioRotation, maxAspectRatioRotation));
+        transform.localScale = RemapVector3(currentAspectRatio, minAspectRatioScale, maxAspectRatioScale);
+    }
+
+    private Vector3 RemapVector3(float aspectRatio, Vector3 minValues, Vector3 maxValues)
+    {
+        return new Vector3(
+            RemapValue(aspectRatio, minAspectRatio, maxAspectRatio, minValues.x, maxValues.x),
+            RemapValue(aspectRatio, minAspectRatio, maxAspectRatio, minValues.y, maxValues.y),
+            RemapValue(aspectRatio, minAspectRatio, maxAspectRatio, minValues.z, maxValues.z)
+        );
+    }
+
+    private static float RemapValue(float value, float fromMin, float fromMax, float toMin, float toMax)
+    {
+        return (value - fromMin) / (fromMax - fromMin) * (toMax - toMin) + toMin;
+    }
+
+    public static float RemapBetweenRange(float x, float a, float b, float c, float d)
+    {
+        return (x - a) / (b - a) * (d - c) + c;
+    }
+
+#if UNITY_EDITOR
+    private void Update()
+    {
+        UpdateTransform();
+    }
+#endif
+}</code></pre>
+
+<p>Now, after using this, we can configure the hero to stay properly framed on any device. Because we mapped a range, this works seamlessly across all aspect ratios without any additional code.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*GLwJy8uFh8l-pmNQ8pnSyQ.png" alt=""></figure><figure><img src="https://cdn-images-1.medium.com/max/800/1*bjNBUlVEyRp-PYm9hGqujQ.png" alt=""></figure><h2 class="section-heading">The Result</h2>
+
+<p>With this approach, your 3D elements adapt smoothly across all screen sizes. The hero that looked perfect on one device now looks equally perfect on others, tablets, iPhones, and everything in between. The beauty of this solution is its scalability. Instead of maintaining separate positioning logic for different devices, you define the extremes once and let the math handle everything in between. Add a new device with an unusual aspect ratio? It just works. This isn’t a magic bullet, but it's a good tool to have at your belt.</p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
-  <a href="[PREV_SLUG].html" class="article-nav-prev">
+  <a href="shader-breakdown-recreating-night-in-the-woods-wobbly-dialogue-effect.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
-    <div class="nav-title">[PREV_TITLE]</div>
+    <div class="nav-title">Shader Breakdown: Night in the Woods' Wobbly Dialogue Effect</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
-  <a href="[NEXT_SLUG].html" class="article-nav-next">
+  <a href="fighting-entropy-in-unity-structure-based-on-domains.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
-    <div class="nav-title">[NEXT_TITLE]</div>
+    <div class="nav-title">Structure Based on Domains</div>
   </a>
-</div>
-
-<!-- FOOTER -->
+</div><!-- FOOTER -->
 <footer>
   <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
   <div class="footer-links">

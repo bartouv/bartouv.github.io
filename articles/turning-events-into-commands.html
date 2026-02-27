@@ -86,7 +86,15 @@
       </button>
       <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
-        <span>Coral & Aqua
+        <span>Coral & Aqua</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#b050f0)"></span>
+        <span>Gold & Violet Mid</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb820,#c060ff)"></span>
+        <span>Gold & Violet Light</span>
       </button>
     </div>
   </div>
@@ -112,30 +120,124 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="https://medium.com/@galbartouv/fighting-entropy-in-unity-turning-events-into-commands-2cf4be3d85f2" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*s3NWY0RoZbSMcLqUgZgV0Q.png" alt=""></figure><h2>Fighting Entropy In Unity— Turning Events into Commands</h2>
+
+<p>In this post, we will explore how we can enhance our project by replacing events with the command pattern and incorporating asynchronous code. We will demonstrate how this approach can lead to code that is more clear, easy to maintain, and can ultimately reduce the number of bugs in our project.</p>
+
+<h2 class="section-heading">Why are events horrible for complex sequences?</h2>
+
+<p>Events are a great way to communicate that some things have happened in the game. Let’s look at a classic example. If an enemy has been damaged, we will inform our event bus so whoever is listening to that event can now know that an enemy has been damaged or maybe even killed and do what it was waiting to do on this occasion.</p>
+
+<p>In our case, we have a health bar that shows how much health the enemy has. When the enemy damaged event is raised the health bar which is listening to it will play an animation of the health lowering it. This is exactly what we want and it works great. But let’s zoom out a little.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*Ay8lAUveNd7SsMuVmD91Cg.png" alt=""></figure><p>When the enemy dies, we want to give the player XP and update the XP view. In this case, the player has acquired enough XP to level up, so we want to display a level-up popup. However, this is where things start to become complicated.</p>
+
+<p>If we simply listen to the event and trigger all the actions at once, we will have a chaotic sequence of events, confusing the player. Instead, we want to first show the enemy’s health lowering to zero, then display the player’s XP rising to 1000, and finally show the level-up popup. As it stands, this is difficult to implement.</p>
+
+<p>We could have only the health bar listen to the event, then have the XP view listen to an event triggered by the health bar, and finally have the popup listen to an event triggered by the XP view. However, this creates a chain of events that is hard to follow. Alternatively, we could add a delay for each operation, but determining the appropriate delay time is a challenge. How much time should we wait? If the XP view requires a delay, how does it know how much time the health bar view animation will take and vice versa for the level-up popup?</p>
+
+<p>Imagine that your boss comes over and says that this approach doesn’t look good. They want the XP update and health update visuals to run simultaneously and for the level-up popup to only display once both have been completed. However, both updates take different amounts of time. Now you must wait for both of them to finish, this is where you bend over into your keyboard and start crying.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*sFV1JF2LylcAip6mhtbtMg.png" alt=""></figure><p>I believe you are beginning to understand the issue. Although this example is straightforward, you will encounter much more complex scenarios in your game. The problem is that we are attempting to manage a sequence of events in the game, but the current implementation is decentralized and challenging to follow and maintain. To resolve this, we must find a way to organize and centralize the management of these events, allowing the various parts of the code to work together seamlessly.</p>
+
+<h2 class="section-heading">What is the command pattern?</h2>
+
+<p>The Command pattern is a way of organizing code that separates the instructions for what needs to be done (the request) from the code that does it. This allows for more flexibility, like being able to delay or repeat the instructions, and also makes it easier to understand and change the code. The Command pattern also allows multiple different parts of the code to handle the same request, which makes the different parts less dependent on each other.</p>
+
+<p>If we take a look at what a command looks like it's a class with an execute function.</p>
+
+<pre><code class="language-csharp">public class Command
+{
+  public abstract void Execute();
+}</code></pre>
+
+<h2 class="section-heading">Why should we use commands in sequences instead of events?</h2>
+
+<p>Our problem is that we need an orchestrator to handle the sequence and manage the different part of the code that is needed for that sequence. Imagine that your creating an event that has logic in it. In that way, we will be able to aggregate all the logic of the sequence into a single point in the code responsible for handling that sequence.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*d06BDA9rpM_uJNlLoWLmKQ.png" alt=""></figure><p>Let's take a look at some example code, in the class below we have an example of an enemy-damaged command. The enemy-damaged command knows about all the things relevant to the enemy-damaged sequence.</p>
+
+<pre><code class="language-csharp">public class EnemyDamagedCommand : Command
+{
+ private EnemyDamagedCommandData _data;
+ private EnemyService _enemyService;
+ private XpView _xpView;
+ private EnemyHealthViewService _enemyHealthViewService ;
+ private popupService _popupServie;
+ private PlayerLevelService _playerLevelService;
+
+ public EnemyDamagedCommand(EnemyDamagedCommandData data, EnemyService enemyService, 
+     XpView xpView, EnemyHealthViewService enemyHealthViewService,
+     PopupService popupServie, PlayerLevelService playerLevelService)
+ {
+  _data = data;
+  _enemyService = enemyService;
+  _xpView = xpView;
+  _enemyHealthViewService = enemyHealthViewService;
+  _popupServie = popupService;
+  _playerLevelService = playerLevelService;
+ }
+
+ public async void Execute()
+ {
+   _enemyService.RemoveHealth(data.enemyId, data.damage);
+   var enemyHealth = _enemyService.GetEnemyHealth(data.enemyId);
+   await EnemyHealthViewService(data.enemyId).UpdateEnemyHealth(enemyHealth);
+  
+   var isEnemyDead = enemyHealth <= 0;
+   if(isEnemyDead)
+   {
+      var killedEnemyXp = _enmeyService.GetEnemyXp(data.enemyId);
+      var didLevelUp = _playerLevelService.addXP(killedEnemyXP)
+      await _xpView.AddXpUpdatedAnimation(killedEnemyXP);
+     
+      if(didLevelUp)
+      {
+        await _popupService.Show(LevelUpPopup)
+      }
+   }
+ }
+}</code></pre>
+
+<p>If we follow its logic this is what it does:</p>
+
+<pre><code class="language-kotlin">If we follow its logic this is what it does:
+
+- We update the enemy health data.
+- update the enemy healthbar and wait until the animation finishs.
+- We check if the enemy is dead.
+    - If the enemy is dead we get the xp that that enemy provides.
+    - updated the player xp data.
+    - Update the xp view and wait until the animation finishs.
+    - Check if the play leveled up
+        - if the player levelUp we open a level up popup and await until it is closed.</code></pre>
+
+<p>The code shows how we took control of the enemy-damaged sequence and encapsulated it in a command, making it easier to maintain and modify in the future. If you’re unfamiliar with asynchronous code, I recommend reading up on it. To effectively use async code in Unity, you’ll need the<a href="https://github.com/Cysharp/UniTask" target="_blank" rel="noopener">Uniatask</a>Framework by Yoshifumi Kawai, which integrates C# async code with the Unity engine.</p>
+
+<h2 class="section-heading">How does the command get its dependencies?</h2>
+
+<p>In the diagram, we utilized a factory to generate the command, we did this for two reasons. Firstly, to decouple the command from its dependencies, avoiding unwanted knowledge transfer and unwanted coupling between separate components. Secondly, the factory enables command pooling, allowing us to reuse the commands after they are executed, thus reducing GC allocation.</p>
+
+<h2 class="section-heading">When should we use events and when should we use commands?</h2>
+
+<p>So, now that we understand the power of using commands, should we abandon the use of events altogether? The answer is no. In simple cases where only a single element is listening to the event, there is no need to create a command. For instance, if a controller is listening to a button, an event is the most appropriate option. However, in cases where sequences of several interacting pieces of code are involved, it is best to create a command to coordinate the sequence.</p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
   <a href="optimizing-draw-calls.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
     <div class="nav-title">Optimizing Draw Calls</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
   <a href="warnings.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
     <div class="nav-title">Warnings</div>
   </a>
-</div>
-
-</main>
+</div></main>
 
 <!-- FOOTER -->
 <footer>
@@ -164,7 +266,9 @@ const themes = {
   p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
   p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
   p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
-  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' }
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' },
+  p16: { '--bg':'#2a1c40','--bg2':'#342254','--bg3':'#3e2868','--panel':'#48307c','--border':'rgba(180,60,240,0.3)','--accent':'#ffc840','--accent2':'#b050f0','--accent3':'#ffaa20','--text':'#f8f0ff','--muted':'#9878a8','--dim':'#1a0e28','--glow1':'rgba(255,190,40,0.12)','--glow2':'rgba(176,80,240,0.12)','--grid':'rgba(176,80,240,0.06)' },
+  p17: { '--bg':'#4a3868','--bg2':'#58447c','--bg3':'#665090','--panel':'#7458a0','--border':'rgba(180,100,240,0.35)','--accent':'#ffb820','--accent2':'#c060ff','--accent3':'#ffa020','--text':'#2a1840','--muted':'#685080','--dim':'#f0e8ff','--glow1':'rgba(255,200,60,0.15)','--glow2':'rgba(200,100,255,0.15)','--grid':'rgba(200,100,255,0.08)' }
 };
 
 function setTheme(name) {

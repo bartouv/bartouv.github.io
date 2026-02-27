@@ -86,7 +86,15 @@
       </button>
       <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
-        <span>Coral & Aqua
+        <span>Coral & Aqua</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#b050f0)"></span>
+        <span>Gold & Violet Mid</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb820,#c060ff)"></span>
+        <span>Gold & Violet Light</span>
       </button>
     </div>
   </div>
@@ -112,30 +120,297 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="https://medium.com/@galbartouv/ui-shine-creating-sweeping-shine-effects-for-unity-ui-0ebca5259174" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <h2>Fighting Entropy In Unity — UI Shine Effect</h2>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*qwpagYja8zh1lyukute-Jw.png" alt=""></figure><p>A sweeping shine effect on UI buttons is a common effect in games. There are several ways to do it. For years, I’ve been doing it by placing masks on the button and then animating a UI element from one side to the other.</p>
+
+<p>This causes performance problems and scalability headaches. Masks force Unity to render additional draw calls and create overdraw issues where pixels get drawn multiple times. Each masked element requires its own rendering pass, which quickly adds up when you have multiple UI elements with shine effects. Beyond performance, this approach doesn’t scale well — when you resize buttons or change layouts, you need to manually adjust animation curves and timing for each element. It’s a maintenance nightmare that becomes exponentially worse as your UI grows in complexity.</p>
+
+<p>When trying to work around these issues by creating the effect via shader, I ran into a different problem. Shine effects work by creating a line that sweeps across the UI element from one edge to the other. To do this properly, the shader needs to know “where am I on this button?” — is this pixel at the left edge (0%), the middle (50%), or the right edge (100%)?</p>
+
+<p>This is what UV coordinates do — they tell each pixel where it sits on the texture, typically in a 0–1 range. For a shine effect to sweep smoothly from left to right, it needs these coordinates to be uniform and predictable. But since we use atlases to optimize UI performance, the UV coordinates aren’t uniform anymore.</p>
+
+<h2 class="section-heading">The Atlas UV Problem</h2>
+
+<p>When you try to apply effects like shine to regular sprites that aren’t part of an atlas, it’s pretty simple. The UV coordinates (which tell the shader where each pixel is on the texture) are nice and uniform, spanning the full 0–1 range across your image.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*d5a6NVr_Ge6GkCuqHL-H2w.png" alt=""></figure><p>But when your sprites come from a texture atlas? The UV coordinates only cover the tiny portion of the atlas where your sprite exists. Instead of clean 0–1 coordinates, you might get something like 0.2–0.4 on the X axis and 0.6–0.8 on the Y axis.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*maQg-k0JiOvaRQ-dlW-g3A.png" alt=""></figure><p>This creates a problem for effects like shine that need to sweep across the entire UI element. But since we don't know the coordinates of the ui element, we don't know how to move the shine. If we use a shine shader that would work on a non-Atlased sprite on an atlased sprite, it will just appear to glow on and off. Each sprite from the atlas will look different depending on its size and position.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*RZGZkP7OTiSiAZclg-CISg.gif" alt=""></figure><p>The solution involves two parts: Your mesh has 4 UV channels, even though we usually use one. First, we need to create proper UV coordinates that ignore the atlas constraints, and second, we need a shader that uses those coordinates to create our shine effect.</p>
+
+<h2 class="section-heading">Part 1: The UV Coordinate Fixer</h2>
+
+<p>Here’s our first piece of the puzzle — a script that calculates clean, uniform UV coordinates for our atlased images:</p>
+
+<p>csharp</p>
+
+<pre><code class="language-csharp">[ExecuteAlways]
+public class ImageUVCreator : BaseMeshEffect
+{
+    [SerializeField] private RectTransform rectTransform;
+
+    public override void ModifyMesh(VertexHelper vertexHelper)
+    {
+        var vertices = new List<UIVertex>();
+        vertexHelper.GetUIVertexStream(vertices);
+
+        // Find the actual bounds of our UI element
+        var minX = float.MaxValue;
+        var maxX = float.MinValue;
+        var minY = float.MaxValue; 
+        var maxY = float.MinValue;
+
+        foreach (var vertex in vertices)
+        {
+            if (vertex.position.x < minX) minX = vertex.position.x;
+            if (vertex.position.x > maxX) maxX = vertex.position.x;
+            if (vertex.position.y < minY) minY = vertex.position.y;
+            if (vertex.position.y > maxY) maxY = vertex.position.y;
+        }
+        
+        var rectAspectRatio = rectTransform != null ? 
+            rectTransform.rect.width / rectTransform.rect.height : default;
+        
+        // Create new, clean UV coordinates
+        for (var i = 0; i < vertices.Count; i++)
+        {
+            var vertex = vertices[i];
+            var normalizedX = Mathf.InverseLerp(minX, maxX, vertex.position.x);
+            var normalizedY = Mathf.InverseLerp(minY, maxY, vertex.position.y);
+
+            vertex.uv1 = new Vector3(normalizedX, normalizedY, rectAspectRatio);
+            vertices[i] = vertex;
+        }
+
+        vertexHelper.Clear();
+        vertexHelper.AddUIVertexTriangleStream(vertices);
+    }
+}</code></pre>
+
+<p>BaseMeshEffect is an abstract base class in Unity’s UI system that allows you to create custom effects that modify the geometry of UI elements like Text, Image, and other Graphic components.</p>
+
+<p>What this script does is pretty clever. Instead of relying on Unity’s atlas-constrained UV coordinates, it looks at where each vertex sits in 3D space and creates brand new UV coordinates based on that.</p>
+
+<p>The key part is the<code>InverseLerp</code>function, which takes a position and figures out where it sits between the minimum and maximum bounds as a percentage. So if a pixel is exactly in the middle of our UI element, it gets UV coordinates of (0.5, 0.5) — nice and predictable.</p>
+
+<p>The<code>ModifyMesh</code>function only executes when the UI element is built or modified - not every frame. This happens during layout rebuilds, which typically occur when you change the UI (resize, enable/disable, etc.). For static UI elements, this means zero ongoing performance cost.</p>
+
+<h2 class="section-heading">Part 2: The Shine Shader</h2>
+
+<p>Now that we have clean UV coordinates, we can create our shine effect. The shader is surprisingly straightforward in concept:</p>
+
+<p><strong>The Basic Idea:</strong>Think of the shine as an invisible line that moves across your UI element over time. The shader looks at each pixel and asks “how close am I to that moving line?” Pixels that are close to the line get brightened up (the shine effect), while pixels far away stay their normal color.</p>
+
+<p><strong>How it moves:</strong>The line starts off-screen on one side and sweeps across to the other side. We use Unity’s built-in time to make this movement automatic and smooth. You can control how fast it moves and at what angle it sweeps.</p>
+
+<p><strong>Keeping it contained:</strong>This is where our custom UV coordinates become crucial. The shader reads these custom coordinates from the UV1 channel (texcoord1) that our script created, rather than the original UV coordinates that were constrained by the atlas. The shader uses them to make sure the shine only appears within the boundaries of your UI element, not spilling over onto other parts of the screen.</p>
+
+<p><strong>Customization options:</strong>The shader gives you control over the shine color, how bright it is, how wide the shine band is, and the angle it sweeps at. You can even turn it on and off, or trigger it to start at specific times.</p>
+
+<p>The clever part is that no matter how your button is sized or positioned on screen, the shine will always sweep cleanly from edge to edge because we’re using those normalized UV coordinates we created earlier.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*i6kG6q1l8SQdjF4CQDIYDg.gif" alt=""></figure><h2 class="section-heading">How to Use It</h2>
+
+<p>Setting this up is straightforward:</p>
+
+<strong>Add the UV Creator</strong>: Attach the ImageUVCreator script to any UI Image component that uses a sprite from a texture atlas</li>
+<strong>Apply the shader</strong>: Create a new Material using the “UI/Shine” shader</li>
+<strong>Assign the material</strong>: Apply your new material to the Image component</li>
+<strong>Tweak the settings</strong>: Adjust the shine properties in the material inspector until it looks just right</li>
+<p>Below, you can see a simple shine shader</p>
+
+<pre><code class="language-cpp">Shader "UI/ShineImproved"
+{
+    Properties
+    {
+        [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+        _Color ("Tint", Color) = (1,1,1,1)
+        
+        // Shine Properties
+        [Toggle] _ShineEnabled ("Enable Shine", Float) = 1
+        _ShineStartTime ("Shine Start Time", Float) = 0
+        _ShineColor ("Shine Color", Color) = (1,1,1,0.8)
+        _ShineWidth ("Shine Width", Range(0.01, 100.0)) = 50.0
+        _ShineSpeed ("Shine Speed", Range(0.1, 5.0)) = 1.0
+        _ShineBrightness ("Shine Brightness", Range(0.0, 2.0)) = 1.5
+        _ShineAngle ("Shine Angle", Range(-90, 90)) = 15
+        
+        // UI Properties
+        _StencilComp ("Stencil Comparison", Float) = 8
+        _Stencil ("Stencil ID", Float) = 0
+        _StencilOp ("Stencil Operation", Float) = 0
+        _StencilWriteMask ("Stencil Write Mask", Float) = 255
+        _StencilReadMask ("Stencil Read Mask", Float) = 255
+        _ColorMask ("Color Mask", Float) = 15
+        
+        [Toggle(UNITY_UI_ALPHACLIP)] _UseUIAlphaClip ("Use Alpha Clip", Float) = 0
+    }
+
+    SubShader
+    {
+        Tags
+        {
+            "Queue"="Transparent"
+            "IgnoreProjector"="True"
+            "RenderType"="Transparent"
+            "PreviewType"="Plane"
+            "CanUseSpriteAtlas"="True"
+        }
+
+        Stencil
+        {
+            Ref [_Stencil]
+            Comp [_StencilComp]
+            Pass [_StencilOp]
+            ReadMask [_StencilReadMask]
+            WriteMask [_StencilWriteMask]
+        }
+
+        Cull Off
+        Lighting Off
+        ZWrite Off
+        ZTest [unity_GUIZTestMode]
+        Blend SrcAlpha OneMinusSrcAlpha
+        ColorMask [_ColorMask]
+
+        Pass
+        {
+            Name "Default"
+        CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma target 2.0
+
+            #include "UnityCG.cginc"
+            #include "UnityUI.cginc"
+
+            #pragma multi_compile_local _ UNITY_UI_CLIP_RECT
+            #pragma multi_compile_local _ UNITY_UI_ALPHACLIP
+
+            struct appdata_t
+            {
+                float4 vertex   : POSITION;
+                float4 color    : COLOR;
+                float2 texcoord : TEXCOORD0;
+                float2 texcoord1 : TEXCOORD1;  // Clean UVs from ImageUVCreator
+            };
+
+            struct v2f
+            {
+                float4 vertex   : SV_POSITION;
+                fixed4 color    : COLOR;
+                float2 texcoord  : TEXCOORD0;
+                float2 shineUV   : TEXCOORD1;  // Clean UVs for shine
+                float4 worldPosition : TEXCOORD2;
+            };
+
+            sampler2D _MainTex;
+            fixed4 _Color;
+            fixed4 _TextureSampleAdd;
+            float4 _ClipRect;
+            float4 _MainTex_ST;
+            
+            // Shine properties
+            float _ShineEnabled;
+            float _ShineStartTime;
+            fixed4 _ShineColor;
+            float _ShineWidth;
+            float _ShineSpeed;
+            float _ShineBrightness;
+            float _ShineAngle;
+
+            v2f vert(appdata_t v)
+            {
+                v2f OUT;
+                OUT.worldPosition = v.vertex;
+                OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
+
+                OUT.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
+                OUT.shineUV = v.texcoord1;  // Use the clean UVs from UV1 channel
+
+                OUT.color = v.color * _Color;
+                return OUT;
+            }
+
+            fixed4 frag(v2f IN) : SV_Target
+            {
+                // Sample the main texture
+                half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
+
+                // Calculate shine effect if enabled
+                if (_ShineEnabled > 0.5)
+                {
+                    // Calculate time-based position for the shine sweep
+                    float time = (_Time.y - _ShineStartTime) * _ShineSpeed;
+                    float shinePos = fmod(time, 3.0) - 1.0; // -1 to 2 range for full sweep
+                    
+                    // Convert angle to radians
+                    float angleRad = radians(_ShineAngle);
+                    float cosAngle = cos(angleRad);
+                    float sinAngle = sin(angleRad);
+                    
+                    // Calculate the position along the shine direction
+                    // Using the clean 0-1 UVs from texcoord1
+                    float2 uv = IN.shineUV;
+                    
+                    // Project UV position onto the shine direction
+                    // This determines where this pixel is along the shine sweep
+                    float projectedPosition = uv.x * cosAngle + uv.y * sinAngle;
+                    
+                    // Calculate distance from the current shine position
+                    // Scale shinePos to match UV space (0-1)
+                    float scaledShinePos = shinePos * 1.414; // sqrt(2) to cover diagonal
+                    float distanceToShine = abs(projectedPosition - scaledShinePos);
+                    
+                    // Create shine mask
+                    float shineMask = 1.0 - smoothstep(0.0, _ShineWidth * 0.01, distanceToShine);
+                    
+                    // Ensure shine only appears within the UI element bounds
+                    float2 boundsMask = step(0.0, uv) * step(uv, 1.0);
+                    shineMask *= boundsMask.x * boundsMask.y;
+                    
+                    // Apply shine effect
+                    float3 shineEffect = _ShineColor.rgb * shineMask * _ShineBrightness;
+                    color.rgb += shineEffect * color.a; // Multiply by alpha to respect transparency
+                }
+
+                #ifdef UNITY_UI_CLIP_RECT
+                color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
+                #endif
+
+                #ifdef UNITY_UI_ALPHACLIP
+                clip (color.a - 0.001);
+                #endif
+
+                return color;
+            }
+        ENDCG
+        }
+    }
+}</code></pre>
+
+<p>I will note that because we use a custom shader, it will break batching in the UI. But the batch breaking will cause fewer draw calls than masks would cause.</p>
+
+<p>Big thx for my coworker Dana for help with the UV solution 🙏</p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
   <a href="taming-polymorphic-serialization.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
     <div class="nav-title">Taming Polymorphic Serialization</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
   <a href="rectmask2d-performance.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
     <div class="nav-title">The Hidden Performance Killer: RectMask2D</div>
   </a>
-</div>
-
-</main>
+</div></main>
 
 <!-- FOOTER -->
 <footer>
@@ -164,7 +439,9 @@ const themes = {
   p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
   p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
   p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
-  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' }
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' },
+  p16: { '--bg':'#2a1c40','--bg2':'#342254','--bg3':'#3e2868','--panel':'#48307c','--border':'rgba(180,60,240,0.3)','--accent':'#ffc840','--accent2':'#b050f0','--accent3':'#ffaa20','--text':'#f8f0ff','--muted':'#9878a8','--dim':'#1a0e28','--glow1':'rgba(255,190,40,0.12)','--glow2':'rgba(176,80,240,0.12)','--grid':'rgba(176,80,240,0.06)' },
+  p17: { '--bg':'#4a3868','--bg2':'#58447c','--bg3':'#665090','--panel':'#7458a0','--border':'rgba(180,100,240,0.35)','--accent':'#ffb820','--accent2':'#c060ff','--accent3':'#ffa020','--text':'#2a1840','--muted':'#685080','--dim':'#f0e8ff','--glow1':'rgba(255,200,60,0.15)','--glow2':'rgba(200,100,255,0.15)','--grid':'rgba(200,100,255,0.08)' }
 };
 
 function setTheme(name) {

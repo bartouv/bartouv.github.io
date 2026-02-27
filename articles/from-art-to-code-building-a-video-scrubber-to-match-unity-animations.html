@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>[TITLE] — GB/DEV</title>
+<title>From Art to Code: Building a Video Scrubber to Match Unity Animations — GB/DEV</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/shared.css">
 <link rel="stylesheet" href="../css/article.css">
@@ -104,11 +104,11 @@
 <section class="article-hero">
   <div class="article-header">
     <a href="../index.html#posts" class="back-link">← Back to Articles</a>
-    <div class="article-tag">// [CATEGORY]</div>
-    <h1 class="article-title">[TITLE]</h1>
+    <div class="article-tag">// UNITY DEV</div>
+    <h1 class="article-title">From Art to Code: Building a Video Scrubber to Match Unity Animations</h1>
     <div class="article-meta">
-      <span class="article-date">[DATE]</span>
-      <span class="article-read-time">[X] min read</span>
+      <span class="article-date">TBD</span>
+      <span class="article-read-time">5 min read</span>
     </div>
   </div>
 </section>
@@ -118,30 +118,96 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="[MEDIUM_URL]" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <h2></h2>
+
+<h2 class="section-heading">From Art to Code: Building a Video Scrubber to Match Unity Animations</h2>
+
+<p>Ever had an artist hand you a video and say "just recreate this in Unity"? Yeah, me too. Eyeballing animations is hell.</p>
+
+<h2 class="section-heading">The Problem</h2>
+
+<p>You're comparing your Unity scene to a reference video by alt-tabbing between windows, constantly pausing, rewinding, and tweaking keyframes. Hours later, the timing still feels off because you're playing spot-the-difference with two moving targets.</p>
+
+<h2 class="section-heading">The Solution</h2>
+
+<p>What if you could scrub through both the reference video and your Unity animation simultaneously? That's exactly what I built.</p>
+
+<h2 class="section-heading">How It Works</h2>
+
+<p>The VideoScrubber tool does three things:</p>
+
+Loads a reference video in Unity</li>
+Lets you scrub frame-by-frame with a slider</li>
+Overlays your Unity scene on top for direct comparison</li>
+<p>Here's the core scrubbing logic:</p>
+
+<pre><code class="language-cpp">public void ScrubToProgress(float normalizedTime)
+{
+    if (!isVideoReady || videoDuration <= 0) return;
+    
+    normalizedTime = Mathf.Clamp01(normalizedTime);
+    wasPlayingBeforeScrub = videoPlayer.isPlaying;
+    videoPlayer.Pause();
+    
+    double targetTime = normalizedTime * videoDuration;
+    videoPlayer.time = targetTime;
+}</code></pre>
+
+<p>The key insight: pause before seeking, otherwise you get weird playback behavior.</p>
+
+<h2 class="section-heading">The Update Loop</h2>
+
+<p>Two-way binding between the slider and video:</p>
+
+<pre><code class="language-typescript">void Update()
+{
+    if (!isVideoReady) return;
+    
+    // Slider moved? Scrub video
+    if (Mathf.Abs(progress - lastProgress) > 0.001f)
+    {
+        ScrubToProgress(progress);
+        lastProgress = progress;
+    }
+    // Video playing? Update slider
+    else if (videoPlayer.isPlaying)
+    {
+        progress = (float)(videoPlayer.time / videoDuration);
+        lastProgress = progress;
+    }
+}</code></pre>
+
+<h2 class="section-heading">The Workflow</h2>
+
+Drop video into Unity</li>
+Set up VideoScrubber component</li>
+Create an Animation Clip that animates the progress field from 0 to 1</li>
+Play your Unity animation - the video plays in perfect sync</li>
+Match timing precisely by adjusting keyframes</li>
+<p>What used to take hours now takes minutes. No more alt-tabbing or guessing.</p>
+
+<h2 class="section-heading">Why This Matters</h2>
+
+<p>Small workflow improvements add up. Every hour saved on tedious animation matching is an hour spent on actual features. Sometimes the best solutions just wire existing tools together in the right way.</p>
+
+<p>Next time an artist says "recreate this," you can smile instead of cry.</p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
-  <a href="[PREV_SLUG].html" class="article-nav-prev">
+  <a href="an-intro-to-rendering.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
-    <div class="nav-title">[PREV_TITLE]</div>
+    <div class="nav-title">An Intro to Rendering</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
-  <a href="[NEXT_SLUG].html" class="article-nav-next">
+  <a href="scene-tool.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
-    <div class="nav-title">[NEXT_TITLE]</div>
+    <div class="nav-title">Scene Tool</div>
   </a>
-</div>
-
-<!-- FOOTER -->
+</div><!-- FOOTER -->
 <footer>
   <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
   <div class="footer-links">

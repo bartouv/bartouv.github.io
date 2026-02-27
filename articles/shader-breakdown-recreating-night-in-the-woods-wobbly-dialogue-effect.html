@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>[TITLE] — GB/DEV</title>
+<title>Shader Breakdown: Recreating Night in the Woods’ Wobbly Dialogue Effect — GB/DEV</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../css/shared.css">
 <link rel="stylesheet" href="../css/article.css">
@@ -104,11 +104,11 @@
 <section class="article-hero">
   <div class="article-header">
     <a href="../index.html#posts" class="back-link">← Back to Articles</a>
-    <div class="article-tag">// [CATEGORY]</div>
-    <h1 class="article-title">[TITLE]</h1>
+    <div class="article-tag">// UNITY DEV</div>
+    <h1 class="article-title">Shader Breakdown: Recreating Night in the Woods’ Wobbly Dialogue Effect</h1>
     <div class="article-meta">
-      <span class="article-date">[DATE]</span>
-      <span class="article-read-time">[X] min read</span>
+      <span class="article-date">TBD</span>
+      <span class="article-read-time">5 min read</span>
     </div>
   </div>
 </section>
@@ -118,30 +118,62 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="[MEDIUM_URL]" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <h2>Shader Breakdown: Recreating Night in the Woods’ Wobbly Dialogue Effect</h2>
+
+<p>Night in the Woods is a beautiful game that I highly recommend you play if you like adventure games. When working on a personal project, I wanted to create a dialogue bubble. As it happens, the one from the game is very pretty, and I wanted to use something similar in my project.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*7SpTu3gXQHd6O5qH8_YaEg.gif" alt=""></figure><p>When looking at this effect, the first thing that came to mind was to use a vertex offset to move the sprite around. This is similar to how we use shaders to animate tree foliage. But a sprite has very few vertices — typically just four corners forming a quad. The effect with the tree foliage works because there are many vertices you can move around to create organic motion. The sprite vertices look like this basic quad structure, which severely limits what vertex manipulation can achieve.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*G_8hVraDHhw5Cy9gvtlNsA.png" alt=""></figure><h2 class="section-heading">The Solution: UV Manipulation</h2>
+
+<p>Instead of using vertex offset to create the desired effect, we can use UV manipulation. The UV coordinates determine the mapping between the texture and the mesh. If we manipulate these coordinates, we can change how the texture appears on the surface, creating the illusion that the texture itself is wobbling</p>
+
+<p>The first thing we're going to do is try adding noise directly to the UV coordinates:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*UxGUntr8ox8PU1XSBfrFSQ.png" alt=""></figure><p>Here is the result in the shader graph preview:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*yV7N9-gO8uV6PT1q-3lAwg.gif" alt=""></figure><p>Oh, so we have a problem …</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*uiASF3JY790Miurp8PhKcQ.gif" alt=""></figure><p>The problem becomes immediately apparent — when we move the noise intensity above zero, parts of the shape get cut off. This happens because we’re uniformly shifting the entire UV space. When we add positive noise values, we move the entire image toward the top-right. When we add negative values, we move it toward the bottom-left. The texture sampling goes outside the 0–1 UV range, causing the cutoff.</p>
+
+<p>To solve this, we need to apply the noise directionally rather than uniformly. The key insight is to divide the UV space into four quadrants and apply noise that pushes each quadrant toward its center, creating the wobble effect while keeping the shape intact.</p>
+
+<p>We’ll split the UV coordinates and apply different directional forces to each quadrant:</p>
+
+<p>For the Top Right, we will add XY to move to the center.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*65q9zWu3Z8_8GNu36FuG_Q.png" alt=""></figure><p>For the Bottom Left, we will subtract XY to move to the center:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*StjWt27MeomJrSd6mQwmDQ.png" alt=""></figure><p>For the Bottom Right, we will add X and subtract Y to move to the center:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*nx8hyjTxBj9A_qR2PQjnmQ.png" alt=""></figure><p>For the Top Left, we will subtract X and add Y to move to the center:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*9sPHvIbkO9Y9rlwZr6KG1g.png" alt=""></figure><p>Together, it looks like this:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*KOTPyIG5MyBu8l2UL1zjyQ.png" alt=""></figure><p>This quadrant-based approach ensures that pixels near the edges get pulled inward, creating the characteristic wobble without losing the overall shape boundaries. The noise creates organic movement while the directional constraints keep the effect contained within the sprite’s bounds.</p>
+
+<h2 class="section-heading">The Result</h2>
+
+<p>The final shader creates a convincing recreation of Night in the Woods’ dialogue bubble effect. The texture appears to wobble and breathe organically while maintaining its overall shape and readability. By manipulating UV coordinates instead of vertices, we achieve complex visual effects even with simple geometry.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*ddWv23hE4lIvrPngjjjXUQ.gif" alt=""></figure><p>This technique can be extended beyond dialogue bubbles — any UI element or sprite that needs organic, breathing motion can benefit from this approach. The key is understanding how UV manipulation can create the illusion of complex deformation without requiring complex geometry.</p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
-  <a href="[PREV_SLUG].html" class="article-nav-prev">
+  <a href="cameras-and-rendering.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
-    <div class="nav-title">[PREV_TITLE]</div>
+    <div class="nav-title">Cameras and Rendering</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
-  <a href="[NEXT_SLUG].html" class="article-nav-next">
+  <a href="making-games-responsive-to-different-devices.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
-    <div class="nav-title">[NEXT_TITLE]</div>
+    <div class="nav-title">Making Games Responsive to Different Devices</div>
   </a>
-</div>
-
-<!-- FOOTER -->
+</div><!-- FOOTER -->
 <footer>
   <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
   <div class="footer-links">

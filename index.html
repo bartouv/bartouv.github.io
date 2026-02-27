@@ -418,6 +418,249 @@
     margin-bottom: 8px;
   }
 
+  /* PODCAST SECTION */
+  .podcast-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 0;
+    text-decoration: none;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+    transition: all 0.3s;
+    overflow: hidden;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  }
+
+  .podcast-card:hover {
+    background: var(--bg3);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .podcast-image {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+    border-right: 1px solid var(--border);
+  }
+
+  .podcast-content {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .podcast-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .podcast-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color: #fff;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
+  .podcast-show {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .podcast-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .podcast-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+  }
+
+  .podcast-platform {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+  }
+
+  /* GAME JAM SECTION */
+  .game-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 0;
+    text-decoration: none;
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 0;
+    transition: all 0.3s;
+    overflow: hidden;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  }
+
+  .game-card:hover {
+    background: var(--bg3);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .game-image {
+    width: 280px;
+    height: 280px;
+    object-fit: cover;
+    border-right: 1px solid var(--border);
+  }
+
+  .game-content {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .game-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .game-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color: #fff;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
+  .game-meta {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+
+  .game-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .game-footer {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+  }
+
+  .game-platform {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+  }
+
+  /* PROJECTS SECTION */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+  }
+
+  .project-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 0;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s;
+    overflow: hidden;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  }
+
+  .project-card:hover {
+    background: var(--bg3);
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+
+  .project-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .project-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .project-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .project-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    color: #fff;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+
+  .project-company {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .project-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .project-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    margin-top: auto;
+  }
+
   /* ABOUT SECTION */
   .about-section {
     position: relative;
@@ -592,6 +835,11 @@
     .stats-bar { flex-wrap: wrap; }
     .stat { flex: 1 1 50%; border-right: none; border-bottom: 1px solid var(--border); }
     .post-card.featured { grid-template-columns: 1fr; }
+    .podcast-card { grid-template-columns: 1fr; }
+    .podcast-image { width: 100%; height: 240px; border-right: none; border-bottom: 1px solid var(--border); }
+    .game-card { grid-template-columns: 1fr; }
+    .game-image { width: 100%; height: 240px; border-right: none; border-bottom: 1px solid var(--border); }
+    .projects-grid { grid-template-columns: 1fr; }
     .about-inner { grid-template-columns: 1fr; gap: 32px; }
     .about-section { padding: 60px 24px; }
     footer { flex-direction: column; gap: 16px; align-items: flex-start; padding: 32px 24px; }
@@ -761,6 +1009,9 @@
   <div class="nav-logo">GB<span>/</span>DEV</div>
   <ul class="nav-links">
     <li><a href="#posts">Articles</a></li>
+    <li><a href="#podcast">Podcast</a></li>
+    <li><a href="#gamejam">Game Jam</a></li>
+    <li><a href="#projects">Projects</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="https://medium.com/@galbartouv" target="_blank">Medium</a></li>
   </ul>
@@ -831,6 +1082,14 @@
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
         <span>Coral & Aqua</span>
       </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#b050f0)"></span>
+        <span>Gold & Violet Mid</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb820,#c060ff)"></span>
+        <span>Gold & Violet Light</span>
+      </button>
     </div>
   </div>
 </nav>
@@ -887,7 +1146,7 @@
   <div class="section-header">
     <h2 class="section-title">Articles</h2>
     <div class="section-line"></div>
-    <span class="section-count">// 8 ARTICLES</span>
+    <span class="section-count" id="article-count">// 18 ARTICLES</span>
   </div>
 
   <div class="posts-grid">
@@ -979,10 +1238,265 @@
       </div>
     </a>
 
+    <a class="post-card" href="articles/shader-breakdown-recreating-night-in-the-woods-wobbly-dialogue-effect.html">
+      <div class="post-tag">// Shaders</div>
+      <div class="post-title">Shader Breakdown: Night in the Woods' Wobbly Dialogue Effect</div>
+      <p class="post-excerpt">Recreating the distinctive wobbly text shader from Night in the Woods. A deep dive into vertex displacement and shader graph techniques.</p>
+      <div class="post-footer">
+        <span class="post-date">Sept 2025</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="articles/making-games-responsive-to-different-devices.html">
+      <div class="post-tag">// Cross-Platform</div>
+      <div class="post-title">Making Games Responsive to Different Devices</div>
+      <p class="post-excerpt">Building adaptive layouts that work across mobile, tablet, and desktop. Handling different aspect ratios and screen sizes gracefully.</p>
+      <div class="post-footer">
+        <span class="post-date">Sept 2025</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="articles/fighting-entropy-in-unity-structure-based-on-domains.html">
+      <div class="post-tag">// Architecture</div>
+      <div class="post-title">Structure Based on Domains</div>
+      <p class="post-excerpt">Organizing Unity projects by business domains instead of technical layers. A scalable approach to project structure for growing teams.</p>
+      <div class="post-footer">
+        <span class="post-date">Jan 2023</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="articles/fighting-entropy-in-unity-seeded-random-for-debugging.html">
+      <div class="post-tag">// Debugging</div>
+      <div class="post-title">Seeded Random for Debugging</div>
+      <p class="post-excerpt">Making randomness reproducible for testing. Using seeded RNG to create deterministic gameplay that's easy to debug and test.</p>
+      <div class="post-footer">
+        <span class="post-date">Draft</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="articles/fighting-entropy-in-development-taming-the-pr-chaos.html">
+      <div class="post-tag">// Development Process</div>
+      <div class="post-title">Taming the PR Chaos</div>
+      <p class="post-excerpt">Managing pull requests in game development teams. Strategies for code review, merge conflicts, and keeping development velocity high.</p>
+      <div class="post-footer">
+        <span class="post-date">Draft</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="articles/fighting-entropy-in-git-custom-commands-that-actually-save-time.html">
+      <div class="post-tag">// Git</div>
+      <div class="post-title">Git Custom Commands That Actually Save Time</div>
+      <p class="post-excerpt">Creating git aliases and custom commands for common Unity workflows. Automate repetitive tasks and streamline your version control.</p>
+      <div class="post-footer">
+        <span class="post-date">Draft</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="articles/fighting-entropy-in-unity-taming-git-chaos-with-custom-commands.html">
+      <div class="post-tag">// Git</div>
+      <div class="post-title">Taming Git Chaos with Custom Commands</div>
+      <p class="post-excerpt">Advanced git workflows for Unity projects. Handle binary files, solve merge conflicts, and maintain clean commit history in team environments.</p>
+      <div class="post-footer">
+        <span class="post-date">Draft</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="articles/an-intro-to-rendering.html">
+      <div class="post-tag">// Rendering</div>
+      <div class="post-title">An Intro to Rendering</div>
+      <p class="post-excerpt">Understanding the fundamentals of rendering pipelines. From vertices to pixels, learn how Unity transforms your 3D scenes into images.</p>
+      <div class="post-footer">
+        <span class="post-date">Draft</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="post-card" href="articles/from-art-to-code-building-a-video-scrubber-to-match-unity-animations.html">
+      <div class="post-tag">// Tools</div>
+      <div class="post-title">Building a Video Scrubber to Match Unity Animations</div>
+      <p class="post-excerpt">Creating custom editor tools to sync video references with animation timelines. Bridge the gap between concept art and implementation.</p>
+      <div class="post-footer">
+        <span class="post-date">Draft</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
+<a class="post-card" href="articles/scene-tool.html">
+      <div class="post-tag">// Editor Tools</div>
+      <div class="post-title">Scene Tool</div>
+      <p class="post-excerpt">Building custom scene view tools for level design workflows. Extend Unity's editor to match your team's specific needs.</p>
+      <div class="post-footer">
+        <span class="post-date">Draft</span>
+        <span class="post-arrow">→</span>
+      </div>
+    </a>
+
   </div>
 
   <div style="margin-top: 32px; text-align: center;">
     <a href="https://medium.com/@galbartouv" target="_blank" class="btn btn-ghost">View All on Medium →</a>
+  </div>
+</div>
+
+<!-- PODCAST -->
+<div class="section" id="podcast" style="padding-top: 0;">
+  <div class="section-header">
+    <h2 class="section-title">Podcast</h2>
+    <div class="section-line"></div>
+    <span class="section-count">// FEATURED APPEARANCE</span>
+  </div>
+
+  <a class="podcast-card" href="https://open.spotify.com/episode/7xRcR1yZD1YJ4IUOqY7Gov?si=f3968ad6c81b4269" target="_blank" rel="noopener">
+    <img src="https://i.scdn.co/image/ab67656300005f1fb380909f4467deb665c901e8" alt="Podcast Episode Cover" class="podcast-image">
+    <div class="podcast-content">
+      <div class="podcast-tag">// GPU OPTIMIZATION</div>
+      <div class="podcast-title">The Optimization Series, Part 3</div>
+      <div class="podcast-show">מזיזי הטרנספורמים (Transform Movers)</div>
+      <p class="podcast-desc">Deep dive into GPU optimization techniques including batching, shaders, and vertex optimization. Discussing practical approaches to solve rendering performance bottlenecks in Unity.</p>
+      <div class="podcast-footer">
+        <span class="podcast-platform">
+          <span>▶</span>
+          <span>Listen on Spotify</span>
+        </span>
+        <span>→</span>
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- GAME JAM -->
+<div class="section" id="gamejam" style="padding-top: 0;">
+  <div class="section-header">
+    <h2 class="section-title">Game Jam</h2>
+    <div class="section-line"></div>
+    <span class="section-count">// PROJECTS</span>
+  </div>
+
+  <a class="game-card" href="https://bartouv.itch.io/rise-of-the-machines-2" target="_blank" rel="noopener">
+    <img src="https://img.itch.zone/aW1nLzEwOTI4MTU3LnBuZw==/347x500/VNpPtr.png" alt="Rise Of The Machines Cover" class="game-image">
+    <div class="game-content">
+      <div class="game-tag">// SHOOTER · HTML5</div>
+      <div class="game-title">Rise Of The Machines</div>
+      <div class="game-meta">Game Jam Project · In Development</div>
+      <p class="game-desc">A fast-paced shooter game where you defend against waves of mechanical enemies. Features dynamic gameplay mechanics and stylized graphics. Built during a game jam and currently in active development.</p>
+      <div class="game-footer">
+        <span class="game-platform">
+          <span>🎮</span>
+          <span>Play on itch.io</span>
+        </span>
+        <span>→</span>
+      </div>
+    </div>
+  </a>
+</div>
+
+<!-- PROJECTS -->
+<div class="section" id="projects" style="padding-top: 0;">
+  <div class="section-header">
+    <h2 class="section-title">Projects</h2>
+    <div class="section-line"></div>
+    <span class="section-count">// SHIPPED GAMES</span>
+  </div>
+
+  <div class="projects-grid">
+
+    <a class="project-card" href="https://www.youtube.com/results?search_query=Pirate+Kings+gameplay" target="_blank" rel="noopener">
+      <img src="https://play-lh.googleusercontent.com/VN7pJhLdYqkJvCvqZ3T_3LqYqhLqN9qvqLqZ3T_3LqYqhLdYqkJvCvqZ3T_3LqYqhLqN9q" alt="Pirate Kings" class="project-image" onerror="this.src='https://via.placeholder.com/400x200/2a1c40/ffc840?text=Pirate+Kings'">
+      <div class="project-content">
+        <div class="project-tag">// STRATEGY · SOCIAL</div>
+        <div class="project-title">Pirate Kings</div>
+        <div class="project-company">Jelly Button Games (Playtika)</div>
+        <p class="project-desc">Build your pirate kingdom, raid enemy islands, and spin the wheel to earn rewards. A massively successful social mobile game with 50+ million downloads combining strategy with casino-style mechanics.</p>
+        <div class="project-footer">
+          <span>▶</span>
+          <span>Watch Gameplay</span>
+          <span style="margin-left: auto;">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://www.youtube.com/results?search_query=Monster+Blasters+Jelly+Button+gameplay" target="_blank" rel="noopener">
+      <img src="https://via.placeholder.com/400x200/2a1c40/b050f0?text=Monster+Blasters" alt="Monster Blasters" class="project-image">
+      <div class="project-content">
+        <div class="project-tag">// ACTION · MULTIPLAYER</div>
+        <div class="project-title">Monster Blasters</div>
+        <div class="project-company">Jelly Button Games (Playtika)</div>
+        <p class="project-desc">Army vs. Monsters MOBA in 3D. Command soldiers, mechs, and helicopters against giant monsters, or become the monster yourself. Asymmetric multiplayer action in destructible city environments.</p>
+        <div class="project-footer">
+          <span>▶</span>
+          <span>Watch Gameplay</span>
+          <span style="margin-left: auto;">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://www.youtube.com/results?search_query=Merge+Tower+Bots+gameplay" target="_blank" rel="noopener">
+      <img src="https://via.placeholder.com/400x200/2a1c40/50e6f6?text=Merge+Tower+Bots" alt="Merge Tower Bots" class="project-image">
+      <div class="project-content">
+        <div class="project-tag">// MERGE · IDLE · TOWER DEFENSE</div>
+        <div class="project-title">Merge Tower Bots</div>
+        <div class="project-company">Playtika</div>
+        <p class="project-desc">Addictive merge idle clicker combining merge mechanics with tower defense. Merge robots to create powerful defenders, protect your gold from monster waves, and progress through challenging levels.</p>
+        <div class="project-footer">
+          <span>▶</span>
+          <span>Watch Gameplay</span>
+          <span style="margin-left: auto;">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://www.youtube.com/results?search_query=Merge+Stories+Playtika+gameplay" target="_blank" rel="noopener">
+      <img src="https://via.placeholder.com/400x200/2a1c40/ff8c50?text=Merge+Stories" alt="Merge Stories" class="project-image">
+      <div class="project-content">
+        <div class="project-tag">// MERGE · BATTLE · 3D</div>
+        <div class="project-title">Merge Stories</div>
+        <div class="project-company">Jelly Button Games (Playtika)</div>
+        <p class="project-desc">Revolutionary merge game combining non-identical item merging with battle gameplay and stunning 3D graphics. Build kingdoms, raid enemies, and discover new territories in this innovative casual game.</p>
+        <div class="project-footer">
+          <span>▶</span>
+          <span>Watch Gameplay</span>
+          <span style="margin-left: auto;">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://www.youtube.com/results?search_query=Dice+Life+Playtika+gameplay" target="_blank" rel="noopener">
+      <img src="https://via.placeholder.com/400x200/2a1c40/c8ff64?text=Dice+Life" alt="Dice Life" class="project-image">
+      <div class="project-content">
+        <div class="project-tag">// SIMULATION · CASUAL</div>
+        <div class="project-title">Dice Life</div>
+        <div class="project-company">Jelly Button Games (Playtika)</div>
+        <p class="project-desc">Cheerful city simulator where you manage a village community. Roll dice for fortune, help characters achieve dreams, manage resources, and grow your town in this free-to-play city builder.</p>
+        <div class="project-footer">
+          <span>▶</span>
+          <span>Watch Gameplay</span>
+          <span style="margin-left: auto;">→</span>
+        </div>
+      </div>
+    </a>
+
+    <a class="project-card" href="https://www.youtube.com/results?search_query=Solaria+Dawn+of+Heroes+gameplay" target="_blank" rel="noopener">
+      <img src="https://via.placeholder.com/400x200/2a1c40/50f0a0?text=Solaria" alt="Solaria: Dawn of Heroes" class="project-image">
+      <div class="project-content">
+        <div class="project-tag">// RPG · REAL-TIME BATTLES</div>
+        <div class="project-title">Solaria: Dawn of Heroes</div>
+        <div class="project-company">Glaive</div>
+        <p class="project-desc">Real-time fantasy battles with strategic squad combat. Assemble teams of mages, warriors, and rangers to battle monsters in vivid fantasy worlds. Features guilds, quests, and regular content updates.</p>
+        <div class="project-footer">
+          <span>▶</span>
+          <span>Watch Gameplay</span>
+          <span style="margin-left: auto;">→</span>
+        </div>
+      </div>
+    </a>
+
   </div>
 </div>
 
@@ -1273,6 +1787,26 @@
       <p>Unity developer with 9+ years of experience shipping mobile games. Currently Client Team Lead at <strong style="color:#fff">Glaive</strong> (Jan 2023–Present), based in Tel Aviv. Previously spent nearly 6 years at <strong style="color:#fff">Jelly Button</strong> — growing from Unity Developer to Client Team Lead on their mobile titles.</p>
       <p>I write about the things that actually matter in production Unity development: team-scale architecture, mobile performance, client-side systems design, and the lessons that only come from shipping real games with real players.</p>
       <p>Based in Tel Aviv, Israel. Follow along on Medium for new articles.</p>
+      <div style="margin:20px 0;display:flex;gap:16px;align-items:center;flex-wrap:wrap;">
+        <a href="https://www.linkedin.com/in/gal-bar-touv-65a331b6/" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--panel);border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);color:var(--accent);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:12px;transition:all 0.2s;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+          LinkedIn
+        </a>
+        <a href="https://discord.com/users/bartouv" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--panel);border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);color:var(--accent2);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:12px;transition:all 0.2s;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
+            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+          </svg>
+          Discord
+        </a>
+        <a href="https://www.artstation.com/galbartouv" target="_blank" rel="noopener noreferrer" style="display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--panel);border:1px solid var(--border);clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);color:var(--accent3);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:12px;transition:all 0.2s;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;">
+            <path d="M0 17.723l2.027 3.505h.001a2.424 2.424 0 0 0 2.164 1.333h13.457l-2.792-4.838H0zm24 .025c0-.484-.143-.935-.388-1.314L15.728 2.728a2.424 2.424 0 0 0-2.142-1.289H9.419L21.598 22.54l1.92-3.325c.378-.637.482-.919.482-1.467zm-11.129-3.462L7.428 4.858l-5.444 9.428h10.887z"/>
+          </svg>
+          ArtStation
+        </a>
+      </div>
       <div class="skills-list">
         <span class="skill-tag">Unity</span>
         <span class="skill-tag">C#</span>
@@ -1320,7 +1854,9 @@ const themes = {
   p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
   p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
   p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
-  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' }
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' },
+  p16: { '--bg':'#2a1c40','--bg2':'#342254','--bg3':'#3e2868','--panel':'#48307c','--border':'rgba(180,60,240,0.3)','--accent':'#ffc840','--accent2':'#b050f0','--accent3':'#ffaa20','--text':'#f8f0ff','--muted':'#9878a8','--dim':'#1a0e28','--glow1':'rgba(255,190,40,0.12)','--glow2':'rgba(176,80,240,0.12)','--grid':'rgba(176,80,240,0.06)' },
+  p17: { '--bg':'#4a3868','--bg2':'#58447c','--bg3':'#665090','--panel':'#7458a0','--border':'rgba(180,100,240,0.35)','--accent':'#ffb820','--accent2':'#c060ff','--accent3':'#ffa020','--text':'#2a1840','--muted':'#685080','--dim':'#f0e8ff','--glow1':'rgba(255,200,60,0.15)','--glow2':'rgba(200,100,255,0.15)','--grid':'rgba(200,100,255,0.08)' }
 };
 
 function setTheme(name) {
@@ -1364,6 +1900,13 @@ document.addEventListener('click', (e) => {
 window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('gb-theme') || 'p1';
   setTheme(saved);
+
+  // Update article count dynamically
+  const articleCount = document.querySelectorAll('.posts-grid .post-card').length;
+  const articleCountEl = document.getElementById('article-count');
+  if (articleCountEl) {
+    articleCountEl.textContent = `// ${articleCount} ARTICLE${articleCount !== 1 ? 'S' : ''}`;
+  }
 });
 </script>
 

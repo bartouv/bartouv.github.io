@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fighting Entropy In Unity — Structure based on Domains — GB/DEV</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/shared.css">
+<link rel="stylesheet" href="../css/article.css">
+</head>
+<body>
+
+<div class="bg-glow g1"></div>
+<div class="bg-glow g2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">GB<span>/</span>DEV</div>
+  <ul class="nav-links">
+    <li><a href="../index.html#posts">Articles</a></li>
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="https://medium.com/@galbartouv" target="_blank">Medium</a></li>
+  </ul>
+  <div class="theme-switcher" id="themeSwitcher">
+    <button class="theme-toggle-btn" onclick="toggleThemePanel()" title="Switch theme">
+      <span class="theme-icon">◑</span>
+      <span class="theme-label">Theme</span>
+    </button>
+    <div class="theme-panel" id="themePanel">
+      <div class="theme-panel-title">// SELECT THEME</div>
+      <button class="theme-option active" data-theme="p1" onclick="setTheme('p1')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#bf5fff,#e040fb)"></span>
+        <span>Neon Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p2" onclick="setTheme('p2')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7c3aed,#a855f7)"></span>
+        <span>Deep Amethyst</span>
+      </button>
+      <button class="theme-option" data-theme="p3" onclick="setTheme('p3')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#d946ef,#ec4899)"></span>
+        <span>Fuchsia Burn</span>
+      </button>
+      <button class="theme-option" data-theme="p4" onclick="setTheme('p4')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#818cf8,#6366f1)"></span>
+        <span>Indigo Pulse</span>
+      </button>
+      <button class="theme-option" data-theme="p5" onclick="setTheme('p5')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c084fc,#7e22ce)"></span>
+        <span>Royal Dusk</span>
+      </button>
+      <button class="theme-option" data-theme="p6" onclick="setTheme('p6')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#f0abfc,#c026d3)"></span>
+        <span>Orchid Haze</span>
+      </button>
+      <button class="theme-option" data-theme="p7" onclick="setTheme('p7')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#a78bfa,#4c1d95)"></span>
+        <span>Midnight Iris</span>
+      </button>
+      <button class="theme-option" data-theme="p8" onclick="setTheme('p8')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#e879f9,#9333ea)"></span>
+        <span>Plasma Storm</span>
+      </button>
+      <button class="theme-option" data-theme="p9" onclick="setTheme('p9')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#7dd3fc,#818cf8)"></span>
+        <span>Aurora Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p10" onclick="setTheme('p10')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#fbbf24,#9333ea)"></span>
+        <span>Gold & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p11" onclick="setTheme('p11')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#50e6f6,#ff6b9d)"></span>
+        <span>Cyan & Rose</span>
+      </button>
+      <button class="theme-option" data-theme="p12" onclick="setTheme('p12')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff8c50,#20e8c0)"></span>
+        <span>Copper & Teal</span>
+      </button>
+      <button class="theme-option" data-theme="p13" onclick="setTheme('p13')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#50f0a0,#ff4080)"></span>
+        <span>Emerald & Crimson</span>
+      </button>
+      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c8ff64,#6040ff)"></span>
+        <span>Lime & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
+        <span>Coral & Aqua</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#b050f0)"></span>
+        <span>Gold & Violet Mid</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb820,#c060ff)"></span>
+        <span>Gold & Violet Light</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ARTICLE HERO -->
+<section class="article-hero">
+  <div class="article-header">
+    <a href="../index.html#posts" class="back-link">← Back to Articles</a>
+    <div class="article-tag">// UNITY DEV</div>
+    <h1 class="article-title">Fighting Entropy In Unity — Structure based on Domains</h1>
+    <div class="article-meta">
+      <span class="article-date">TBD</span>
+      <span class="article-read-time">5 min read</span>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE BODY -->
+<article class="article-body">
+  <div class="article-container">
+
+    <!-- ARTICLE CONTENT GOES HERE -->
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BT3-dFabFc6MIzzaYH_Aig.png" alt=""></figure><h2>Fighting Entropy In Unity — Structure based on Domains</h2>
+
+<h2 class="section-heading">🌑Introduction</h2>
+
+<p>Creating games is extremely hard. The choices we take with our project structure can make it even harder. We can quickly find our project in a state that is unscalable and difficult to change and extend. It’s a common problem that all game developers face. In this blog post, I would like to introduce you to a structural solution that has proven itself in several personal projects and multiple enterprise-level ones as well. By adopting this project architecture you will be able to create games that are resilient to changes and easier to maintain.</p>
+
+<h2 class="section-heading">🌒Structure based on types</h2>
+
+<p>The purpose of a folder is to create order. But to do so it has to be used correctly. Folders are the glue that holds the structure of our projects. When you begin a new project you need to ask yourself what problems you want to avoid with the structure of your project. It’s important to make these choices early on because the longer you delay them the harder it will be to change later.</p>
+
+<p>When working on my first project, I looked at a few unity tutorials and decided to structure the folders by their content type. All the animation clips were placed in the animation folder, all the scripts were in the scripts folder, and so on. There were special examples like theresourcesfolder but other than that the pattern persisted.</p>
+
+<p>The folder structure looked something like this:</p>
+
+<pre><code class="language-xml"><Animations>
+<Audio>
+<Fonts>
+<Materials>
+<Models>
+<Plugins>
+<Prefabs>
+<Resources>
+<Scenes>
+<Scripts>
+	<Commands>
+	<Controlers>
+	<Models>
+	<Signals>
+	<Views>
+<Sprites>
+<Textures></code></pre>
+
+<p>It worked fine in a small school project. Later on, when I started working in a professional capacity I encountered similar folder structures. But the folder structure I used in my school project didn’t scale well. What works on a small project doesn’t always translate well to a big one.</p>
+
+<p>So what is wrong with a structure based on<strong>types</strong>?</p>
+
+<h2 class="section-heading"><strong>🌓What’s wrong with it?</strong></h2>
+
+<p>When I was presented with the opportunity to start a project from scratch I was delighted, I could finally build a project that wouldn’t have the pitfalls the previous ones had. I could structure the project as I pleased. So I sat down and started to list the many problems that the former projects have presented to me.</p>
+
+<p>🧭<strong>Complex Project navigation</strong>— Navigating the type-based structure in small projects was easy, unfortunately, as projects become bigger it became a nightmare to traverse them. When a new team member joined the project he couldn’t tell what it was from looking at the project structure. The onboarding for the project was very difficult and confusing. What is this project? What feature does it have? Where do I place new files I create? Where do I find the files I’m looking for? Where are these files used?</p>
+
+<p>🍝<strong>Code Coupling</strong>— The structure of the project leads to coupling. You might think that the two have nothing to do with each other but you would be mistaken. Since the folders don’t describe the dependencies of the project nobody knows the dependencies and quickly you find yourself in a place where everything is coupled and no way of enforcing the order. When you change code in one feature another one breaks. You get merge conflicts when people don’t even work on the same features. And in the end, it causes tons and tons of bugs and headaches.</p>
+
+<p>🐢<strong>Slow work iterations</strong>— In Unity, it’s a best practice to use more than one scene at a time. This way you can separate your features between the different scenes. Each time you need a new one you can add it<a href="https://docs.unity3d.com/ScriptReference/SceneManagement.LoadSceneMode.Additive.html" target="_blank" rel="noopener">additively</a>If you happen to be using a single scene in your game I urge you to reconsider.</p>
+
+<p>Unfortunately, as a result of the coupling in the code, there was no way of opening a single scene and working on it alone. This was because each scene had dependencies on other scenes. Eventually, all scenes are dependent on each other. If you try to open a scene you would be faced with tens of exceptions and the scene wouldn’t load properly. That meant that if I created a scene I would have to load the whole game. This would cause long work iterations. The larger the project became the more time-consuming it became.</p>
+
+<p>🗑<strong>Hard to discard features</strong>— Because the feature files were scattered around the project, I had no way of knowing what files were unique to the feature. That meant that either I deleted something that was used in other features and broke them by accident, or I had to leave a ton of junk in the project that wasn’t used but no one had any way of knowing.</p>
+
+<p>😨<strong>Fear of change</strong>— Changing files like materials, animation, sprites, and others would cause continuous bugs. This was because there was no way to know in what features the files were used. So you would change a material that was used on a popup and a particle effect would break. It was like playing whack-a-mole. Sometimes bugs caused by this would persist for weeks because they were hard to spot.</p>
+
+<p>💱<strong>Hard to share code between projects</strong>— As a result of this mess, code isn’t easily extractable from the project. Moreover, this structure doesn’t lend itself well to causing the team to create code with the thought of sharing it with other projects and making it decoupled from the game itself.</p>
+
+<p>🖼<strong>Hard to manage UI Atlases</strong>— Atlases are how we improve the UI performance. Atlases have a size limit so you can't just place all the sprites in the project in a single atlas and be done with it. You need to create several or tens of atlases wisely to get the best bang for your buck. But since you have no way of knowing where your sprites are used in the project this would cause several problems.</p>
+
+<ul><li>There was no simple way of choosing what sprites should be atlased together.</li>
+<li>And even when you did think you knew, then you would create an atlas and discover later on that putting sprite “x” in that atlas caused more draw calls elsewhere since the sprite was used in several other places with a combination of different sprites than those in the atlas you created.</li>
+<li>In places, only a single sprite in a large atlas was used causing big textures to be loaded into memory even though there was no actual need for 99% of its content.</li>
+</ul>
+
+<p>🧘<strong>The project is not flexible to change</strong>— As an aggregation of all of the above, the project was not malleable and broke easily and frequently.</p>
+
+<h2 class="section-heading">🌔How do we define a better structure</h2>
+
+<p>If we look at the root cause of these problems we can see that the structure of the project is the main culprit. The question which we are left with is how do we structure our project in a way that eliminates these problems. If we invert the problems we raised we get a list of requirements for the structure we want:</p>
+
+<ul><li>🧭<strong>Easy Project navigation</strong></li>
+<li>🍝<strong>Decoupled Code</strong></li>
+<li>🐢<strong>Faster work Iterations</strong></li>
+<li>🗑<strong>Easy to discard features</strong></li>
+<li>💱<strong>Easy to share code between projects</strong></li>
+<li>😨<strong>No Fear of change</strong></li>
+<li>🖼<strong>Easy to manage UI Atlases</strong></li>
+<li>🧘<strong>Project flexible to change</strong></li>
+</ul>
+
+<h2 class="section-heading">🌕Domain-based structure</h2>
+
+<p>The solution that arose is a domain-based structure. Instead of separating the project into types, we can separate it into domains. A domain is an area of the project that has a shared purpose. We have three levels of domains, and each domain should only be dependent on domains of a higher level:</p>
+
+<h2 class="section-heading">1️⃣Company Core Domain:</h2>
+
+<p>The first level is for things that can be used across multiple projects. This domain should not be dependent on any other domain. For example an input lock system. This is a system that can be made generic and used across several different projects. So you only need to write it once and then you can use it again in all your projects.</p>
+
+<h2 class="section-heading">2️⃣Game Core Domain:</h2>
+
+<p>The second level is for things that are used across the game. This domain should only be dependent on the Company's Core Domain. This for example would be game-specific services. This services logic is unique to the game and cant be shared with other projects but it will be used across many features of the game.</p>
+
+<h2 class="section-heading">3️⃣Inner Game Domains:</h2>
+
+<p>The third level is for things that are feature specific. These domains should each only be dependent on the Game Core Domain and the Company Core Domain. For example, if you have a Hud that displays your experience and the gold in your game, there is no reason for it to know of the Map feature you have in your game. Each is its own domain. I’ll note that as the project scales you might want to split up Domains to have sub-domains. That is if a domain can be separated into several inner parts you can separate it inward into several subdomains which don’t know about each other.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*7ePaI4wDuL8-U4eC.png" alt=""></figure><p>The folder structure is similar to before. We still separate all the assets into folders by their type, but now we do so in chunks. Each chunk has a logical reason for existing and all its assets are relevant to each other. The smaller chunks are easier to maintain and follow and give a coherent structure to the project, one that describes the project and is easy to follow and grasp.</p>
+
+<pre><code class="language-xml"><CompanyCore>
+		<Animations>
+		<Audio>
+		.
+		.
+		.
+		<Scripts>
+		<Sprites>
+		<Textures>
+		<GameCore>
+				<Animations>
+				<Audio>
+				.
+				.
+				.
+				<Scripts>
+				<Sprites>
+				<Textures>
+				<SubDomains>
+						<Domain1>
+								<Animations>
+								<Audio>
+								.
+								.
+								.
+								<Scripts>
+								<Sprites>
+								<Textures>
+								<SubDomains>
+										<SubDomain1>
+										<SubDomain2>
+						<Domain2>
+								<Animations>
+								<Audio>
+								.
+								.
+								.
+								<Scripts>
+								<Sprites>
+								<Textures></code></pre>
+
+<h2 class="section-heading">🌖How do the different domains interact?</h2>
+
+<p>Now that we grasp the structure let’s talk about how the different domains interact with each other. Let’s look at an example. Let’s say we’re building a pirate game, where you sail ships and wage war on the open sea. Our game currently has several features. A map that describes our place in the world, a battle area where we see our ships sailing in the water and wage war on others, and a popup mechanism that we use to display different popups as needed in the game.</p>
+
+<p>Let’s say we want to update the player's XP, which will increase the player’s level, which will open a level-up popup. The issue is that when well look at our diagram we see that the 🗡<strong>Battle Domain</strong>and the 📳<strong>Popup Domain</strong>do not know about each other. Moreover, the 🍏<strong>Pirate Ships Game Core Domain</strong>doesn’t know about either one of those domains it only knows about the 🫐<strong>Company Core Domain.</strong></p>
+
+<p>To amend this issue we can create an interface for each domain. These interfaces will sit one level above these domains in the 🍏<strong>Game Core Domain</strong>. This way the 🍏<strong>Game Core Domain</strong>can communicate with the subdomains without actually interacting with them directly or knowing about their concrete implementations, or referencing anything inside the subdomains. Each domain is responsible to implement its interface. Since the interfaces are inside the 🍏<strong>Game Core Domain</strong>it has access to them, even though it knows nothing about the domains that implement them. In the diagram below you can see that the flow of control is still in one direction.</p>
+
+<p>There are many ways of making the domains interact with each other, my preferred method is the command pattern. We can create an “Update XP<a href="https://www.wikiwand.com/en/Command_pattern" target="_blank" rel="noopener">Command</a>” inside the 🍏<strong>Game Core Domain</strong>. The “Update XP Command” will change the XP and open the level-up popup by accessing the interfaces of the different domains.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*p0t5AMMqNJIVJFET.png" alt=""></figure><h2 class="section-heading">🌗How do we maintain the structure?</h2>
+
+<p>Like all good things in life keeping this structure maintained takes effort and discipline. Each time you add more code or assets you’ll have to think about how do those things relate to the structure. When a domain becomes too big you might look at it and realize that it should be separated into subdomains. When you add a new feature you need to consider what assets it needs. let’s look at an example.</p>
+
+<p>In our example, as we worked on the battle domain we realized that it should be separated into two subdomains ⚜<strong>Battle Hud</strong>and 🧙<strong>Battle Units</strong>. Each is responsible for its own things and they have no reason to know about each other directly. Then we start working on a new feature called battle notifications. We create a new subdomain for it because we already know that it’s not dependent on the other subdomains. But then we realize that some of the ⚜<strong>Battle Hud</strong>domain assets are needed for the 🔴<strong>Battle Notification</strong>domain. What a pickle. If we are lazy we just go ahead and use them directly. But this goes against everything we are trying to do here. This causes dependencies between the two domains. We have two options. One duplicates the assets, which in some cases might be the correct course of action. But as developers, we hate repeating ourselves and like to keep things<a href="https://www.wikiwand.com/en/Don%27t_repeat_yourself#:~:text=%22Don%27t%20repeat%20yourself%22,data%20normalization%20to%20avoid%20redundancy." target="_blank" rel="noopener">DRY</a>. So if we don’t want to duplicate the assets but still keep our structure intact we can just move the shared assets one level above to the 🗡<strong>Battle Domain</strong>.</p>
+
+<p>The beauty of working like this is that when we make changes we always know what can be affected as a result of those changes. If we change an asset in 🗡<strong>Battle Domain</strong>we know that the only places in the project that can be affected are in that domain and its subdomains. This way after making changes we can be sure what parts of the project we need to go over and make sure that nothing is broken. The only drawback is that we can’t be sure which subdomains use the assets that are in the 🗡<strong>Battle Domain</strong>. In this case, the 🧙<strong>Battle Units</strong>domain doesn’t use the assets we talked about, but by looking at the structure you can’t be sure.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*1MaiKVk83qepSlfY.png" alt=""></figure><h2 class="section-heading">🌘How do we enforce the structure?</h2>
+
+<p>So ordering the files this way alone won’t save us from the gods of chaos, we need to somehow enforce this order. Even with great architecture, the effects of entropy are real. No matter how good the structure of your project is, over time, your project will become disorganized. You must continuously maintain the architecture and try to enforce it. The larger the project is the more hands will touch it. The more hands that touch it the harder enforcing it is. To make maintaining the architecture simpler we can do things to force the people who work on the project to adhere to its structure.</p>
+
+<h2 class="section-heading">Enforcing order in the code</h2>
+
+<p>We want our code to be as organized as possible. The order we have created by separating it in the folder structure is awesome and will go a long way in fighting the disorganization but it’s not enough.</p>
+
+<p>The reason why it is lacking is that nothing is stopping an undisciplined programmer from taking a script from<strong>Battle Domain</strong>and referencing<strong>Popups Domain</strong>. This would be catastrophic. Why? Because now we have broken the order. We have specifically separated the two domains because they shouldn’t be coupled together and yet now someone has broken that separation.</p>
+
+<p>So how do we make sure that no one breaks our order?</p>
+
+<p>We use<a href="https://docs.unity3d.com/Manual/ScriptCompilationAssemblyDefinitionFiles.html" target="_blank" rel="noopener"><strong>Assembly definitions</strong></a><strong>.</strong>By defining assemblies, scripts in the assemblies you define only have access to scripts in those other assemblies that you designate. What this essentially means is that if we can make it so no script from one domain can access scripts from other domains! If a programmer tries to access one from the other it will appear to him that the script he is looking for doesn’t exist.</p>
+
+<p>So in this way, we will make sure to put Assemblies in all the domain folders, all subdomain folders, the core game folder, and cross-project folder, and so on.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*LeDgz56iuoAvOTW6.png" alt=""></figure><h2 class="section-heading">Enforcing order in assets</h2>
+
+<p>Unfortunately, Assembly Definitions do not enforce anything which isn’t a script. This leaves us with a problem. Let’s say we have a material that is used for Domain1. In our new way of thinking it should only be used in Domain1 or one of its subdomains. This way we have an understanding of the usage of our assets. If we change this material we know that we can only affect this domain or one of its sub-domains but the rest of the project is encapsulated from change.</p>
+
+<p>How do we enforce this? The answer is not as clean as I would like but it’s as good a solution as I have found. We will use the Smurf Naming convention on assets, that is if we have a material in Domain1 we will call it Domain1_MaterialName. This is ugly but this has a couple of benefits.</p>
+
+<ul><li>One searching for assets becomes easier because if you search for an asset in a certain domain you already know its prefix.</li>
+<li>Two we can now write automation scripts that go over our folders and prefabs and make sure these prefabs and scenes only use assets that belong to their domain or parent domains.</li>
+</ul>
+
+<h2 class="section-heading">🌑Reexamining the requirements</h2>
+
+<p>🧭<strong>Easy Project navigation</strong>— The structure speaks for itself. Just by looking at the project structure, you will be able to tell what features it has and where things should go. A new team member should be easily able to navigate the project domains and see where to put things.</p>
+
+<p>🍝<strong>Decoupled Code</strong>— By separating the code into domains and then wrapping them up in assemblies we make the code as separated as possible. There literally can be no dependencies between the different parts of the project. Well not unless someone just gives the domains assemblies access to each other (totally not based on a true story).</p>
+
+<p>🐢<strong>Faster work Iterations</strong>— Since we now have no dependencies between domains. We can have a scene for each domain and the only things it should depend on are the game core and the company core. So you should have no problem running one domain’s scene without having to load other domain scenes. This way you can check that a single feature is working without loading the entire game.</p>
+
+<p>🗑<strong>Easy to discard features</strong>— There should now be very clear points of access to a domain. And the domain has no access to other domains. So if you decide to remove that domain you can just delete the folder. All the assets in that folder should not have been used by any other domain. The only code that will break is the few access points you had in the game core.</p>
+
+<p>😨<strong>No Fear of change</strong>— This is mostly the same as “easy to discard a feature”. If you change something in a domain then you know that you can only affect things in that domain or its subdomains. This is also helpful for QA, since you know if you only changed things in a specific domain you only need to check that domain and its children.</p>
+
+<p>🖼<strong>Easy to manage UI Atlases</strong>— We now know by the placement of the assets where it is used. And so we can create better atlases.</p>
+
+<p>💱<strong>Easy to share code between projects</strong>— Since the Company Core can have no dependencies on the rest of the project you can ensure that everything inside it can be used across other projects. Each time you write new functionalities that are not dependent on the game you can put them in the company core and just like that they should be ready for other projects’ use.</p>
+
+<p>🧘<strong>The Project is flexible to change</strong>— As an aggregation of all of the above, the project can be much easier to change and manipulate.</p>
+
+<h2 class="section-heading">🌚Summary</h2>
+
+<p>I’ve been developing games professionally since 2016 and I can speak for myself by saying that once I began building my projects in this way it feels impossible to go back. I hope that after reading this you will give it a try and hopefully it will make your life easier. Making games is extremely difficult, so use your energy to make games, and not fight your codebase. Even though working in this way requires maintenance and discipline it is well worth the effort, and in a short time, you will be able to rip the rewards, by doing things quicker and saving yourself headaches. Thank you for taking the time for reading this write-up. If you have any questions feel free to ask.</p>
+
+
+
+  </div>
+</article>
+
+<!-- ARTICLE NAVIGATION -->
+<div class="article-nav">
+  <a href="making-games-responsive-to-different-devices.html" class="article-nav-prev">
+    <div class="nav-label">← Previous</div>
+    <div class="nav-title">Making Games Responsive to Different Devices</div>
+  </a>
+  <a href="fighting-entropy-in-unity-seeded-random-for-debugging.html" class="article-nav-next">
+    <div class="nav-label">Next →</div>
+    <div class="nav-title">Seeded Random for Debugging</div>
+  </a>
+</div><!-- FOOTER -->
+<footer>
+  <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
+  <div class="footer-links">
+    <a href="https://medium.com/@galbartouv" target="_blank">Medium</a>
+    <a href="../index.html#posts">Articles</a>
+    <a href="../index.html#about">About</a>
+  </div>
+</footer>
+
+<!-- THEME SCRIPT -->
+<script>
+const themes = {
+  p1:  { '--bg':'#170f28','--bg2':'#1d1432','--bg3':'#23193c','--panel':'#291e46','--border':'rgba(200,120,255,0.25)','--accent':'#d580ff','--accent2':'#ee60ff','--accent3':'#ff70cc','--text':'#f0e8ff','--muted':'#b09ad0','--dim':'#4a3070','--glow1':'rgba(180,80,255,0.12)','--glow2':'rgba(220,64,255,0.08)','--grid':'rgba(180,80,255,0.05)' },
+  p2:  { '--bg':'#130e28','--bg2':'#191434','--bg3':'#1f1a40','--panel':'#252050','--border':'rgba(150,100,255,0.25)','--accent':'#b89aff','--accent2':'#8b5cf6','--accent3':'#d4b8ff','--text':'#eeebff','--muted':'#a090c8','--dim':'#40306e','--glow1':'rgba(130,70,240,0.12)','--glow2':'rgba(170,130,255,0.06)','--grid':'rgba(130,70,240,0.05)' },
+  p3:  { '--bg':'#1c0e22','--bg2':'#23122c','--bg3':'#2a1636','--panel':'#311a40','--border':'rgba(230,80,240,0.25)','--accent':'#f580c8','--accent2':'#e040ef','--accent3':'#ff90e0','--text':'#ffe8f8','--muted':'#c080a8','--dim':'#501860','--glow1':'rgba(220,70,240,0.12)','--glow2':'rgba(250,120,200,0.06)','--grid':'rgba(220,70,240,0.05)' },
+  p4:  { '--bg':'#101028','--bg2':'#161638','--bg3':'#1c1c44','--panel':'#222254','--border':'rgba(120,125,255,0.25)','--accent':'#9098ff','--accent2':'#7478f0','--accent3':'#b8bcff','--text':'#eaeaff','--muted':'#8888c8','--dim':'#303070','--glow1':'rgba(100,105,245,0.12)','--glow2':'rgba(140,145,255,0.06)','--grid':'rgba(100,105,245,0.05)' },
+  p5:  { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#281a4c','--border':'rgba(170,60,240,0.25)','--accent':'#cc88ff','--accent2':'#a040ee','--accent3':'#bb70ff','--text':'#f5e8ff','--muted':'#a870c8','--dim':'#3e1860','--glow1':'rgba(150,40,220,0.12)','--glow2':'rgba(200,130,255,0.06)','--grid':'rgba(150,40,220,0.05)' },
+  p6:  { '--bg':'#1e1028','--bg2':'#261430','--bg3':'#2e183a','--panel':'#361c44','--border':'rgba(210,60,230,0.25)','--accent':'#f0b0ff','--accent2':'#d030e0','--accent3':'#ff90f8','--text':'#fff0ff','--muted':'#c888d0','--dim':'#501068','--glow1':'rgba(200,40,220,0.12)','--glow2':'rgba(245,175,255,0.06)','--grid':'rgba(200,40,220,0.05)' },
+  p7:  { '--bg':'#0e0c28','--bg2':'#131034','--bg3':'#181440','--panel':'#1d184c','--border':'rgba(100,60,200,0.28)','--accent':'#b898ff','--accent2':'#7840e0','--accent3':'#9060f0','--text':'#eeeaff','--muted':'#8878bc','--dim':'#281858','--glow1':'rgba(80,40,180,0.14)','--glow2':'rgba(170,140,255,0.08)','--grid':'rgba(80,40,180,0.06)' },
+  p8:  { '--bg':'#1a0c28','--bg2':'#210f34','--bg3':'#281240','--panel':'#2f154c','--border':'rgba(180,60,240,0.25)','--accent':'#f080ff','--accent2':'#a030e8','--accent3':'#e060f0','--text':'#ffe8ff','--muted':'#b060c8','--dim':'#441060','--glow1':'rgba(160,50,230,0.12)','--glow2':'rgba(240,130,255,0.08)','--grid':'rgba(160,50,230,0.05)' },
+  p9:  { '--bg':'#0e1230','--bg2':'#121840','--bg3':'#161e4e','--panel':'#1a245c','--border':'rgba(120,130,255,0.25)','--accent':'#b0bcff','--accent2':'#8890f8','--accent3':'#90d8ff','--text':'#eaecff','--muted':'#7888c0','--dim':'#202860','--glow1':'rgba(130,210,255,0.1)','--glow2':'rgba(140,150,255,0.1)','--grid':'rgba(110,120,245,0.05)' },
+  p10: { '--bg':'#160e28','--bg2':'#1c1234','--bg3':'#221640','--panel':'#28194c','--border':'rgba(180,60,240,0.22)','--accent':'#ffc840','--accent2':'#a030ea','--accent3':'#ffaa20','--text':'#fff8e8','--muted':'#b09868','--dim':'#3c2828','--glow1':'rgba(255,190,40,0.08)','--glow2':'rgba(160,50,234,0.08)','--grid':'rgba(160,50,234,0.04)' },
+  p11: { '--bg':'#0e1e28','--bg2':'#121e2e','--bg3':'#162634','--panel':'#1a2e3c','--border':'rgba(80,230,240,0.22)','--accent':'#50e6f6','--accent2':'#ff6b9d','--accent3':'#80f0ff','--text':'#e8f8ff','--muted':'#88b0c8','--dim':'#283840','--glow1':'rgba(80,230,246,0.1)','--glow2':'rgba(255,107,157,0.08)','--grid':'rgba(80,180,200,0.04)' },
+  p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
+  p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
+  p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' },
+  p16: { '--bg':'#2a1c40','--bg2':'#342254','--bg3':'#3e2868','--panel':'#48307c','--border':'rgba(180,60,240,0.3)','--accent':'#ffc840','--accent2':'#b050f0','--accent3':'#ffaa20','--text':'#f8f0ff','--muted':'#9878a8','--dim':'#1a0e28','--glow1':'rgba(255,190,40,0.12)','--glow2':'rgba(176,80,240,0.12)','--grid':'rgba(176,80,240,0.06)' },
+  p17: { '--bg':'#4a3868','--bg2':'#58447c','--bg3':'#665090','--panel':'#7458a0','--border':'rgba(180,100,240,0.35)','--accent':'#ffb820','--accent2':'#c060ff','--accent3':'#ffa020','--text':'#2a1840','--muted':'#685080','--dim':'#f0e8ff','--glow1':'rgba(255,200,60,0.15)','--glow2':'rgba(200,100,255,0.15)','--grid':'rgba(200,100,255,0.08)' }
+};
+
+function setTheme(name) {
+  const t = themes[name] || themes['p1'];
+  const root = document.documentElement;
+  Object.entries(t).forEach(([k, v]) => {
+    if (!k.startsWith('--glow') && !k.startsWith('--grid')) {
+      root.style.setProperty(k, v);
+    }
+  });
+  const style = document.getElementById('gridStyle') || (() => {
+    const s = document.createElement('style');
+    s.id = 'gridStyle';
+    document.head.appendChild(s);
+    return s;
+  })();
+  style.textContent = 'body::before{background-image:linear-gradient(' + t['--grid'] + ' 1px,transparent 1px),linear-gradient(90deg,' + t['--grid'] + ' 1px,transparent 1px);background-size:40px 40px;}';
+  const g1 = document.querySelector('.bg-glow.g1');
+  const g2 = document.querySelector('.bg-glow.g2');
+  if (g1) g1.style.background = 'radial-gradient(circle,' + t['--glow1'] + ',transparent 70%)';
+  if (g2) g2.style.background = 'radial-gradient(circle,' + t['--glow2'] + ',transparent 70%)';
+  document.querySelectorAll('.theme-option').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.theme === name);
+  });
+  localStorage.setItem('gb-theme', name);
+  toggleThemePanel(false);
+}
+
+function toggleThemePanel(forceClose) {
+  const panel = document.getElementById('themePanel');
+  if (forceClose === false) { panel.classList.remove('open'); return; }
+  panel.classList.toggle('open');
+}
+
+document.addEventListener('click', (e) => {
+  if (!document.getElementById('themeSwitcher').contains(e.target)) {
+    document.getElementById('themePanel').classList.remove('open');
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('gb-theme') || 'p1';
+  setTheme(saved);
+});
+</script>
+
+</body>
+</html>

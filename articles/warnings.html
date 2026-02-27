@@ -86,7 +86,15 @@
       </button>
       <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ff7864,#00d4e0)"></span>
-        <span>Coral & Aqua
+        <span>Coral & Aqua</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#b050f0)"></span>
+        <span>Gold & Violet Mid</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb820,#c060ff)"></span>
+        <span>Gold & Violet Light</span>
       </button>
     </div>
   </div>
@@ -112,30 +120,60 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <div class="read-on-medium">
-      <p>This article is available on Medium with full formatting, images, and interactive examples.</p>
-      <a href="https://medium.com/@galbartouv/fighting-entropy-in-unity-warnings-7fdc64c73641" target="_blank" class="btn btn-primary">Read Full Article on Medium →</a>
-    </div>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*nq9c9ZkVq8xBMfrNSNF8nQ.png" alt=""></figure><h2>Fighting Entropy In Unity — Warnings</h2>
+
+<p>Compiler warnings are messages that alert you to potential issues in your code. While they don’t prevent your code from being compiled, it’s important to address warnings as they could indicate problems that could cause issues when running your program. On the other hand, errors are critical issues that must be fixed before the code can be compiled.</p>
+
+<p>I have often encountered projects that have a large number of warnings at the start, sometimes over 600, and sometimes even more when the program is running. These warnings can be caused by a variety of factors, such as third-party plugins, empty serialized fields, or other benign issues. It is important to address these warnings as soon as possible in the project to ensure the smooth operation of the program.</p>
+
+<p>The problem is that when a helpful warning pops up you won’t see them. You’ll miss them in a sea of useless warnings and thus warnings in the project lose all value.</p>
+
+<p>So how do we resolve this issue?</p>
+
+<p><strong>PRAGMAS</strong></p>
+
+<p>A pragma is a language construct that tells the compiler how it should process input. Pragmas can be used to ignore warnings in specific classes. You can place them at the top of classes that you don’t want to throw warnings. Below is an example of a pragma that ignores warning CS0414: The private field ‘X’ is assigned but its value is never used.</p>
+
+<pre><code class="language-cpp">#pragma warning disable 0414</code></pre>
+
+<p>This is a good way to reduce the noise in your warning section of the console.</p>
+
+<p>So the pragmas help but you’re probably thinking to yourself that there is no way you going to place warnings in hundreds of classes. So it’s good you don’t have to.</p>
+
+<p><strong>CSC.RSP FILE</strong></p>
+
+<p>With the csc file, you can completely ignore specific warnings in your project. All you need to do is create a csc.rsp file and place it in your assets folder. That way you can reduce a lot of the warnings that are not helpful. At any time you can remove the ignored warnings from the csc file and check that you’re not ignoring something important.</p>
+
+<p>An example of the content of the file:</p>
+
+<pre><code class="language-diff">-nowarn:0649
+-nowarn:0414 
+-nowarn:0168</code></pre>
+
+<p>Adding the file above will ignore all of the following warnings, for all files in your project:</p>
+
+<p>warning CS0649: Field ‘X’ is never assigned to, and will always have its default value null</p>
+
+<p>warning CS0414: The private field ‘X’ is assigned but its value is never used</p>
+
+<p>warning CS0168: variable declared but not used.</p>
+
+
 
   </div>
 </article>
 
 <!-- ARTICLE NAVIGATION -->
 <div class="article-nav">
-  <!-- Previous Article (remove if first) -->
   <a href="turning-events-into-commands.html" class="article-nav-prev">
     <div class="nav-label">← Previous</div>
     <div class="nav-title">Turning Events into Commands</div>
   </a>
-
-  <!-- Next Article (remove if last) -->
   <a href="cameras-and-rendering.html" class="article-nav-next">
     <div class="nav-label">Next →</div>
     <div class="nav-title">Cameras and Rendering</div>
   </a>
-</div>
-
-</main>
+</div></main>
 
 <!-- FOOTER -->
 <footer>
@@ -164,7 +202,9 @@ const themes = {
   p12: { '--bg':'#1a1208','--bg2':'#221810','--bg3':'#2a1e18','--panel':'#342420','--border':'rgba(255,140,80,0.22)','--accent':'#ff8c50','--accent2':'#20e8c0','--accent3':'#ffb080','--text':'#fff0e8','--muted':'#c8a888','--dim':'#403028','--glow1':'rgba(255,140,80,0.08)','--glow2':'rgba(32,232,192,0.08)','--grid':'rgba(200,120,80,0.04)' },
   p13: { '--bg':'#081a12','--bg2':'#0e2218','--bg3':'#142a1e','--panel':'#1a3224','--border':'rgba(80,240,160,0.22)','--accent':'#50f0a0','--accent2':'#ff4080','--accent3':'#80ffc0','--text':'#e8fff0','--muted':'#88c8a0','--dim':'#283830','--glow1':'rgba(80,240,160,0.08)','--glow2':'rgba(255,64,128,0.08)','--grid':'rgba(80,200,140,0.04)' },
   p14: { '--bg':'#181a0e','--bg2':'#1e2214','--bg3':'#242a1a','--panel':'#2a3220','--border':'rgba(200,255,100,0.22)','--accent':'#c8ff64','--accent2':'#6040ff','--accent3':'#e0ff90','--text':'#f0ffe8','--muted':'#a8c888','--dim':'#383828','--glow1':'rgba(200,255,100,0.08)','--glow2':'rgba(96,64,255,0.08)','--grid':'rgba(160,200,80,0.04)' },
-  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' }
+  p15: { '--bg':'#28120e','--bg2':'#321812','--bg3':'#3c1e18','--panel':'#462420','--border':'rgba(255,120,100,0.22)','--accent':'#ff7864','--accent2':'#00d4e0','--accent3':'#ffa080','--text':'#ffe8e8','--muted':'#c89088','--dim':'#402828','--glow1':'rgba(255,120,100,0.08)','--glow2':'rgba(0,212,224,0.08)','--grid':'rgba(200,100,90,0.04)' },
+  p16: { '--bg':'#2a1c40','--bg2':'#342254','--bg3':'#3e2868','--panel':'#48307c','--border':'rgba(180,60,240,0.3)','--accent':'#ffc840','--accent2':'#b050f0','--accent3':'#ffaa20','--text':'#f8f0ff','--muted':'#9878a8','--dim':'#1a0e28','--glow1':'rgba(255,190,40,0.12)','--glow2':'rgba(176,80,240,0.12)','--grid':'rgba(176,80,240,0.06)' },
+  p17: { '--bg':'#4a3868','--bg2':'#58447c','--bg3':'#665090','--panel':'#7458a0','--border':'rgba(180,100,240,0.35)','--accent':'#ffb820','--accent2':'#c060ff','--accent3':'#ffa020','--text':'#2a1840','--muted':'#685080','--dim':'#f0e8ff','--glow1':'rgba(255,200,60,0.15)','--glow2':'rgba(200,100,255,0.15)','--grid':'rgba(200,100,255,0.08)' }
 };
 
 function setTheme(name) {
