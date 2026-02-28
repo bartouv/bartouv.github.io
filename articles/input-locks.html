@@ -159,9 +159,11 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BaW1yio88GdvdfG4MMdPYg.png" alt=""></figure><h2>Fighting Entropy in Unity — Input Locks</h2>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BaW1yio88GdvdfG4MMdPYg.png" alt=""></figure>
 
-<p>In this post, I will show you how to create an efficient Input lock service for Unity that follow SOLID principles. You can take a look at the example project.<a href="https://github.com/bartouv/InputLockExampleProject" target="_blank" rel="noopener">https://github.com/bartouv/InputLockExampleProject</a></p>
+    <h2>Fighting Entropy in Unity — Input Locks</h2>
+
+<p>In this post, I will show you how to create an efficient Input lock service for Unity that follow SOLID principles. You can take a look at the example project: <a href="https://github.com/bartouv/InputLockExampleProject" target="_blank" rel="noopener">https://github.com/bartouv/InputLockExampleProject</a></p>
 
 <p>Input locks are a crucial aspect of game development that allows you to control user input in various ways. For example, you might need to prevent a button from being clickable or block the use of a raycaster at certain points in the game. There are numerous elements that can receive input and may need to be locked in specific game flows.</p>
 
@@ -181,7 +183,7 @@
 <li>We want the code which is responsible for locking input to also be responsible for unlocking it.</li>
 </ul>
 
-<p>So let’s together now build an input lock service that follows the<a href="https://www.wikiwand.com/en/SOLID" target="_blank" rel="noopener">SOLID</a>principles.</p>
+<p>So let's together now build an input lock service that follows the <a href="https://www.wikiwand.com/en/SOLID" target="_blank" rel="noopener">SOLID</a> principles.</p>
 
 <h2 class="section-heading">The Lock</h2>
 
@@ -205,17 +207,17 @@
         }
     }</code></pre>
 
-<p>We want each lock to be unique, and so on creation, we will give the lock a GUID (globally unique identifier). C# provides us with a simple way to do this, you can check out the documentation<a href="https://docs.microsoft.com/en-us/dotnet/api/system.guid.newguid?view=net-6.0" target="_blank" rel="noopener">here</a>. This insures that each lock we create will be easily identified and different from the rest.</p>
+<p>We want each lock to be unique, and so on creation, we will give the lock a GUID (globally unique identifier). C# provides us with a simple way to do this, you can check out the documentation <a href="https://docs.microsoft.com/en-us/dotnet/api/system.guid.newguid?view=net-6.0" target="_blank" rel="noopener">here</a>. This ensures that each lock we create will be easily identified and different from the rest.</p>
 
 <p>We want to give the lock Tags which it will be responsible to lock. This way we can mark lockable objects with tags and decide which of these tags we want to lock. In the case where an object has two locking tags and two different locks are each locking a different tag, it will remain locked until both locks are unlocked.</p>
 
-<p>We want to know which part of our code created the lock and for this C# also gives us a simple ability to do this, we will use the attribute [<a href="https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.callerfilepathattribute?view=net-6.0" target="_blank" rel="noopener">CallerFilePath</a>] which allows us to obtain the path of the caller class in compile time. We will be able to use this info later to easily debug where the input lock came from. We will also use<a href="https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getfilenamewithoutextension?view=net-6.0" target="_blank" rel="noopener">Path.GetFileNameWithoutExtension</a>a functionality that C# provides us in order to take the file path we got from the caller and reduce it to only the class name which is all we really want.</p>
+<p>We want to know which part of our code created the lock and for this C# also gives us a simple ability to do this, we will use the attribute [<a href="https://docs.microsoft.com/en-us/dotnet/api/system.runtime.compilerservices.callerfilepathattribute?view=net-6.0" target="_blank" rel="noopener">CallerFilePath</a>] which allows us to obtain the path of the caller class in compile time. We will be able to use this info later to easily debug where the input lock came from. We will also use <a href="https://docs.microsoft.com/en-us/dotnet/api/system.io.path.getfilenamewithoutextension?view=net-6.0" target="_blank" rel="noopener">Path.GetFileNameWithoutExtension</a>, a functionality that C# provides us in order to take the file path we got from the caller and reduce it to only the class name which is all we really want.</p>
 
 <h2 class="section-heading">Subscribing the lockable objects to the Input Lock Service</h2>
 
-<p>We want our input lock service to have a subscription functionality. That means that we want the lockable object to be responsible for subscribing to the service when it is created and unsubscribing when it is destroyed. Since the lockable objects will be a<a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html" target="_blank" rel="noopener"><strong>MonoBehaviour</strong></a><strong>,</strong>and MonoBehaviours have unity event functions Awake and OnDestroy which are called during the creation and destruction of the object, we will let the lockable object decide when to subscribe and unsubscribe. This way we make sure that there will be no<a href="https://www.wikiwand.com/en/Memory_leak" target="_blank" rel="noopener">memory leaks</a>.</p>
+<p>We want our input lock service to have a subscription functionality. That means that we want the lockable object to be responsible for subscribing to the service when it is created and unsubscribing when it is destroyed. Since the lockable objects will be a <a href="https://docs.unity3d.com/ScriptReference/MonoBehaviour.html" target="_blank" rel="noopener"><strong>MonoBehaviour</strong></a>, and MonoBehaviours have unity event functions Awake and OnDestroy which are called during the creation and destruction of the object, we will let the lockable object decide when to subscribe and unsubscribe. This way we make sure that there will be no <a href="https://www.wikiwand.com/en/Memory_leak" target="_blank" rel="noopener">memory leaks</a>.</p>
 
-<p>So we will create the following interface for the input lock service. This interface will only be relevant for the lockable objects and not the code which will be responsible for creating the locks themselves. This follows the<a href="https://www.wikiwand.com/en/Interface_segregation_principle#:~:text=In%20the%20field%20of%20software,are%20of%20interest%20to%20them." target="_blank" rel="noopener">interface segregation</a>principle of SOLID, as we do not force the lockable object to be dependent on functions it doesn’t need.</p>
+<p>So we will create the following interface for the input lock service. This interface will only be relevant for the lockable objects and not the code which will be responsible for creating the locks themselves. This follows the <a href="https://www.wikiwand.com/en/Interface_segregation_principle#:~:text=In%20the%20field%20of%20software,are%20of%20interest%20to%20them." target="_blank" rel="noopener">interface segregation</a> principle of SOLID, as we do not force the lockable object to be dependent on functions it doesn't need.</p>
 
 <pre><code class="language-csharp">public interface IInputLockServiceSubscription
 {
@@ -229,6 +231,7 @@
 {
     _inputLockSubscribers.Add(inputLockable);
     UpdateLockable(inputLockable);
+}
 
 public void UnsubscribeLockable(BaseInputLockable inputLockable)
 {
@@ -278,9 +281,9 @@ public void UnsubscribeLockable(BaseInputLockable inputLockable)
 
 <p>So let’s look at the above code. The class has Tags, as serialized fields. The user can configure the specific lockable with whichever locking Tags are relevant. Notice that we are Injecting only the IInputLockServiceSubscription interface since the rest of the input lock service doesn’t interest us here. On creation of the object, the awake function is called and subscribes itself to the Input Lock Service. On destruction, the object unsubscribes itself from the service preventing memory leaks. This class will be the base class for all lockables and as such lock and unlock functions are generic all they do is all internal abstract functions, update the IsLocked state, and prevent the functions from being called if the current state is already applied.</p>
 
-<p>let’s look at two examples of implementing the base class:</p>
+<p>Let's look at two examples of implementing the base class:</p>
 
-<p>bellow is an example of a button lockable</p>
+<p>Below is an example of a button lockable:</p>
 
 <pre><code class="language-csharp">[RequireComponent(typeof(Button))]
 public class ButtonInputLocker : BaseInputLockable
@@ -303,7 +306,7 @@ public class ButtonInputLocker : BaseInputLockable
     }
 }</code></pre>
 
-<p>And bellow here is an example of a raycaster inputlock</p>
+<p>And below is an example of a raycaster input lock:</p>
 
 <pre><code class="language-csharp">[RequireComponent(typeof(BaseRaycaster))]
 public class RaycasterInputLocker : BaseInputLockable
@@ -326,11 +329,11 @@ public class RaycasterInputLocker : BaseInputLockable
     }
 }</code></pre>
 
-<p>Note how simple it is to add new types of lockables with different functionality. The service itself is agnostic to the type of lockable, this follows the<a href="https://www.wikiwand.com/en/Open%E2%80%93closed_principle" target="_blank" rel="noopener">Open/Closed</a>principle of solid, as the code is easily extendable without the need for modification.</p>
+<p>Note how simple it is to add new types of lockables with different functionality. The service itself is agnostic to the type of lockable, this follows the <a href="https://www.wikiwand.com/en/Open%E2%80%93closed_principle" target="_blank" rel="noopener">Open/Closed</a> principle of SOLID, as the code is easily extendable without the need for modification.</p>
 
 <h2 class="section-heading">The Input Lock Service</h2>
 
-<p>Let’s look at the input lock service interface</p>
+<p>Let's look at the input lock service interface:</p>
 
 <pre><code class="language-csharp">public interface IInputLockService
     {
@@ -341,7 +344,7 @@ public class RaycasterInputLocker : BaseInputLockable
         InputLock LockAllExcept(InputLockTag[] inputLockTagsExcept);
     }</code></pre>
 
-<p>let’s look at the implementation of the input lock service</p>
+<p>Let's look at the implementation of the input lock service:</p>
 
 <pre><code class="language-csharp">public class InputLockService : IInputLockService, IInputLockServiceSubscription
     {
@@ -475,7 +478,7 @@ public class RaycasterInputLocker : BaseInputLockable
         }
     }</code></pre>
 
-<p>let’s check that the code works with some unit tests:</p>
+<p>Let's check that the code works with some unit tests:</p>
 
 <pre><code class="language-csharp">public class InputServiceTest
     {
@@ -545,11 +548,13 @@ public class RaycasterInputLocker : BaseInputLockable
         
     }</code></pre>
 
-<p>we can run the test runner now to see if the tests work.</p>
+<p>We can run the test runner now to see if the tests work.</p>
 
 <p>Window → General → TestRunner</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*HU9RhvMUjlJtraVN.png" alt=""></figure><p>And now we can be confident that the code works :D.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*HU9RhvMUjlJtraVN.png" alt=""></figure>
+
+<p>And now we can be confident that the code works!</p>
 
 
 
