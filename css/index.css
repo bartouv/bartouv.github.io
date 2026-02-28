@@ -266,7 +266,7 @@
 .post-date {
   font-family: 'Share Tech Mono', monospace;
   font-size: 11px;
-  color: var(--dim);
+  color: var(--text);
 }
 
 .post-arrow {
