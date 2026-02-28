@@ -161,7 +161,9 @@
 
 <p>Night in the Woods is a beautiful game that I highly recommend you play if you like adventure games. When working on a personal project, I wanted to create a dialogue bubble. As it happens, the one from the game is very pretty, and I wanted to use something similar in my project.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*7SpTu3gXQHd6O5qH8_YaEg.gif" alt=""></figure><p>When looking at this effect, the first thing that came to mind was to use a vertex offset to move the sprite around. This is similar to how we use shaders to animate tree foliage. But a sprite has very few vertices — typically just four corners forming a quad. The effect with the tree foliage works because there are many vertices you can move around to create organic motion. The sprite vertices look like this basic quad structure, which severely limits what vertex manipulation can achieve.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*7SpTu3gXQHd6O5qH8_YaEg.gif" alt=""></figure>
+
+<p>When looking at this effect, the first thing that came to mind was to use a vertex offset to move the sprite around. This is similar to how we use shaders to animate tree foliage. But a sprite has very few vertices — typically just four corners forming a quad. The effect with the tree foliage works because there are many vertices you can move around to create organic motion. The sprite vertices look like this basic quad structure, which severely limits what vertex manipulation can achieve.</p>
 
 <figure><img src="https://cdn-images-1.medium.com/max/800/1*G_8hVraDHhw5Cy9gvtlNsA.png" alt=""></figure><h2 class="section-heading">The Solution: UV Manipulation</h2>
 
@@ -169,11 +171,17 @@
 
 <p>The first thing we're going to do is try adding noise directly to the UV coordinates:</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/1200/1*UxGUntr8ox8PU1XSBfrFSQ.png" alt=""></figure><p>Here is the result in the shader graph preview:</p>
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*UxGUntr8ox8PU1XSBfrFSQ.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*yV7N9-gO8uV6PT1q-3lAwg.gif" alt=""></figure><p>Oh, so we have a problem …</p>
+<p>Here is the result in the shader graph preview:</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*uiASF3JY790Miurp8PhKcQ.gif" alt=""></figure><p>The problem becomes immediately apparent — when we move the noise intensity above zero, parts of the shape get cut off. This happens because we’re uniformly shifting the entire UV space. When we add positive noise values, we move the entire image toward the top-right. When we add negative values, we move it toward the bottom-left. The texture sampling goes outside the 0–1 UV range, causing the cutoff.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*yV7N9-gO8uV6PT1q-3lAwg.gif" alt=""></figure>
+
+<p>Oh, so we have a problem …</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*uiASF3JY790Miurp8PhKcQ.gif" alt=""></figure>
+
+<p>The problem becomes immediately apparent — when we move the noise intensity above zero, parts of the shape get cut off. This happens because we’re uniformly shifting the entire UV space. When we add positive noise values, we move the entire image toward the top-right. When we add negative values, we move it toward the bottom-left. The texture sampling goes outside the 0–1 UV range, causing the cutoff.</p>
 
 <p>To solve this, we need to apply the noise directionally rather than uniformly. The key insight is to divide the UV space into four quadrants and apply noise that pushes each quadrant toward its center, creating the wobble effect while keeping the shape intact.</p>
 
@@ -181,21 +189,33 @@
 
 <p>For the Top Right, we will add XY to move to the center.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/1200/1*65q9zWu3Z8_8GNu36FuG_Q.png" alt=""></figure><p>For the Bottom Left, we will subtract XY to move to the center:</p>
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*65q9zWu3Z8_8GNu36FuG_Q.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/1200/1*StjWt27MeomJrSd6mQwmDQ.png" alt=""></figure><p>For the Bottom Right, we will add X and subtract Y to move to the center:</p>
+<p>For the Bottom Left, we will subtract XY to move to the center:</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/1200/1*nx8hyjTxBj9A_qR2PQjnmQ.png" alt=""></figure><p>For the Top Left, we will subtract X and add Y to move to the center:</p>
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*StjWt27MeomJrSd6mQwmDQ.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/1200/1*9sPHvIbkO9Y9rlwZr6KG1g.png" alt=""></figure><p>Together, it looks like this:</p>
+<p>For the Bottom Right, we will add X and subtract Y to move to the center:</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/1200/1*KOTPyIG5MyBu8l2UL1zjyQ.png" alt=""></figure><p>This quadrant-based approach ensures that pixels near the edges get pulled inward, creating the characteristic wobble without losing the overall shape boundaries. The noise creates organic movement while the directional constraints keep the effect contained within the sprite’s bounds.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*nx8hyjTxBj9A_qR2PQjnmQ.png" alt=""></figure>
+
+<p>For the Top Left, we will subtract X and add Y to move to the center:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*9sPHvIbkO9Y9rlwZr6KG1g.png" alt=""></figure>
+
+<p>Together, it looks like this:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/1200/1*KOTPyIG5MyBu8l2UL1zjyQ.png" alt=""></figure>
+
+<p>This quadrant-based approach ensures that pixels near the edges get pulled inward, creating the characteristic wobble without losing the overall shape boundaries. The noise creates organic movement while the directional constraints keep the effect contained within the sprite’s bounds.</p>
 
 <h2 class="section-heading">The Result</h2>
 
 <p>The final shader creates a convincing recreation of Night in the Woods’ dialogue bubble effect. The texture appears to wobble and breathe organically while maintaining its overall shape and readability. By manipulating UV coordinates instead of vertices, we achieve complex visual effects even with simple geometry.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*ddWv23hE4lIvrPngjjjXUQ.gif" alt=""></figure><p>This technique can be extended beyond dialogue bubbles — any UI element or sprite that needs organic, breathing motion can benefit from this approach. The key is understanding how UV manipulation can create the illusion of complex deformation without requiring complex geometry.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*ddWv23hE4lIvrPngjjjXUQ.gif" alt=""></figure>
+
+<p>This technique can be extended beyond dialogue bubbles — any UI element or sprite that needs organic, breathing motion can benefit from this approach. The key is understanding how UV manipulation can create the illusion of complex deformation without requiring complex geometry.</p>
 
 
 

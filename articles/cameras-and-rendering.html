@@ -159,7 +159,9 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <figure><img src="https://cdn-images-1.medium.com/max/800/1*pKtCW1yUNqQQn3VPkhQiCg.png" alt=""></figure><h2>Fighting Entropy In Unity — Cameras, and Rendering</h2>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*pKtCW1yUNqQQn3VPkhQiCg.png" alt=""></figure>
+
+    <h2>Fighting Entropy In Unity — Cameras, and Rendering</h2>
 
 <p>In this post, I will detail how you can take control of your rendering and cameras. We will learn how to use the scriptable render pipeline (SRP) camera stacking functionality to create a stack that separates are rendering of the 3d objects in our game and the UI in our game. This will enable us to have the ability to improve the performance of our project and reduce visual bugs.</p>
 
@@ -171,43 +173,67 @@
 
 <p>If we were to use a single camera for our UI and the 3d world we would encounter a problem. As the camera moves in the world some object will enter the area between the near plane of the camera frustum and the canvas. This will cause 3d object in the world to be rendered in front of the UI which wasn’t what we wanted.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*bQcOLmZYZD38T7Ie.png" alt=""></figure><p>Instead of putting the UI on canvases that are in camera screen space, we can put them in Overlay screen space. But the overlay mode for canvases is a terrible option. It only gives you constraints and no advantages. The overlay mode renders the canvas over everything. It rendered the canvas on the last render queue which is 5000. It doesn’t allow you to render 3d models or particles on top of your UI. This might be fine for a simple bubbles game but for most games nowadays you need to have 3d objects and particles over your UI in many cases.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*bQcOLmZYZD38T7Ie.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*9yegDclxUcJhuwfA.png" alt=""></figure><figure><img src="https://cdn-images-1.medium.com/max/800/0*RGJ1cFjfBCKKYzL_.png" alt=""></figure><p>*technically this is wrong because the overlay isn’t rendered by the camera but use your imagination.</p>
+<p>Instead of putting the UI on canvases that are in camera screen space, we can put them in Overlay screen space. But the overlay mode for canvases is a terrible option. It only gives you constraints and no advantages. The overlay mode renders the canvas over everything. It rendered the canvas on the last render queue which is 5000. It doesn’t allow you to render 3d models or particles on top of your UI. This might be fine for a simple bubbles game but for most games nowadays you need to have 3d objects and particles over your UI in many cases.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*9yegDclxUcJhuwfA.png" alt=""></figure><figure><img src="https://cdn-images-1.medium.com/max/800/0*RGJ1cFjfBCKKYzL_.png" alt=""></figure>
+
+<p>*technically this is wrong because the overlay isn’t rendered by the camera but use your imagination.</p>
 
 <p>To address this problem, we can implement a dedicated camera for rendering the UI. This allows us to control the layering of elements over and under the UI. To do this we will create a camera stack.</p>
 
 <h2 class="section-heading">What is a camera Stack?</h2>
 
-<p>The way cameras work has changed in the move to the Scriptable Render Pipeline (SRP). The SRP cameras work with a<a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@7.2/manual/cameras-multiple.html" target="_blank" rel="noopener">stack</a>. A camera stack works by layering several cameras together for a combined output. The stack has a “Base” camera and “overlay” cameras. The Base is rendered and then on top of it, each overlay is overlayed onto the previous camera’s rendered image.</p>
+<p>The way cameras work has changed in the move to the Scriptable Render Pipeline (SRP). The SRP cameras work with a <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@7.2/manual/cameras-multiple.html" target="_blank" rel="noopener">stack</a>. A camera stack works by layering several cameras together for a combined output. The stack has a “Base” camera and “overlay” cameras. The Base is rendered and then on top of it, each overlay is overlayed onto the previous camera’s rendered image.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*nHk1sJHqut-FWPaz.png" alt=""></figure><p>We want the base camera to be the camera that is responsible for rendering our 3d objects in the game and we will use an overlay camera to render UI on top of it. Now that the UI has its own camera we can put 3d object in front of the UI or behind it and there is no way for the 3d objects of the game itself to be rendered in front of the UI.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*nHk1sJHqut-FWPaz.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*gVi0gqXx2NhA-j__.png" alt=""></figure><p>As you can see below the Base camera is rendering the orange cubs and the UI camera is rendering the canvases and balls. Even though the cubes are in front of the canvases the canvas is rendered on top.</p>
+<p>We want the base camera to be the camera that is responsible for rendering our 3d objects in the game and we will use an overlay camera to render UI on top of it. Now that the UI has its own camera we can put 3d object in front of the UI or behind it and there is no way for the 3d objects of the game itself to be rendered in front of the UI.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*gVi0gqXx2NhA-j__.png" alt=""></figure>
+
+<p>As you can see below the Base camera is rendering the orange cubs and the UI camera is rendering the canvases and balls. Even though the cubes are in front of the canvases the canvas is rendered on top.</p>
 
 <figure><img src="https://cdn-images-1.medium.com/max/800/0*eJ4HydFT1bvKUVIU.png" alt=""></figure><h2 class="section-heading">How do we render 3D over UI?</h2>
 
 <p>Now that we have a UI camera we want to add 3d models to be part of our UI. To do this we have to understand two things. The first is that the order that the UI will be drawn will depend on the order of the layers of the canvas, the higher the order in the layer will determine which is drawn first. While visually it looks like the plane distance should be what determines if one canvas will be rendered over the other this is false.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*JnvUm2HRVOuVmV1N.png" alt=""></figure><p>The second thing to understand is the interaction between canvases and 3d objects, which is dependent on the distance from the camera. If the 3d model is closer to the camera than the canvas then it will be drawn first, likewise, if the canvas is closer to the camera it will be drawn above the 3d object. The sorting layer order isn’t relevant in this case.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*JnvUm2HRVOuVmV1N.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*eifI8_gXqp2jHSyg.png" alt=""></figure><p>So in the example, below if UI 1 is at sorting order 0 and UI 2 is at sorting order 10 then we will draw UI1, pink ball, UI2, and blue ball. But if the sorting order is 10 for UI1 and 0 for UI2 then we will draw UI2, pink ball, UI1, and blue ball.</p>
+<p>The second thing to understand is the interaction between canvases and 3d objects, which is dependent on the distance from the camera. If the 3d model is closer to the camera than the canvas then it will be drawn first, likewise, if the canvas is closer to the camera it will be drawn above the 3d object. The sorting layer order isn’t relevant in this case.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*eifI8_gXqp2jHSyg.png" alt=""></figure>
+
+<p>So in the example, below if UI 1 is at sorting order 0 and UI 2 is at sorting order 10 then we will draw UI1, pink ball, UI2, and blue ball. But if the sorting order is 10 for UI1 and 0 for UI2 then we will draw UI2, pink ball, UI1, and blue ball.</p>
 
 <figure><img src="https://cdn-images-1.medium.com/max/800/0*3a-7dXj3uoRNua0K.gif" alt=""></figure><h2 class="section-heading">How to create the camera stack?</h2>
 
 <p>To create a camera stack we will first need to create a new camera and set its render type to “Base”:</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*z_E1F1V5nK0W2bmn.png" alt=""></figure><p>For best performance, we would also like to define what this camera renders so we will choose that it will only render the default layer, though we can create a specific one for it if we choose.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*z_E1F1V5nK0W2bmn.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*7VXVkn7KchQ0_qga.png" alt=""></figure><p>Now we will create an overlay camera for our UI. We create a new camera and set its Render Type to “Overlay”:</p>
+<p>For best performance, we would also like to define what this camera renders so we will choose that it will only render the default layer, though we can create a specific one for it if we choose.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*RHLu6BQBp_9LbYMg.png" alt=""></figure><p>For best performance, we would also like to define what this camera renders we will create a UI layer, and set its culling mask to be only UI.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*7VXVkn7KchQ0_qga.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*EuSyJ0qHNwOqZ1k7.png" alt=""></figure><p>Then we should go back to our Base camera and add the Overlay Ui camera onto its stack:</p>
+<p>Now we will create an overlay camera for our UI. We create a new camera and set its Render Type to “Overlay”:</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*pPD9TqxsmcgeCE_E.png" alt=""></figure><p>I’ll note that the term Overlay may confuse you with the canvas Screen Space — Overlay render mode, but the two have nothing to do with each other.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*RHLu6BQBp_9LbYMg.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*wiPKe2CWS7Nolw-F.png" alt=""></figure><p>If you have a need for more cameras you can do the same as we did with the UI camera, but please take note that each camera adds more overhead performance-wise. So think about whether or not you actually need it.</p>
+<p>For best performance, we would also like to define what this camera renders we will create a UI layer, and set its culling mask to be only UI.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*EuSyJ0qHNwOqZ1k7.png" alt=""></figure>
+
+<p>Then we should go back to our Base camera and add the Overlay Ui camera onto its stack:</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*pPD9TqxsmcgeCE_E.png" alt=""></figure>
+
+<p>I’ll note that the term Overlay may confuse you with the canvas Screen Space — Overlay render mode, but the two have nothing to do with each other.</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*wiPKe2CWS7Nolw-F.png" alt=""></figure>
+
+<p>If you have a need for more cameras you can do the same as we did with the UI camera, but please take note that each camera adds more overhead performance-wise. So think about whether or not you actually need it.</p>
 
 <h2 class="section-heading">Should we use more than one stack?</h2>
 
@@ -219,13 +245,17 @@
 
 <p>So we understand that using a single stack would be the better choice. This will require us to have the stack in a scene that is always loaded. Now we’re facing a new issue. We have created the stack which sits in Scene A, but in scene B we have a canvas that we want to render UI. We created a camera specifically for this but the canvas requires a reference to the camera. Since the camera is sitting in a different scene we can’t reference it, and if we don’t have a camera reference it will revert to Overlay mode.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*cIMMSE5yBTJqw8py.png" alt=""></figure><p>To solve this we will create an infrastructure that will give us full control of our cameras and canvases and will allow us to set the camera to the canvas via code.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*cIMMSE5yBTJqw8py.png" alt=""></figure>
+
+<p>To solve this we will create an infrastructure that will give us full control of our cameras and canvases and will allow us to set the camera to the canvas via code.</p>
 
 <h2 class="section-heading">Our Infrastructure</h2>
 
 <p>In programming, we strive to have a single responsibility over things in our code. The same goes for our canvases and cameras. If we were to access our cameras and canvases in many places in our code we would create a mess. Instead, we want to have a single point in our code that is responsible for our cameras and one for our canvases. This way no other place in the code needs to know either about the cameras or the canvases, the services will be our facade to accessing all of them. Below I will describe how we are going to implement this:</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*c6dSP_wmwhRNiweE.png" alt=""></figure><p>We Start off with a camera subscriber, this component’s sole purpose is to inform the Camera service that the camera exists and what type of camera it is. We use the Unity Life Cycle events to make sure to subscribe and unsubscribe with the creation and destruction of the game object.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*c6dSP_wmwhRNiweE.png" alt=""></figure>
+
+<p>We Start off with a camera subscriber, this component’s sole purpose is to inform the Camera service that the camera exists and what type of camera it is. We use the Unity Life Cycle events to make sure to subscribe and unsubscribe with the creation and destruction of the game object.</p>
 
 <figure><img src="https://cdn-images-1.medium.com/max/800/0*i1OD3PkOwoiASyrs.png" alt=""></figure><pre><code class="language-csharp">[RequireComponent(typeof(Camera))]
 public class CameraServiceSubscriber : MonoBehaviour
@@ -287,7 +317,9 @@ _canvasSubscribers.Add(canvasSubscriberData);
 
 <p>A common mistake I have seen in many projects is the misunderstanding that just because you can’t see something means that it’s not being rendered. Unfortunately, this is far from the case. Imagine that you have a rich 3d world in your game and then you load a nice UI shop over it. You might be tempted into thinking that just because the shop has covered the world that the world isn’t being rendered. You would be mistaken. The other thing is that just because the shop UI is in the front doesn’t mean that another UI underneath it isn’t being rendered.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*Mo5Xict6iEU-30_r.png" alt=""></figure><p>Good thing we have our services that control all the canvases and all the cameras.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*Mo5Xict6iEU-30_r.png" alt=""></figure>
+
+<p>Good thing we have our services that control all the canvases and all the cameras.</p>
 
 <p>When we have UI covering the screen we want to turn off the base camera so it will not render the 3d objects. But we can’t just disable it, because of how the camera stack works if we disable the base camera the overlays will stop rendering as well. Instead, we will need to remove all the layers in the base camera culling mask. For that we have the following code in the camera service:</p>
 

@@ -159,7 +159,9 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <figure><img src="https://cdn-images-1.medium.com/max/800/1*s3NWY0RoZbSMcLqUgZgV0Q.png" alt=""></figure><h2>Fighting Entropy In Unity— Turning Events into Commands</h2>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*s3NWY0RoZbSMcLqUgZgV0Q.png" alt=""></figure>
+
+    <h2>Fighting Entropy In Unity— Turning Events into Commands</h2>
 
 <p>In this post, we will explore how we can enhance our project by replacing events with the command pattern and incorporating asynchronous code. We will demonstrate how this approach can lead to code that is more clear, easy to maintain, and can ultimately reduce the number of bugs in our project.</p>
 
@@ -169,7 +171,9 @@
 
 <p>In our case, we have a health bar that shows how much health the enemy has. When the enemy damaged event is raised the health bar which is listening to it will play an animation of the health lowering it. This is exactly what we want and it works great. But let’s zoom out a little.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*Ay8lAUveNd7SsMuVmD91Cg.png" alt=""></figure><p>When the enemy dies, we want to give the player XP and update the XP view. In this case, the player has acquired enough XP to level up, so we want to display a level-up popup. However, this is where things start to become complicated.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*Ay8lAUveNd7SsMuVmD91Cg.png" alt=""></figure>
+
+<p>When the enemy dies, we want to give the player XP and update the XP view. In this case, the player has acquired enough XP to level up, so we want to display a level-up popup. However, this is where things start to become complicated.</p>
 
 <p>If we simply listen to the event and trigger all the actions at once, we will have a chaotic sequence of events, confusing the player. Instead, we want to first show the enemy’s health lowering to zero, then display the player’s XP rising to 1000, and finally show the level-up popup. As it stands, this is difficult to implement.</p>
 
@@ -177,13 +181,15 @@
 
 <p>Imagine that your boss comes over and says that this approach doesn’t look good. They want the XP update and health update visuals to run simultaneously and for the level-up popup to only display once both have been completed. However, both updates take different amounts of time. Now you must wait for both of them to finish, this is where you bend over into your keyboard and start crying.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*sFV1JF2LylcAip6mhtbtMg.png" alt=""></figure><p>I believe you are beginning to understand the issue. Although this example is straightforward, you will encounter much more complex scenarios in your game. The problem is that we are attempting to manage a sequence of events in the game, but the current implementation is decentralized and challenging to follow and maintain. To resolve this, we must find a way to organize and centralize the management of these events, allowing the various parts of the code to work together seamlessly.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*sFV1JF2LylcAip6mhtbtMg.png" alt=""></figure>
+
+<p>I believe you are beginning to understand the issue. Although this example is straightforward, you will encounter much more complex scenarios in your game. The problem is that we are attempting to manage a sequence of events in the game, but the current implementation is decentralized and challenging to follow and maintain. To resolve this, we must find a way to organize and centralize the management of these events, allowing the various parts of the code to work together seamlessly.</p>
 
 <h2 class="section-heading">What is the command pattern?</h2>
 
 <p>The Command pattern is a way of organizing code that separates the instructions for what needs to be done (the request) from the code that does it. This allows for more flexibility, like being able to delay or repeat the instructions, and also makes it easier to understand and change the code. The Command pattern also allows multiple different parts of the code to handle the same request, which makes the different parts less dependent on each other.</p>
 
-<p>If we take a look at what a command looks like it's a class with an execute function.</p>
+<p>If we take a look at what a command looks like it's a class with an execute function.:</p>
 
 <pre><code class="language-csharp">public class Command
 {
@@ -194,7 +200,9 @@
 
 <p>Our problem is that we need an orchestrator to handle the sequence and manage the different part of the code that is needed for that sequence. Imagine that your creating an event that has logic in it. In that way, we will be able to aggregate all the logic of the sequence into a single point in the code responsible for handling that sequence.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*d06BDA9rpM_uJNlLoWLmKQ.png" alt=""></figure><p>Let's take a look at some example code, in the class below we have an example of an enemy-damaged command. The enemy-damaged command knows about all the things relevant to the enemy-damaged sequence.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*d06BDA9rpM_uJNlLoWLmKQ.png" alt=""></figure>
+
+<p>Let's take a look at some example code, in the class below we have an example of an enemy-damaged command. The enemy-damaged command knows about all the things relevant to the enemy-damaged sequence.:</p>
 
 <pre><code class="language-csharp">public class EnemyDamagedCommand : Command
 {
@@ -251,7 +259,7 @@
     - Check if the play leveled up
         - if the player levelUp we open a level up popup and await until it is closed.</code></pre>
 
-<p>The code shows how we took control of the enemy-damaged sequence and encapsulated it in a command, making it easier to maintain and modify in the future. If you’re unfamiliar with asynchronous code, I recommend reading up on it. To effectively use async code in Unity, you’ll need the<a href="https://github.com/Cysharp/UniTask" target="_blank" rel="noopener">Uniatask</a>Framework by Yoshifumi Kawai, which integrates C# async code with the Unity engine.</p>
+<p>The code shows how we took control of the enemy-damaged sequence and encapsulated it in a command, making it easier to maintain and modify in the future. If you’re unfamiliar with asynchronous code, I recommend reading up on it. To effectively use async code in Unity, you’ll need the <a href="https://github.com/Cysharp/UniTask" target="_blank" rel="noopener">Uniatask</a>Framework by Yoshifumi Kawai, which integrates C# async code with the Unity engine.</p>
 
 <h2 class="section-heading">How does the command get its dependencies?</h2>
 

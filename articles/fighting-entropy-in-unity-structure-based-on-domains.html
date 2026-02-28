@@ -157,7 +157,9 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BT3-dFabFc6MIzzaYH_Aig.png" alt=""></figure><h2>Fighting Entropy In Unity — Structure based on Domains</h2>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BT3-dFabFc6MIzzaYH_Aig.png" alt=""></figure>
+
+    <h2>Fighting Entropy In Unity — Structure based on Domains</h2>
 
 <h2 class="section-heading">🌑Introduction</h2>
 
@@ -201,7 +203,7 @@
 
 <p>🍝<strong>Code Coupling</strong>— The structure of the project leads to coupling. You might think that the two have nothing to do with each other but you would be mistaken. Since the folders don’t describe the dependencies of the project nobody knows the dependencies and quickly you find yourself in a place where everything is coupled and no way of enforcing the order. When you change code in one feature another one breaks. You get merge conflicts when people don’t even work on the same features. And in the end, it causes tons and tons of bugs and headaches.</p>
 
-<p>🐢<strong>Slow work iterations</strong>— In Unity, it’s a best practice to use more than one scene at a time. This way you can separate your features between the different scenes. Each time you need a new one you can add it<a href="https://docs.unity3d.com/ScriptReference/SceneManagement.LoadSceneMode.Additive.html" target="_blank" rel="noopener">additively</a>If you happen to be using a single scene in your game I urge you to reconsider.</p>
+<p>🐢<strong>Slow work iterations</strong>— In Unity, it’s a best practice to use more than one scene at a time. This way you can separate your features between the different scenes. Each time you need a new one you can add it <a href="https://docs.unity3d.com/ScriptReference/SceneManagement.LoadSceneMode.Additive.html" target="_blank" rel="noopener">additively</a>If you happen to be using a single scene in your game I urge you to reconsider.</p>
 
 <p>Unfortunately, as a result of the coupling in the code, there was no way of opening a single scene and working on it alone. This was because each scene had dependencies on other scenes. Eventually, all scenes are dependent on each other. If you try to open a scene you would be faced with tens of exceptions and the scene wouldn’t load properly. That meant that if I created a scene I would have to load the whole game. This would cause long work iterations. The larger the project became the more time-consuming it became.</p>
 
@@ -222,7 +224,7 @@
 
 <h2 class="section-heading">🌔How do we define a better structure</h2>
 
-<p>If we look at the root cause of these problems we can see that the structure of the project is the main culprit. The question which we are left with is how do we structure our project in a way that eliminates these problems. If we invert the problems we raised we get a list of requirements for the structure we want:</p>
+<p>If we look at the root cause of these problems We can see that the structure of the project is the main culprit. The question which we are left with is how do we structure our project in a way that eliminates these problems. If we invert the problems we raised we get a list of requirements for the structure we want:</p>
 
 <ul><li>🧭<strong>Easy Project navigation</strong></li>
 <li>🍝<strong>Decoupled Code</strong></li>
@@ -250,7 +252,9 @@
 
 <p>The third level is for things that are feature specific. These domains should each only be dependent on the Game Core Domain and the Company Core Domain. For example, if you have a Hud that displays your experience and the gold in your game, there is no reason for it to know of the Map feature you have in your game. Each is its own domain. I’ll note that as the project scales you might want to split up Domains to have sub-domains. That is if a domain can be separated into several inner parts you can separate it inward into several subdomains which don’t know about each other.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*7ePaI4wDuL8-U4eC.png" alt=""></figure><p>The folder structure is similar to before. We still separate all the assets into folders by their type, but now we do so in chunks. Each chunk has a logical reason for existing and all its assets are relevant to each other. The smaller chunks are easier to maintain and follow and give a coherent structure to the project, one that describes the project and is easy to follow and grasp.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*7ePaI4wDuL8-U4eC.png" alt=""></figure>
+
+<p>The folder structure is similar to before. We still separate all the assets into folders by their type, but now we do so in chunks. Each chunk has a logical reason for existing and all its assets are relevant to each other. The smaller chunks are easier to maintain and follow and give a coherent structure to the project, one that describes the project and is easy to follow and grasp.</p>
 
 <pre><code class="language-xml"><CompanyCore>
 		<Animations>
@@ -307,7 +311,7 @@
 
 <p>Like all good things in life keeping this structure maintained takes effort and discipline. Each time you add more code or assets you’ll have to think about how do those things relate to the structure. When a domain becomes too big you might look at it and realize that it should be separated into subdomains. When you add a new feature you need to consider what assets it needs. let’s look at an example.</p>
 
-<p>In our example, as we worked on the battle domain we realized that it should be separated into two subdomains ⚜<strong>Battle Hud</strong>and 🧙<strong>Battle Units</strong>. Each is responsible for its own things and they have no reason to know about each other directly. Then we start working on a new feature called battle notifications. We create a new subdomain for it because we already know that it’s not dependent on the other subdomains. But then we realize that some of the ⚜<strong>Battle Hud</strong>domain assets are needed for the 🔴<strong>Battle Notification</strong>domain. What a pickle. If we are lazy we just go ahead and use them directly. But this goes against everything we are trying to do here. This causes dependencies between the two domains. We have two options. One duplicates the assets, which in some cases might be the correct course of action. But as developers, we hate repeating ourselves and like to keep things<a href="https://www.wikiwand.com/en/Don%27t_repeat_yourself#:~:text=%22Don%27t%20repeat%20yourself%22,data%20normalization%20to%20avoid%20redundancy." target="_blank" rel="noopener">DRY</a>. So if we don’t want to duplicate the assets but still keep our structure intact we can just move the shared assets one level above to the 🗡<strong>Battle Domain</strong>.</p>
+<p>In our example, as we worked on the battle domain we realized that it should be separated into two subdomains ⚜<strong>Battle Hud</strong>and 🧙<strong>Battle Units</strong>. Each is responsible for its own things and they have no reason to know about each other directly. Then we start working on a new feature called battle notifications. We create a new subdomain for it because we already know that it’s not dependent on the other subdomains. But then we realize that some of the ⚜<strong>Battle Hud</strong>domain assets are needed for the 🔴<strong>Battle Notification</strong>domain. What a pickle. If we are lazy we just go ahead and use them directly. But this goes against everything we are trying to do here. This causes dependencies between the two domains. We have two options. One duplicates the assets, which in some cases might be the correct course of action. But as developers, we hate repeating ourselves and like to keep things <a href="https://www.wikiwand.com/en/Don%27t_repeat_yourself#:~:text=%22Don%27t%20repeat%20yourself%22,data%20normalization%20to%20avoid%20redundancy." target="_blank" rel="noopener">DRY</a>. So if we don’t want to duplicate the assets but still keep our structure intact we can just move the shared assets one level above to the 🗡<strong>Battle Domain</strong>.</p>
 
 <p>The beauty of working like this is that when we make changes we always know what can be affected as a result of those changes. If we change an asset in 🗡<strong>Battle Domain</strong>we know that the only places in the project that can be affected are in that domain and its subdomains. This way after making changes we can be sure what parts of the project we need to go over and make sure that nothing is broken. The only drawback is that we can’t be sure which subdomains use the assets that are in the 🗡<strong>Battle Domain</strong>. In this case, the 🧙<strong>Battle Units</strong>domain doesn’t use the assets we talked about, but by looking at the structure you can’t be sure.</p>
 
@@ -323,7 +327,7 @@
 
 <p>So how do we make sure that no one breaks our order?</p>
 
-<p>We use<a href="https://docs.unity3d.com/Manual/ScriptCompilationAssemblyDefinitionFiles.html" target="_blank" rel="noopener"><strong>Assembly definitions</strong></a><strong>.</strong>By defining assemblies, scripts in the assemblies you define only have access to scripts in those other assemblies that you designate. What this essentially means is that if we can make it so no script from one domain can access scripts from other domains! If a programmer tries to access one from the other it will appear to him that the script he is looking for doesn’t exist.</p>
+<p>We use <a href="https://docs.unity3d.com/Manual/ScriptCompilationAssemblyDefinitionFiles.html" target="_blank" rel="noopener"><strong>Assembly definitions</strong></a><strong>.</strong>By defining assemblies, scripts in the assemblies you define only have access to scripts in those other assemblies that you designate. What this essentially means is that if we can make it so no script from one domain can access scripts from other domains! If a programmer tries to access one from the other it will appear to him that the script he is looking for doesn’t exist.</p>
 
 <p>So in this way, we will make sure to put Assemblies in all the domain folders, all subdomain folders, the core game folder, and cross-project folder, and so on.</p>
 

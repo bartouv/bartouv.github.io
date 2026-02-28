@@ -159,11 +159,17 @@
     <!-- ARTICLE CONTENT GOES HERE -->
     <h2>Making Games Responsive to Different Devices</h2>
 
-The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z9ecNiV1bQJxwJ0CvDOf9g.png" alt=""></figure><p>Your hero selection screen looks perfect on your mobile device. The character model sits perfectly to the right, and the UI elements are balanced on the left.</p>
+The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z9ecNiV1bQJxwJ0CvDOf9g.png" alt=""></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*4ov-6AvJl16dWrZfpwviJQ.png" alt=""></figure><p>Then you test it on your tablet and suddenly your hero is floating awkwardly in space, almost off-screen. What happened?</p>
+<p>Your hero selection screen looks perfect on your mobile device. The character model sits perfectly to the right, and the UI elements are balanced on the left.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*yaASULIEcN3LCdI8Pqbk4A.png" alt=""></figure><p>Unity’s UI system adapts to different screen sizes automatically using RectTransforms and Canvases. Your 3D content doesn’t. It lives in world space, oblivious to screen dimensions.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*4ov-6AvJl16dWrZfpwviJQ.png" alt=""></figure>
+
+<p>Then you test it on your tablet and suddenly your hero is floating awkwardly in space, almost off-screen. What happened?</p>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*yaASULIEcN3LCdI8Pqbk4A.png" alt=""></figure>
+
+<p>Unity’s UI system adapts to different screen sizes automatically using RectTransforms and Canvases. Your 3D content doesn’t. It lives in world space, oblivious to screen dimensions.</p>
 
 <p>You’ll encounter these problems in almost every project. Device-specific positioning code, lookup tables for different aspect ratios, and magic numbers for every new device. It’s a maintenance nightmare and not scalable. On last check, Google Play Console has 17,000+ Android devices, each with countless different aspect ratios.</p>
 
@@ -182,7 +188,7 @@ The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z
 
 <p>This maps any value<code>x</code>from range<code>[a, b]</code>to the equivalent position in range<code>[c, d]</code>.</p>
 
-<p>If you’ve used Shader Graph, you’ll recognize this — it’s the same as the<a href="https://docs.unity3d.com/Packages/com.unity.shadergraph@6.9/manual/Remap-Node.html" target="_blank" rel="noopener">Remap Node</a>. Unity recognizes that this function is useful enough to warrant its own node.</p>
+<p>If you’ve used Shader Graph, you’ll recognize this — it’s the same as the <a href="https://docs.unity3d.com/Packages/com.unity.shadergraph@6.9/manual/Remap-Node.html" target="_blank" rel="noopener">Remap Node</a>. Unity recognizes that this function is useful enough to warrant its own node.</p>
 
 <p>A simple use case for this would be converting temperature from Celsius [0, 100] to Fahrenheit [32, 212].</p>
 
@@ -190,7 +196,9 @@ The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z
 
 <p>Here’s how it works visually:</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*3LByjM0VFtXLuslIXDbRUA.png" alt=""></figure><p>That's all you have to do, and you can instantly know how to convert the two.</p>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*3LByjM0VFtXLuslIXDbRUA.png" alt=""></figure>
+
+<p>That's all you have to do, and you can instantly know how to convert the two.</p>
 
 <h2 class="section-heading">How does it solve our problem?</h2>
 
