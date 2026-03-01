@@ -257,7 +257,7 @@
 
 <p>We Start off with a camera subscriber, this component’s sole purpose is to inform the Camera service that the camera exists and what type of camera it is. We use the Unity Life Cycle events to make sure to subscribe and unsubscribe with the creation and destruction of the game object.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*i1OD3PkOwoiASyrs.png" alt=""></figure><pre><code class="language-csharp">[RequireComponent(typeof(Camera))]
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*i1OD3PkOwoiASyrs.png" alt=""></figure><pre class="language-csharp"><code class="language-csharp">[RequireComponent(typeof(Camera))]
 public class CameraServiceSubscriber : MonoBehaviour
 {
     [SerializeField] private CameraType _cameraType;
@@ -277,7 +277,7 @@ public class CameraServiceSubscriber : MonoBehaviour
 
 <p>Similar to the camera subscriber we create a subscriber for canvases, this component’s sole purpose is to inform the Canvas service that the canvas exists and give it tags(will go into detail later about why we need these tags).</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*l13X2bODGcCqrNsB.png" alt=""></figure><pre><code class="language-csharp">public class CanvasSubscriber : MonoBehaviour
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*l13X2bODGcCqrNsB.png" alt=""></figure><pre class="language-csharp"><code class="language-csharp">public class CanvasSubscriber : MonoBehaviour
 {
     [SerializeField] private List<CanvasTagType> _canvasTagTypes;
     
@@ -300,7 +300,7 @@ public class CameraServiceSubscriber : MonoBehaviour
 
 <p>Now here is where we are easily able to link the canvas with the camera. When we call the SubscribeCanvas function in the canvas service it calls SetCanvasCamera function in the camera service.</p>
 
-<pre><code class="language-csharp">public void SubscribeCanvas(CanvasSubscriberData canvasSubscriberData)
+<pre class="language-csharp"><code class="language-csharp">public void SubscribeCanvas(CanvasSubscriberData canvasSubscriberData)
 {
     if (_canvasSubscribers.Contains(canvasSubscriberData))
     {
@@ -344,7 +344,7 @@ public void TurnCameraCullingMasksOff(CameraType type)
 
 <p>To stop rendering unneeded UI we have the following code in our canvas service:</p>
 
-<pre><code class="language-csharp">public CanvasRenderLock StopRenderingAllExcept(List<CanvasTagType> canvasTagTypes)
+<pre class="language-csharp"><code class="language-csharp">public CanvasRenderLock StopRenderingAllExcept(List<CanvasTagType> canvasTagTypes)
 {
     var canvasesToLock =      Enum.GetValues(typeof(CanvasTagType)).Cast<CanvasTagType>().ToList();
 foreach (var canvasTagType in canvasTagTypes)
@@ -399,7 +399,7 @@ private void UpdateRenderingOfSubscribers()
     }
 }</code></pre>
 
-<pre><code class="language-csharp">public class CanvasRenderLock
+<pre class="language-csharp"><code class="language-csharp">public class CanvasRenderLock
 {
     public readonly string Guid;
     public readonly List<CanvasTagType> CanvasesToLockList;

@@ -199,7 +199,7 @@ Debug.Log(Random.Range(0, 100)); // 89 again</code></pre>
 
 <p>Let’s take a look at some example code. In the class below we have an example of a random service that can switch between development (seeded) and production (truly random) modes::</p>
 
-<pre><code class="language-csharp">public static class RandomService
+<pre class="language-csharp"><code class="language-csharp">public static class RandomService
 {
     private static System.Random _random;
     private static int _currentSeed;
@@ -279,7 +279,7 @@ Debug.Log(Random.Range(0, 100)); // 89 again</code></pre>
 
 <p>In our RandomService, we can implement multiple random streams to prevent different systems from interfering with each other. We can do this for several reasons. Firstly, to decouple random systems from each other, avoiding situations where adding a random call to one system changes the behavior of another. Secondly, streams enable us to debug specific systems in isolation without worrying about cross-contamination from other parts of the code.</p>
 
-<pre><code class="language-csharp">public static class RandomService
+<pre class="language-csharp"><code class="language-csharp">public static class RandomService
 {
     // ... previous code ...
     
@@ -391,7 +391,7 @@ using UnityEngine;</code></pre>
 
 <p>Let’s look at how this system transforms a typical enemy spawner from an unpredictable debugging nightmare into a controlled, reproducible system::</p>
 
-<pre><code class="language-csharp">public class EnemySpawner : MonoBehaviour
+<pre class="language-csharp"><code class="language-csharp">public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject[] enemyPrefabs;
     [SerializeField] private Transform[] spawnPoints;
@@ -452,7 +452,7 @@ using UnityEngine;</code></pre>
 
 <p>Here’s how we might handle different scenarios:</p>
 
-<pre><code class="language-csharp">public static class RandomService
+<pre class="language-csharp"><code class="language-csharp">public static class RandomService
 {
     // ... previous code ...
     
@@ -496,7 +496,7 @@ using UnityEngine;</code></pre>
 
 <p><strong>Order dependencies</strong>: Be careful about conditional random calls that might or might not execute, as this changes the sequence.</p>
 
-<pre><code class="language-csharp">// Bad - this breaks reproducibility
+<pre class="language-csharp"><code class="language-csharp">// Bad - this breaks reproducibility
 void Update()
 {
     if (someCondition)
@@ -518,7 +518,7 @@ void Update()
 
 <p>For more complex games, you might want to integrate seeded random with your save system:</p>
 
-<pre><code class="language-csharp">[System.Serializable]
+<pre class="language-csharp"><code class="language-csharp">[System.Serializable]
 public class GameSaveData
 {
     public int randomSeed;
@@ -537,7 +537,7 @@ public class GameSaveData
 
 <p>You might also want to create different stream categories for different types of systems:</p>
 
-<pre><code class="language-csharp">public static class RandomStreams
+<pre class="language-csharp"><code class="language-csharp">public static class RandomStreams
 {
     public const string ENEMIES = "Enemies";
     public const string LOOT = "Loot";

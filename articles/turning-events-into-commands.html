@@ -191,7 +191,7 @@
 
 <p>If we take a look at what a command looks like it's a class with an execute function.:</p>
 
-<pre><code class="language-csharp">public class Command
+<pre class="language-csharp"><code class="language-csharp">public class Command
 {
   public abstract void Execute();
 }</code></pre>
@@ -204,7 +204,7 @@
 
 <p>Let's take a look at some example code, in the class below we have an example of an enemy-damaged command. The enemy-damaged command knows about all the things relevant to the enemy-damaged sequence.:</p>
 
-<pre><code class="language-csharp">public class EnemyDamagedCommand : Command
+<pre class="language-csharp"><code class="language-csharp">public class EnemyDamagedCommand : Command
 {
  private EnemyDamagedCommandData _data;
  private EnemyService _enemyService;
