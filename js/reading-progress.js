@@ -1,15 +1,15 @@
 // Reading Progress Indicator for GB/DEV Unity Blog
-// Shows scroll progress through article content
+// Shows scroll progress through article content and index page
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Only run on article pages
-  const articleBody = document.querySelector('.article-body');
-  if (!articleBody) return;
-
   const progressBar = document.querySelector('.reading-progress-bar');
   const progressContainer = document.querySelector('.reading-progress');
 
   if (!progressBar || !progressContainer) return;
+
+  // Check if we're on an article page or index page
+  const articleBody = document.querySelector('.article-body');
+  const isArticlePage = !!articleBody;
 
   let ticking = false;
 
@@ -18,21 +18,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // Get scroll position
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-    // Get article hero height (we want progress to start after hero)
-    const articleHero = document.querySelector('.article-hero');
-    const heroHeight = articleHero ? articleHero.offsetHeight : 0;
+    let progress, showThreshold;
 
-    // Calculate total scrollable height (excluding footer area)
-    const articleNav = document.querySelector('.article-nav');
-    const articleNavTop = articleNav ? articleNav.offsetTop : document.documentElement.scrollHeight;
+    if (isArticlePage) {
+      // Article page: Calculate based on article content
+      const articleHero = document.querySelector('.article-hero');
+      const heroHeight = articleHero ? articleHero.offsetHeight : 0;
 
-    const scrollableHeight = articleNavTop - heroHeight;
-    const windowHeight = window.innerHeight;
+      const articleNav = document.querySelector('.article-nav');
+      const articleNavTop = articleNav ? articleNav.offsetTop : document.documentElement.scrollHeight;
 
-    // Calculate progress percentage
-    const scrolled = scrollTop - heroHeight;
-    const maxScroll = scrollableHeight - windowHeight;
-    const progress = Math.max(0, Math.min(100, (scrolled / maxScroll) * 100));
+      const scrollableHeight = articleNavTop - heroHeight;
+      const windowHeight = window.innerHeight;
+
+      const scrolled = scrollTop - heroHeight;
+      const maxScroll = scrollableHeight - windowHeight;
+      progress = Math.max(0, Math.min(100, (scrolled / maxScroll) * 100));
+      showThreshold = heroHeight;
+    } else {
+      // Index page: Calculate based on total document height
+      const documentHeight = document.documentElement.scrollHeight;
+      const windowHeight = window.innerHeight;
+      const maxScroll = documentHeight - windowHeight;
+      progress = Math.max(0, Math.min(100, (scrollTop / maxScroll) * 100));
+      showThreshold = 100; // Show after scrolling 100px
+    }
 
     // Update progress bar width
     progressBar.style.width = `${progress}%`;
@@ -41,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     progressContainer.setAttribute('aria-valuenow', Math.round(progress));
 
     // Show/hide progress bar
-    if (scrollTop > heroHeight) {
+    if (scrollTop > showThreshold) {
       progressContainer.classList.add('visible');
     } else {
       progressContainer.classList.remove('visible');
