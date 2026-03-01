@@ -315,4 +315,117 @@
     padding: 16px;
     font-size: 12px;
   }
+
+  .article-share {
+    padding: 32px 24px 24px;
+  }
+
+  .share-buttons {
+    flex-direction: column;
+  }
+
+  .share-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* READING PROGRESS INDICATOR */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 200; /* Above nav (z-index: 100) */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.reading-progress.visible {
+  opacity: 1;
+}
+
+.reading-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+  transition: width 0.1s ease-out;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+/* SOCIAL SHARE BUTTONS */
+.article-share {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 48px 32px;
+  border-top: 1px solid var(--border);
+}
+
+.share-label {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  margin-bottom: 16px;
+}
+
+.share-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  text-decoration: none;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.share-btn svg {
+  flex-shrink: 0;
+}
+
+/* Platform-specific colors using theme variables */
+.share-twitter {
+  color: var(--accent);
+}
+
+.share-linkedin {
+  color: var(--accent2);
+}
+
+.share-reddit {
+  color: var(--accent3);
+}
+
+.share-hackernews {
+  color: var(--accent);
+}
+
+.share-copy {
+  color: var(--muted);
+}
+
+.share-btn:hover {
+  border-color: currentColor;
+  background: var(--bg3);
+  transform: translateY(-2px);
+}
+
+.share-copy.copied {
+  color: var(--accent);
+  border-color: var(--accent);
 }
