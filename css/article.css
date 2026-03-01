@@ -68,7 +68,7 @@
 }
 
 .article-container {
-  max-width: 720px;
+  max-width: 650px;
   margin: 0 auto;
 }
 
@@ -92,13 +92,13 @@
 .article-container p {
   font-size: 16px;
   line-height: 1.8;
-  color: var(--muted);
+  color: var(--text);
   margin-bottom: 20px;
 }
 
 .article-container strong {
   color: var(--text);
-  font-weight: 400;
+  font-weight: 600;
 }
 
 .article-container em {
@@ -115,13 +115,13 @@
 .article-container li {
   font-size: 16px;
   line-height: 1.8;
-  color: var(--muted);
+  color: var(--text);
   margin-bottom: 12px;
 }
 
 .article-container a {
   color: var(--accent);
-  text-decoration: none;
+  text-decoration: underline;
   transition: color 0.2s;
 }
 
