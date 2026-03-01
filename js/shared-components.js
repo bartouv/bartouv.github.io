@@ -142,8 +142,110 @@ const SharedComponents = {
   </div>
 </footer>`,
 
+  // Navigation for index page (with all 5 links using local anchors)
+  navigationIndex: `<!-- NAV -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-logo">GB<span>/</span>DEV</div>
+  <ul class="nav-links">
+    <li><a href="#posts">Articles</a></li>
+    <li><a href="#podcast">Podcast</a></li>
+    <li><a href="#gamejam">Game Jam</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+    <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+<div class="theme-switcher" id="themeSwitcher">
+    <button class="theme-toggle-btn" aria-label="Open theme selector" onclick="toggleThemePanel()" title="Switch theme">
+      <span class="theme-icon">◑</span>
+      <span class="theme-label">Theme</span>
+    </button>
+    <div class="theme-panel" id="themePanel">
+      <div class="theme-panel-title">// SELECT THEME</div>
+      <button class="theme-option active" data-theme="p1" onclick="setTheme('p1')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#282a36,#ff79c6,#bd93f9)"></span>
+        <span>Dracula</span>
+      </button>
+      <button class="theme-option" data-theme="p2" onclick="setTheme('p2')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#1a0e1e,#e080ff,#60d0ff)"></span>
+        <span>Purple & Cyan</span>
+      </button>
+      <button class="theme-option" data-theme="p3" onclick="setTheme('p3')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#0e1a18,#60ffb0,#ff7090)"></span>
+        <span>Teal & Pink</span>
+      </button>
+      <button class="theme-option" data-theme="p4" onclick="setTheme('p4')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#a030ea)"></span>
+        <span>Gold & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p5" onclick="setTheme('p5')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#c8ff64,#6040ff)"></span>
+        <span>Lime & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p6" onclick="setTheme('p6')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#1e0e16,#ff60a0,#40e0c0)"></span>
+        <span>Rose & Teal</span>
+      </button>
+      <button class="theme-option" data-theme="p7" onclick="setTheme('p7')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff9040,#8040ff)"></span>
+        <span>Orange & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p8" onclick="setTheme('p8')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#0e181a,#60c8ff,#ffb040)"></span>
+        <span>Sky & Orange</span>
+      </button>
+      <button class="theme-option" data-theme="p9" onclick="setTheme('p9')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffb860,#6050d0)"></span>
+        <span>Amber & Indigo</span>
+      </button>
+      <button class="theme-option" data-theme="p10" onclick="setTheme('p10')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#e0ff50,#7050ff)"></span>
+        <span>Lemon & Violet</span>
+      </button>
+      <button class="theme-option" data-theme="p11" onclick="setTheme('p11')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#50f0f0,#ff60a0)"></span>
+        <span>Cyan & Magenta</span>
+      </button>
+      <button class="theme-option" data-theme="p12" onclick="setTheme('p12')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ff80ff,#40d0d0)"></span>
+        <span>Magenta & Cyan</span>
+      </button>
+      <button class="theme-option" data-theme="p13" onclick="setTheme('p13')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#ffa850,#50a0ff)"></span>
+        <span>Peach & Blue</span>
+      </button>
+      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#d080ff,#50f090)"></span>
+        <span>Purple & Mint</span>
+      </button>
+    </div>
+  </div>
+</nav>`,
+
+  // Footer for index page (with local anchors)
+  footerIndex: `<!-- FOOTER -->
+<footer role="contentinfo">
+  <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
+  <div class="footer-links">
+    <a href="#posts">Articles</a>
+    <a href="#about">About</a>
+  </div>
+</footer>`,
+
   // Inject all components
   inject() {
+    // Detect if we're on index page or article page
+    const isIndexPage = window.location.pathname.endsWith('index.html') ||
+                        window.location.pathname.endsWith('/') ||
+                        !window.location.pathname.includes('/articles/');
+
+    // Select appropriate navigation and footer based on page type
+    const navToUse = isIndexPage ? this.navigationIndex : this.navigation;
+    const footerToUse = isIndexPage ? this.footerIndex : this.footer;
+
     // Inject reading progress
     const progressPlaceholder = document.getElementById('reading-progress-placeholder');
     if (progressPlaceholder) {
@@ -162,10 +264,10 @@ const SharedComponents = {
       glowsPlaceholder.outerHTML = this.backgroundGlows;
     }
 
-    // Inject navigation
+    // Inject navigation (index or article variant)
     const navPlaceholder = document.getElementById('nav-placeholder');
     if (navPlaceholder) {
-      navPlaceholder.outerHTML = this.navigation;
+      navPlaceholder.outerHTML = navToUse;
     }
 
     // Inject social share
@@ -174,10 +276,10 @@ const SharedComponents = {
       sharePlaceholder.outerHTML = this.socialShare;
     }
 
-    // Inject footer
+    // Inject footer (index or article variant)
     const footerPlaceholder = document.getElementById('footer-placeholder');
     if (footerPlaceholder) {
-      footerPlaceholder.outerHTML = this.footer;
+      footerPlaceholder.outerHTML = footerToUse;
     }
   }
 };
