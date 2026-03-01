@@ -343,21 +343,21 @@ Debug.Log(Random.Range(0, 100)); // 89 again</code></pre>
 using UnityEditor;
 using UnityEngine;</code></pre>
 
-<pre><code>public class RandomSeedWindow : EditorWindow
+<pre class="language-csharp"><code class="language-csharp">public class RandomSeedWindow : EditorWindow
 {
     private int _seedValue = 12345;
-    
+
     [MenuItem("Tools/Random Debug/Open Seed Window")]
     public static void ShowWindow()
     {
         GetWindow<RandomSeedWindow>("Random Debug");
     }
-    
+
     private void OnGUI()
     {
         GUILayout.Label("Random Seed Debugger", EditorStyles.boldLabel);
         GUILayout.Space(10);
-        
+
         if (Application.isPlaying)
         {
             EditorGUILayout.BeginVertical("box");
@@ -369,7 +369,7 @@ using UnityEngine;</code></pre>
         {
             EditorGUILayout.HelpBox("Enter Play mode to see current state", MessageType.Info);
         }
-        
+
         GUILayout.Space(10);
         _seedValue = EditorGUILayout.IntField("New Seed:", _seedValue);
         
@@ -505,7 +505,7 @@ void Update()
     int random2 = RandomService.Range(0, 100); // This changes based on the above
 }</code></pre>
 
-<pre><code>// Good - use separate streams
+<pre class="language-csharp"><code class="language-csharp">// Good - use separate streams
 void Update()
 {
     int random1 = RandomService.RangeFromStream("SystemA", 0, 100);
@@ -585,6 +585,7 @@ public class GameSaveData
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 
 </body>
 </html>

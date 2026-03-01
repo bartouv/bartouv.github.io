@@ -216,7 +216,7 @@ git status</code></pre>
 <pre><code class="language-bash">#!/bin/bash
 # Usage: git sweep</code></pre>
 
-<pre><code>git reset --hard
+<pre class="language-bash"><code class="language-bash">git reset --hard
 git clean -fd</code></pre>
 
 <p>This command obliterates any local changes and removes untracked files. It’s the Git equivalent of Unity’s “Reimport All” — destructive but effective when you need a clean slate.</p>
@@ -232,7 +232,7 @@ git clean -fd</code></pre>
 <pre><code class="language-bash">#!/bin/bash
 # Usage: git dev</code></pre>
 
-<pre><code>git reset --hard
+<pre class="language-bash"><code class="language-bash">git reset --hard
 git clean -fd
 git fetch
 git checkout develop
@@ -254,7 +254,7 @@ git status</code></pre>
 <pre><code class="language-bash">#!/bin/bash
 # Usage: git cleancheckout <branch-name></code></pre>
 
-<pre><code>git reset --hard
+<pre class="language-bash"><code class="language-bash">git reset --hard
 git clean -fd
 git checkout $1
 git fetch
@@ -323,7 +323,7 @@ If you don’t have a suitable directory, create one:</li>
 <pre><code class="language-bash">#!/bin/bash
 # Usage: git unity-reset</code></pre>
 
-<pre><code>git reset --hard
+<pre class="language-bash"><code class="language-bash">git reset --hard
 git clean -fd
 # Remove Unity's generated folders that can cause conflicts
 rm -rf Library/
@@ -396,6 +396,7 @@ git status</code></pre>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 
 </body>
 </html>

@@ -37,7 +37,7 @@ The formatting skill automatically fixes:
 ### 7. **Prism.js Code Block Structure**
 - ✅ Adds language class to `<pre>` tags: `<pre><code class="language-csharp">` → `<pre class="language-csharp"><code class="language-csharp">`
 - ✅ Ensures proper syntax highlighting by fixing Prism.js CSS selectors
-- ✅ Supports C#, YAML, JavaScript, JSON, XML, CSS, and HTML
+- ✅ Supports C#, YAML, Bash, JavaScript, JSON, XML, CSS, and HTML
 
 ## Usage
 

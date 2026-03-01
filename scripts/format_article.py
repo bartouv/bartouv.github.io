@@ -181,6 +181,7 @@ class ArticleFormatter:
         patterns = [
             (r'<pre><code class="language-csharp">', r'<pre class="language-csharp"><code class="language-csharp">'),
             (r'<pre><code class="language-yaml">', r'<pre class="language-yaml"><code class="language-yaml">'),
+            (r'<pre><code class="language-bash">', r'<pre class="language-bash"><code class="language-bash">'),
             (r'<pre><code class="language-javascript">', r'<pre class="language-javascript"><code class="language-javascript">'),
             (r'<pre><code class="language-json">', r'<pre class="language-json"><code class="language-json">'),
             (r'<pre><code class="language-xml">', r'<pre class="language-xml"><code class="language-xml">'),
