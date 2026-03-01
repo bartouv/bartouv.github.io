@@ -195,13 +195,13 @@
 
 <p>It's important to understand culling as well. Culling are techniques of reducing the things we need to render. It's like telling people who are sick to stay home cause they aren’t needed today and we don't want to waste energy on them.</p>
 
-<p><strong>Frustum Culling</strong>is a technique where we don't try to render things that are out of the camera's frustum.</p>
+<p><strong>Frustum Culling</strong> is a technique where we don't try to render things that are out of the camera's frustum.</p>
 
-<p><strong>Z Culling</strong>is a technique where an opaque triangle (a triangle that has no transparency and is rendered on the opaque queue) is covered by another opaque triangle and is thus not visible to the user and so we don't render it. It's important to grasp if you have 1000 boxes that are transparent and the first one is blocking the other 999 boxes from the camera you will still need to render those 999 boxes.</p>
+<p><strong>Z Culling</strong> is a technique where an opaque triangle (a triangle that has no transparency and is rendered on the opaque queue) is covered by another opaque triangle and is thus not visible to the user and so we don't render it. It's important to grasp if you have 1000 boxes that are transparent and the first one is blocking the other 999 boxes from the camera you will still need to render those 999 boxes.</p>
 
-<p><strong>BackFace Culling</strong>is a technique where we don't draw the vertices that are facing away from the camera. So if a car is facing the camera dead on you won't draw the trunk causes it's on the back face of the car.</p>
+<p><strong>BackFace Culling</strong> is a technique where we don't draw the vertices that are facing away from the camera. So if a car is facing the camera dead on you won't draw the trunk causes it's on the back face of the car.</p>
 
-<p><strong>Occlusion Culling</strong>is a technique involving discarding objects or triangles that are not visible to the user due to being occluded by other objects in the scene. This can be done using a variety of techniques, such as bounding volume hierarchies or occlusion maps.</p>
+<p><strong>Occlusion Culling</strong> is a technique involving discarding objects or triangles that are not visible to the user due to being occluded by other objects in the scene. This can be done using a variety of techniques, such as bounding volume hierarchies or occlusion maps.</p>
 
 <p>We also have to consider the content of the draw calls. While you might think that having 10 draw calls is better than 100 you might be wrong, because it depends. Each draw call is a unique butterfly. Each one has data it passes and a shader it wants to use. The more complex the shader the more time it will take the GPU to calculate what color the pixel should be. So like cars the more weight they carry the slower they are. If we want to go faster we have to give our draw call a weight and simplify what it does.</p>
 
