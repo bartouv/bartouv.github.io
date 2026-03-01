@@ -213,7 +213,7 @@ git status</code></pre>
 
 <p>Sometimes you need to abandon everything and get to a clean state immediately. Enter the nuclear option:</p>
 
-<pre><code class="language-bash">#!/bin/bash
+<pre class="language-bash"><code class="language-bash">#!/bin/bash
 # Usage: git sweep</code></pre>
 
 <pre class="language-bash"><code class="language-bash">git reset --hard
@@ -229,7 +229,7 @@ git clean -fd</code></pre>
 
 <p>When you need to switch to<code>develop</code>quickly but safely:</p>
 
-<pre><code class="language-bash">#!/bin/bash
+<pre class="language-bash"><code class="language-bash">#!/bin/bash
 # Usage: git dev</code></pre>
 
 <pre class="language-bash"><code class="language-bash">git reset --hard
@@ -251,7 +251,7 @@ git status</code></pre>
 
 <p>For maximum flexibility, create a parameterized command that can clean and switch to any branch:</p>
 
-<pre><code class="language-bash">#!/bin/bash
+<pre class="language-bash"><code class="language-bash">#!/bin/bash
 # Usage: git cleancheckout <branch-name></code></pre>
 
 <pre class="language-bash"><code class="language-bash">git reset --hard
@@ -273,13 +273,13 @@ git pull</code></pre>
 <h2 class="section-heading">On macOS/Linux:</h2>
 
 Create a directory for your Git scripts (if it doesn’t exist):</li>
-<pre><code class="language-bash">mkdir -p ~/bin</code></pre>
+<pre class="language-bash"><code class="language-bash">mkdir -p ~/bin</code></pre>
 
 Add it to your PATH by adding this line to your<code>~/.bashrc</code>or<code>~/.zshrc</code>:</li>
-<pre><code class="language-bash">export PATH="$HOME/bin:$PATH"</code></pre>
+<pre class="language-bash"><code class="language-bash">export PATH="$HOME/bin:$PATH"</code></pre>
 
 Create your command script:</li>
-<pre><code class="language-bash">touch ~/bin/git-dev
+<pre class="language-bash"><code class="language-bash">touch ~/bin/git-dev
 chmod +x ~/bin/git-dev</code></pre>
 
 Edit the file with your preferred editor and add the script content.</li>
@@ -320,7 +320,7 @@ If you don’t have a suitable directory, create one:</li>
 
 <h2 class="section-heading">The Unity Reset</h2>
 
-<pre><code class="language-bash">#!/bin/bash
+<pre class="language-bash"><code class="language-bash">#!/bin/bash
 # Usage: git unity-reset</code></pre>
 
 <pre class="language-bash"><code class="language-bash">git reset --hard
