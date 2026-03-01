@@ -85,6 +85,16 @@ class ArticleFormatter:
             self.content = re.sub(pattern, r'</a> \1', self.content)
             self.changes_made.append(f'Fixed {len(matches)} missing spaces after links')
 
+    def fix_missing_spaces_after_strong(self):
+        """Add missing spaces after closing strong tags."""
+        # Pattern: </strong> followed by lowercase letter (no space)
+        pattern = r'</strong>([a-z])'
+        matches = re.findall(pattern, self.content)
+
+        if matches:
+            self.content = re.sub(pattern, r'</strong> \1', self.content)
+            self.changes_made.append(f'Fixed {len(matches)} missing spaces after bold text')
+
     def fix_missing_spaces_before_links(self):
         """Add missing spaces before anchor tags when needed."""
         # Pattern: word character followed by <a (no space)
@@ -202,6 +212,7 @@ class ArticleFormatter:
         # Run all fixes
         self.fix_squished_tags()
         self.fix_missing_spaces_after_links()
+        self.fix_missing_spaces_after_strong()
         self.fix_missing_spaces_before_links()
         self.fix_punctuation_before_links()
         self.fix_typos()

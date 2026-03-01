@@ -21,6 +21,7 @@ python3 scripts/format_article.py --dry-run
 |-------|--------|-------|
 | **Squished tags** | `</figure><h2>` | `</figure>\n\n<h2>` |
 | **Missing spaces** | `</a>text` | `</a> text` |
+| **Missing spaces after bold** | `</strong>batching` | `</strong> batching` |
 | **Typos** | "bellow is" | "below is" |
 | **Emoticons** | "works :D." | "works!" |
 | **Capitalization** | "we can run" | "We can run" |

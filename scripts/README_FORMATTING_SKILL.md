@@ -15,6 +15,7 @@ The formatting skill automatically fixes:
 - ✅ Missing spaces after links: `</a>text` → `</a> text`
 - ✅ Missing spaces before links: `text<a` → `text <a`
 - ✅ Punctuation before links: `</a>and` → `</a>, and`
+- ✅ Missing spaces after bold tags: `</strong>text` → `</strong> text`
 
 ### 3. **Common Typos**
 - ✅ "bellow" → "below"
