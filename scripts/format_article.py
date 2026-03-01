@@ -9,6 +9,7 @@ Fixes common formatting issues in article HTML files:
 - Common typos
 - Emoticon cleanup
 - Code block formatting
+- Prism.js code block structure (language classes on <pre> tags)
 - Consistent punctuation
 """
 
@@ -174,6 +175,25 @@ class ArticleFormatter:
                 self.content = re.sub(pattern, replacement, self.content)
                 self.changes_made.append('Added missing colon before code block')
 
+    def fix_prism_code_blocks(self):
+        """Add language class to <pre> tags for proper Prism.js styling."""
+        # Prism.js expects both <pre> and <code> to have language classes
+        patterns = [
+            (r'<pre><code class="language-csharp">', r'<pre class="language-csharp"><code class="language-csharp">'),
+            (r'<pre><code class="language-yaml">', r'<pre class="language-yaml"><code class="language-yaml">'),
+            (r'<pre><code class="language-javascript">', r'<pre class="language-javascript"><code class="language-javascript">'),
+            (r'<pre><code class="language-json">', r'<pre class="language-json"><code class="language-json">'),
+            (r'<pre><code class="language-xml">', r'<pre class="language-xml"><code class="language-xml">'),
+            (r'<pre><code class="language-css">', r'<pre class="language-css"><code class="language-css">'),
+            (r'<pre><code class="language-html">', r'<pre class="language-html"><code class="language-html">'),
+        ]
+
+        for pattern, replacement in patterns:
+            matches = re.findall(pattern, self.content)
+            if matches:
+                self.content = re.sub(pattern, replacement, self.content)
+                self.changes_made.append(f'Fixed {len(matches)} Prism.js code block(s) - added language class to <pre> tag')
+
     def format(self):
         """Run all formatting fixes."""
         self.read_file()
@@ -188,6 +208,7 @@ class ArticleFormatter:
         self.fix_code_block_spacing()
         self.fix_list_spacing()
         self.fix_missing_colons()
+        self.fix_prism_code_blocks()
 
         return len(self.changes_made) > 0
 

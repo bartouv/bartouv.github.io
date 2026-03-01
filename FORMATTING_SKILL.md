@@ -25,6 +25,7 @@ python3 scripts/format_article.py --dry-run
 | **Emoticons** | "works :D." | "works!" |
 | **Capitalization** | "we can run" | "We can run" |
 | **Punctuation** | `</a>and` | `</a>, and` |
+| **Prism.js structure** | `<pre><code class="language-csharp">` | `<pre class="language-csharp"><code class="language-csharp">` |
 
 ## Common Use Cases
 
@@ -72,6 +73,10 @@ python3 scripts/format_article.py --dry-run
 - `:D.` → `!`
 - `:).` → `.`
 - `;).` → `.`
+
+### 6. Prism.js Code Blocks
+- Missing language class on `<pre>` tags: `<pre><code class="language-csharp">` → `<pre class="language-csharp"><code class="language-csharp">`
+- Ensures proper syntax highlighting by adding language class to both `<pre>` and `<code>` tags
 
 ## Example Output
 

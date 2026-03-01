@@ -34,6 +34,11 @@ The formatting skill automatically fixes:
 - ✅ Spacing around `<ul>` and `<ol>` lists
 - ✅ Consistent paragraph spacing
 
+### 7. **Prism.js Code Block Structure**
+- ✅ Adds language class to `<pre>` tags: `<pre><code class="language-csharp">` → `<pre class="language-csharp"><code class="language-csharp">`
+- ✅ Ensures proper syntax highlighting by fixing Prism.js CSS selectors
+- ✅ Supports C#, YAML, JavaScript, JSON, XML, CSS, and HTML
+
 ## Usage
 
 ### Format a Single Article
