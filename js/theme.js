@@ -57,7 +57,7 @@ document.addEventListener('click', (e) => {
 });
 
 window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('gb-theme') || 'p1';
+  const saved = localStorage.getItem('gb-theme') || 'p14';
   setTheme(saved);
 
   // Update article count dynamically

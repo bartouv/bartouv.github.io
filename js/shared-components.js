@@ -35,7 +35,7 @@ const SharedComponents = {
     </button>
         <div class="theme-panel" id="themePanel">
       <div class="theme-panel-title">// SELECT THEME</div>
-      <button class="theme-option active" data-theme="p1" onclick="setTheme('p1')">
+      <button class="theme-option" data-theme="p1" onclick="setTheme('p1')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#282a36,#ff79c6,#bd93f9)"></span>
         <span>Dracula</span>
       </button>
@@ -165,7 +165,7 @@ const SharedComponents = {
     </button>
     <div class="theme-panel" id="themePanel">
       <div class="theme-panel-title">// SELECT THEME</div>
-      <button class="theme-option active" data-theme="p1" onclick="setTheme('p1')">
+      <button class="theme-option" data-theme="p1" onclick="setTheme('p1')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#282a36,#ff79c6,#bd93f9)"></span>
         <span>Dracula</span>
       </button>
