@@ -205,6 +205,8 @@
   border: 1px solid var(--border);
 }
 
+.post-card[hidden] { display: none; }
+
 .post-card {
   background: var(--panel);
   padding: 32px;
