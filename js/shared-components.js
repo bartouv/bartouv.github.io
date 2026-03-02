@@ -35,6 +35,10 @@ const SharedComponents = {
     </button>
         <div class="theme-panel" id="themePanel">
       <div class="theme-panel-title">// SELECT THEME</div>
+      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#d080ff,#50f090)"></span>
+        <span>Purple & Mint</span>
+      </button>
       <button class="theme-option" data-theme="p1" onclick="setTheme('p1')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#282a36,#ff79c6,#bd93f9)"></span>
         <span>Dracula</span>
@@ -86,10 +90,6 @@ const SharedComponents = {
       <button class="theme-option" data-theme="p13" onclick="setTheme('p13')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ffa850,#50a0ff)"></span>
         <span>Peach & Blue</span>
-      </button>
-      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')">
-        <span class="theme-swatch" style="background:linear-gradient(135deg,#d080ff,#50f090)"></span>
-        <span>Purple & Mint</span>
       </button>
     </div>
 </nav>`,
@@ -165,6 +165,10 @@ const SharedComponents = {
     </button>
     <div class="theme-panel" id="themePanel">
       <div class="theme-panel-title">// SELECT THEME</div>
+      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#d080ff,#50f090)"></span>
+        <span>Purple & Mint</span>
+      </button>
       <button class="theme-option" data-theme="p1" onclick="setTheme('p1')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#282a36,#ff79c6,#bd93f9)"></span>
         <span>Dracula</span>
@@ -216,10 +220,6 @@ const SharedComponents = {
       <button class="theme-option" data-theme="p13" onclick="setTheme('p13')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ffa850,#50a0ff)"></span>
         <span>Peach & Blue</span>
-      </button>
-      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')">
-        <span class="theme-swatch" style="background:linear-gradient(135deg,#d080ff,#50f090)"></span>
-        <span>Purple & Mint</span>
       </button>
     </div>
   </div>
