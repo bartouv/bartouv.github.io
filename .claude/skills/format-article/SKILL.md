@@ -120,9 +120,14 @@ Check specifically for artifacts introduced by Medium imports:
 
 - ✗ **Empty alt text**: `alt=""` on `<figure><img>` — auto-fix with descriptive text based on surrounding context (caption, nearby headings, or code content)
 - ✗ **Collapsed/duplicate heading**: An H2 whose text matches or closely echoes the article's `<title>` — remove it (the page title already appears in `.article-title`)
-- ✗ **Unicode spaces in headings**: Hair space (U+200A) or non-breaking space (U+00A0) inside heading text — replace with regular spaces
+- ✗ **Unicode spaces in headings**: Hair space (U+200A) or non-breaking space (U+00A0) inside heading text — replace with regular spaces. These also appear in heading text like `vertex\u00a0have?` — use a regex to fix all headings at once.
 - ✗ **Double colons before code blocks**: `::` preceding a `<pre>` — replace with single colon `:`
 - ✗ **Missing `<figure>` wrapper**: Bare `<img>` not wrapped in `<figure>` — wrap it in `<figure>...</figure>`
+- ✗ **Hair-space em dash** (`\u200a\u2014\u200a`): Medium encodes em dashes as U+200A + U+2014 + U+200A (hair space + em dash + hair space). These render with invisible spacing, making dashes look cramped (e.g. "Off—Disables" instead of "Off - Disables"). Replace ALL occurrences in the article body with ` - ` (space + hyphen + space). **Only replace in the body, not in `<title>` or meta tags.**
+- ✗ **`</figure>` immediately followed by `<h2>` or `<h3>`** on the same line — add a blank line between them
+- ✗ **Broken Markdown-in-HTML links**: Medium sometimes exports links as `[text](<a href="url">url</a>)` — convert to a proper `<a href="url">text</a>` tag
+
+**Implementation note**: Because Medium files contain special Unicode characters (`\u200a`, `\u00a0`, `\u2014`), use Python with `encoding='utf-8'` for reliable replacements. The `Edit` tool may fail to match strings containing these characters.
 
 **Action**: List all Medium import artifacts found. These are always safe to fix automatically.
 
@@ -174,10 +179,11 @@ If user requests formatting fixes (not just analysis):
 2. **Apply fixes** in order of priority:
    1. Fix collapsed/minified code blocks (high — unreadable)
    2. Fix heading hierarchy + add missing `class="section-heading"` (high)
-   3. Clean up Medium import artifacts: duplicate headings, unicode spaces, double colons, empty alt text (high)
+   3. Clean up Medium import artifacts: hair-space em dashes, unicode spaces in headings, broken Markdown links, `</figure><h2>` on same line, duplicate headings, double colons, empty alt text (high)
    4. Break up overly long paragraphs (medium)
    5. Convert prose lists to HTML lists (medium)
-   6. Add emphasis to key terms (low)
+   6. Convert `Term — Description` paragraphs to H3 headings + bold term, when they are clearly sub-topics of a section (medium)
+   7. Add emphasis to key terms; use `<code>` for inline identifiers and function names (low)
 3. **Preserve content**: NEVER change the actual content, meaning, or information
 4. **Apply all at once**: When the user confirms, apply ALL identified fixes in a single pass — do NOT re-ask for confirmation on each individual change. Report a summary of what was changed after.
 
@@ -205,6 +211,12 @@ If user requests formatting fixes (not just analysis):
 - Bold actionable items
 - Bold important warnings or caveats
 - Don't overuse (max 2-3 bold items per section)
+- Use `<code>` for inline technical identifiers (e.g. `Renderer.sortingOrder`, `pow`, `sin`) — not bold
+
+### Dashes
+- This blog uses ` - ` (space + hyphen + space) for definition separators in article body, **not** em dashes (`—`)
+- Sub-topics formatted as `Term — Description` in plain paragraphs should become H3 headings with the term bolded: `<h3 class="section-heading">Term</h3>` followed by the description in a `<p>`
+- Never replace dashes in `<title>`, meta tags, or nav elements — only in article body content
 
 ### Visuals
 - Add images every 300-400 words for long articles
