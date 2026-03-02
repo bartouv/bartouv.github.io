@@ -61,7 +61,7 @@ window.addEventListener('DOMContentLoaded', () => {
   setTheme(saved);
 
   // Update article count dynamically
-  const articleCount = document.querySelectorAll('.posts-grid .post-card').length;
+  const articleCount = document.querySelectorAll('.posts-grid .post-card:not([hidden])').length;
   const articleCountEl = document.getElementById('article-count');
   if (articleCountEl) {
     articleCountEl.textContent = `// ${articleCount} ARTICLE${articleCount !== 1 ? 'S' : ''}`;
