@@ -83,11 +83,9 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BT3-dFabFc6MIzzaYH_Aig.png" alt=""></figure>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BT3-dFabFc6MIzzaYH_Aig.png" alt="Header image for the article on domain-based Unity project structure"></figure>
 
-    <h2>Fighting Entropy In Unity — Structure based on Domains</h2>
-
-<h2 class="section-heading">🌑Introduction</h2>
+    <h2 class="section-heading">🌑Introduction</h2>
 
 <p>Creating games is extremely hard. The choices we take with our project structure can make it even harder. We can quickly find our project in a state that is unscalable and difficult to change and extend. It’s a common problem that all game developers face. In this blog post, I would like to introduce you to a structural solution that has proven itself in several personal projects and multiple enterprise-level ones as well. By adopting this project architecture you will be able to create games that are resilient to changes and easier to maintain.</p>
 
@@ -99,29 +97,29 @@
 
 <p>The folder structure looked something like this:</p>
 
-<pre class="language-xml"><code class="language-xml"><Animations>
-<Audio>
-<Fonts>
-<Materials>
-<Models>
-<Plugins>
-<Prefabs>
-<Resources>
-<Scenes>
-<Scripts>
-	<Commands>
-	<Controlers>
-	<Models>
-	<Signals>
-	<Views>
-<Sprites>
-<Textures></code></pre>
+<pre class="language-xml"><code class="language-xml">&lt;Animations&gt;
+&lt;Audio&gt;
+&lt;Fonts&gt;
+&lt;Materials&gt;
+&lt;Models&gt;
+&lt;Plugins&gt;
+&lt;Prefabs&gt;
+&lt;Resources&gt;
+&lt;Scenes&gt;
+&lt;Scripts&gt;
+	&lt;Commands&gt;
+	&lt;Controlers&gt;
+	&lt;Models&gt;
+	&lt;Signals&gt;
+	&lt;Views&gt;
+&lt;Sprites&gt;
+&lt;Textures&gt;</code></pre>
 
 <p>It worked fine in a small school project. Later on, when I started working in a professional capacity I encountered similar folder structures. But the folder structure I used in my school project didn’t scale well. What works on a small project doesn’t always translate well to a big one.</p>
 
-<p>So what is wrong with a structure based on<strong>types</strong>?</p>
+<p>So what is wrong with a structure based on <strong>types</strong>?</p>
 
-<h2 class="section-heading"><strong>🌓What’s wrong with it?</strong></h2>
+<h2 class="section-heading">🌓What’s wrong with it?</h2>
 
 <p>When I was presented with the opportunity to start a project from scratch I was delighted, I could finally build a project that wouldn’t have the pitfalls the previous ones had. I could structure the project as I pleased. So I sat down and started to list the many problems that the former projects have presented to me.</p>
 
@@ -178,50 +176,50 @@
 
 <p>The third level is for things that are feature specific. These domains should each only be dependent on the Game Core Domain and the Company Core Domain. For example, if you have a Hud that displays your experience and the gold in your game, there is no reason for it to know of the Map feature you have in your game. Each is its own domain. I’ll note that as the project scales you might want to split up Domains to have sub-domains. That is if a domain can be separated into several inner parts you can separate it inward into several subdomains which don’t know about each other.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*7ePaI4wDuL8-U4eC.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*7ePaI4wDuL8-U4eC.png" alt="Diagram showing the three-level domain hierarchy: Company Core, Game Core, and Inner Game Domains"></figure>
 
 <p>The folder structure is similar to before. We still separate all the assets into folders by their type, but now we do so in chunks. Each chunk has a logical reason for existing and all its assets are relevant to each other. The smaller chunks are easier to maintain and follow and give a coherent structure to the project, one that describes the project and is easy to follow and grasp.</p>
 
-<pre class="language-xml"><code class="language-xml"><CompanyCore>
-		<Animations>
-		<Audio>
+<pre class="language-xml"><code class="language-xml">&lt;CompanyCore&gt;
+		&lt;Animations&gt;
+		&lt;Audio&gt;
 		.
 		.
 		.
-		<Scripts>
-		<Sprites>
-		<Textures>
-		<GameCore>
-				<Animations>
-				<Audio>
+		&lt;Scripts&gt;
+		&lt;Sprites&gt;
+		&lt;Textures&gt;
+		&lt;GameCore&gt;
+				&lt;Animations&gt;
+				&lt;Audio&gt;
 				.
 				.
 				.
-				<Scripts>
-				<Sprites>
-				<Textures>
-				<SubDomains>
-						<Domain1>
-								<Animations>
-								<Audio>
+				&lt;Scripts&gt;
+				&lt;Sprites&gt;
+				&lt;Textures&gt;
+				&lt;SubDomains&gt;
+						&lt;Domain1&gt;
+								&lt;Animations&gt;
+								&lt;Audio&gt;
 								.
 								.
 								.
-								<Scripts>
-								<Sprites>
-								<Textures>
-								<SubDomains>
-										<SubDomain1>
-										<SubDomain2>
-						<Domain2>
-								<Animations>
-								<Audio>
+								&lt;Scripts&gt;
+								&lt;Sprites&gt;
+								&lt;Textures&gt;
+								&lt;SubDomains&gt;
+										&lt;SubDomain1&gt;
+										&lt;SubDomain2&gt;
+						&lt;Domain2&gt;
+								&lt;Animations&gt;
+								&lt;Audio&gt;
 								.
 								.
 								.
-								<Scripts>
-								<Sprites>
-								<Textures></code></pre>
+								&lt;Scripts&gt;
+								&lt;Sprites&gt;
+								&lt;Textures&gt;</code></pre>
 
 <h2 class="section-heading">🌖How do the different domains interact?</h2>
 
@@ -233,7 +231,9 @@
 
 <p>There are many ways of making the domains interact with each other, my preferred method is the command pattern. We can create an “Update XP<a href="https://www.wikiwand.com/en/Command_pattern" target="_blank" rel="noopener">Command</a>” inside the 🍏<strong>Game Core Domain</strong>. The “Update XP Command” will change the XP and open the level-up popup by accessing the interfaces of the different domains.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*p0t5AMMqNJIVJFET.png" alt=""></figure><h2 class="section-heading">🌗How do we maintain the structure?</h2>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*p0t5AMMqNJIVJFET.png" alt="Diagram showing domain interaction flow using the command pattern, with one-directional control flow"></figure>
+
+<h2 class="section-heading">🌗How do we maintain the structure?</h2>
 
 <p>Like all good things in life keeping this structure maintained takes effort and discipline. Each time you add more code or assets you’ll have to think about how do those things relate to the structure. When a domain becomes too big you might look at it and realize that it should be separated into subdomains. When you add a new feature you need to consider what assets it needs. let’s look at an example.</p>
 
@@ -241,15 +241,17 @@
 
 <p>The beauty of working like this is that when we make changes we always know what can be affected as a result of those changes. If we change an asset in 🗡<strong>Battle Domain</strong> we know that the only places in the project that can be affected are in that domain and its subdomains. This way after making changes we can be sure what parts of the project we need to go over and make sure that nothing is broken. The only drawback is that we can’t be sure which subdomains use the assets that are in the 🗡<strong>Battle Domain</strong>. In this case, the 🧙<strong>Battle Units</strong> domain doesn’t use the assets we talked about, but by looking at the structure you can’t be sure.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*1MaiKVk83qepSlfY.png" alt=""></figure><h2 class="section-heading">🌘How do we enforce the structure?</h2>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*1MaiKVk83qepSlfY.png" alt="Diagram showing Battle Domain split into Battle Hud and Battle Units subdomains, with shared assets moved up one level"></figure>
+
+<h2 class="section-heading">🌘How do we enforce the structure?</h2>
 
 <p>So ordering the files this way alone won’t save us from the gods of chaos, we need to somehow enforce this order. Even with great architecture, the effects of entropy are real. No matter how good the structure of your project is, over time, your project will become disorganized. You must continuously maintain the architecture and try to enforce it. The larger the project is the more hands will touch it. The more hands that touch it the harder enforcing it is. To make maintaining the architecture simpler we can do things to force the people who work on the project to adhere to its structure.</p>
 
-<h2 class="section-heading">Enforcing order in the code</h2>
+<h2 class="section-heading">Enforcing order in the code</h2>
 
 <p>We want our code to be as organized as possible. The order we have created by separating it in the folder structure is awesome and will go a long way in fighting the disorganization but it’s not enough.</p>
 
-<p>The reason why it is lacking is that nothing is stopping an undisciplined programmer from taking a script from<strong>Battle Domain</strong> and referencing<strong>Popups Domain</strong>. This would be catastrophic. Why? Because now we have broken the order. We have specifically separated the two domains because they shouldn’t be coupled together and yet now someone has broken that separation.</p>
+<p>The reason why it is lacking is that nothing is stopping an undisciplined programmer from taking a script from <strong>Battle Domain</strong> and referencing <strong>Popups Domain</strong>. This would be catastrophic. Why? Because now we have broken the order. We have specifically separated the two domains because they shouldn’t be coupled together and yet now someone has broken that separation.</p>
 
 <p>So how do we make sure that no one breaks our order?</p>
 
@@ -257,7 +259,9 @@
 
 <p>So in this way, we will make sure to put Assemblies in all the domain folders, all subdomain folders, the core game folder, and cross-project folder, and so on.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*LeDgz56iuoAvOTW6.png" alt=""></figure><h2 class="section-heading">Enforcing order in assets</h2>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*LeDgz56iuoAvOTW6.png" alt="Diagram showing Assembly Definitions placed in each domain folder to enforce code separation"></figure>
+
+<h2 class="section-heading">Enforcing order in assets</h2>
 
 <p>Unfortunately, Assembly Definitions do not enforce anything which isn’t a script. This leaves us with a problem. Let’s say we have a material that is used for Domain1. In our new way of thinking it should only be used in Domain1 or one of its subdomains. This way we have an understanding of the usage of our assets. If we change this material we know that we can only affect this domain or one of its sub-domains but the rest of the project is encapsulated from change.</p>
 

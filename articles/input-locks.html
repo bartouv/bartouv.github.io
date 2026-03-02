@@ -85,9 +85,7 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BaW1yio88GdvdfG4MMdPYg.png" alt=""></figure>
-
-    <h2>Fighting Entropy in Unity — Input Locks</h2>
+    <figure><img src="https://cdn-images-1.medium.com/max/800/1*BaW1yio88GdvdfG4MMdPYg.png" alt="Article banner: Input Locks"></figure>
 
 <p>In this post, I will show you how to create an efficient Input lock service for Unity that follow SOLID principles. You can take a look at the example project: <a href="https://github.com/bartouv/InputLockExampleProject" target="_blank" rel="noopener">https://github.com/bartouv/InputLockExampleProject</a></p>
 
@@ -151,7 +149,7 @@
     void UnsubscribeLockable(BaseInputLockable inputLockable);
 }</code></pre>
 
-<p>Another thing we want to do on subscription is look at all the locks that are locked and see if the lockable object we are subscribing should be locked and if so, lock it. This is what the Update Lockable function is doing. This will also be called on each new lock that is added and each time a lock will be unlocked.:</p>
+<p>Another thing we want to do on subscription is look at all the locks that are locked and see if the lockable object we are subscribing should be locked and if so, lock it. This is what the Update Lockable function is doing. This will also be called on each new lock that is added and each time a lock will be unlocked:</p>
 
 <pre class="language-csharp"><code class="language-csharp">public void SubscribeLockable(BaseInputLockable inputLockable)
 {
@@ -166,7 +164,7 @@ public void UnsubscribeLockable(BaseInputLockable inputLockable)
 
 <h2 class="section-heading">The lockable object</h2>
 
-<p>Now let’s look at the lockable object::</p>
+<p>Now let’s look at the lockable object:</p>
 
 <pre class="language-csharp"><code class="language-csharp">public abstract class BaseInputLockable : MonoBehaviour
     {
@@ -259,7 +257,7 @@ public class RaycasterInputLocker : BaseInputLockable
 
 <h2 class="section-heading">The Input Lock Service</h2>
 
-<p>Let's look at the input lock service interface::</p>
+<p>Let's look at the input lock service interface:</p>
 
 <pre class="language-csharp"><code class="language-csharp">public interface IInputLockService
     {
@@ -270,7 +268,7 @@ public class RaycasterInputLocker : BaseInputLockable
         InputLock LockAllExcept(InputLockTag[] inputLockTagsExcept);
     }</code></pre>
 
-<p>Let's look at the implementation of the input lock service::</p>
+<p>Let's look at the implementation of the input lock service:</p>
 
 <pre class="language-csharp"><code class="language-csharp">public class InputLockService : IInputLockService, IInputLockServiceSubscription
     {
@@ -478,7 +476,7 @@ public class RaycasterInputLocker : BaseInputLockable
 
 <p>Window → General → TestRunner</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*HU9RhvMUjlJtraVN.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*HU9RhvMUjlJtraVN.png" alt="Unity Test Runner window showing all input lock unit tests passing"></figure>
 
 <p>And now we can be confident that the code works!</p>
 

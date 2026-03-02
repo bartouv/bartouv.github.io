@@ -83,17 +83,15 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <h2>Making Games Responsive to Different Devices</h2>
-
-The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z9ecNiV1bQJxwJ0CvDOf9g.png" alt=""></figure>
+The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z9ecNiV1bQJxwJ0CvDOf9g.png" alt="Hero selection screen showing a character positioned perfectly on a mobile device"></figure>
 
 <p>Your hero selection screen looks perfect on your mobile device. The character model sits perfectly to the right, and the UI elements are balanced on the left.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*4ov-6AvJl16dWrZfpwviJQ.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*4ov-6AvJl16dWrZfpwviJQ.png" alt="Screenshot of the hero selection screen displayed correctly on a mobile device"></figure>
 
 <p>Then you test it on your tablet and suddenly your hero is floating awkwardly in space, almost off-screen. What happened?</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*yaASULIEcN3LCdI8Pqbk4A.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*yaASULIEcN3LCdI8Pqbk4A.png" alt="Screenshot showing the hero floating awkwardly off-screen on a tablet due to fixed world-space positioning"></figure>
 
 <p>Unity’s UI system adapts to different screen sizes automatically using RectTransforms and Canvases. Your 3D content doesn’t. It lives in world space, oblivious to screen dimensions.</p>
 
@@ -107,7 +105,7 @@ The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z
 
 <h2 class="section-heading">The Remap Function</h2>
 
-<pre class="language-css"><code class="language-css">public static float RemapBetweenRange(float x, float a, float b, float c, float d)
+<pre class="language-csharp"><code class="language-csharp">public static float RemapBetweenRange(float x, float a, float b, float c, float d)
 {
     return (x - a) / (b - a) * (d - c) + c;
 }</code></pre>
@@ -118,11 +116,11 @@ The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z
 
 <p>A simple use case for this would be converting temperature from Celsius [0, 100] to Fahrenheit [32, 212].</p>
 
-<pre><code class="language-cpp">float fahrenheit = RemapBetweenRange(25, 0, 100, 32, 212); // Returns 77°F</code></pre>
+<pre class="language-csharp"><code class="language-csharp">float fahrenheit = RemapBetweenRange(25, 0, 100, 32, 212); // Returns 77°F</code></pre>
 
 <p>Here’s how it works visually:</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*3LByjM0VFtXLuslIXDbRUA.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*3LByjM0VFtXLuslIXDbRUA.png" alt="Diagram illustrating the remap function mapping a value from one range to another"></figure>
 
 <p>That's all you have to do, and you can instantly know how to convert the two.</p>
 
@@ -196,7 +194,11 @@ public class AspectRatioFitter : MonoBehaviour
 
 <p>Now, after using this, we can configure the hero to stay properly framed on any device. Because we mapped a range, this works seamlessly across all aspect ratios without any additional code.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*GLwJy8uFh8l-pmNQ8pnSyQ.png" alt=""></figure><figure><img src="https://cdn-images-1.medium.com/max/800/1*bjNBUlVEyRp-PYm9hGqujQ.png" alt=""></figure><h2 class="section-heading">The Result</h2>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*GLwJy8uFh8l-pmNQ8pnSyQ.png" alt="Screenshot of the hero selection screen correctly positioned on a mobile device after applying the remap function"></figure>
+
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*bjNBUlVEyRp-PYm9hGqujQ.png" alt="Screenshot of the hero selection screen correctly positioned on a tablet after applying the remap function"></figure>
+
+<h2 class="section-heading">The Result</h2>
 
 <p>With this approach, your 3D elements adapt smoothly across all screen sizes. The hero that looked perfect on one device now looks equally perfect on others, tablets, iPhones, and everything in between. The beauty of this solution is its scalability. Instead of maintaining separate positioning logic for different devices, you define the extremes once and let the math handle everything in between. Add a new device with an unusual aspect ratio? It just works. This isn’t a magic bullet, but it's a good tool to have at your belt.</p>
 

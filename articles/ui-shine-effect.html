@@ -85,13 +85,13 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <h2>Fighting Entropy In Unity — UI Shine Effect</h2>
-
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*qwpagYja8zh1lyukute-Jw.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*qwpagYja8zh1lyukute-Jw.png" alt="UI button with a sweeping shine effect using the old mask-and-animate approach"></figure>
 
 <p>A sweeping shine effect on UI buttons is a common effect in games. There are several ways to do it. For years, I’ve been doing it by placing masks on the button and then animating a UI element from one side to the other.</p>
 
-<p>This causes performance problems and scalability headaches. Masks force Unity to render additional draw calls and create overdraw issues where pixels get drawn multiple times. Each masked element requires its own rendering pass, which quickly adds up when you have multiple UI elements with shine effects. Beyond performance, this approach doesn’t scale well — when you resize buttons or change layouts, you need to manually adjust animation curves and timing for each element. It’s a maintenance nightmare that becomes exponentially worse as your UI grows in complexity.</p>
+<p>This causes performance problems and scalability headaches. Masks force Unity to render additional draw calls and create overdraw issues where pixels get drawn multiple times. Each masked element requires its own rendering pass, which quickly adds up when you have multiple UI elements with shine effects.</p>
+
+<p>Beyond performance, this approach doesn’t scale well — when you resize buttons or change layouts, you need to manually adjust animation curves and timing for each element. It’s a maintenance nightmare that becomes exponentially worse as your UI grows in complexity.</p>
 
 <p>When trying to work around these issues by creating the effect via shader, I ran into a different problem. Shine effects work by creating a line that sweeps across the UI element from one edge to the other. To do this properly, the shader needs to know “where am I on this button?” — is this pixel at the left edge (0%), the middle (50%), or the right edge (100%)?</p>
 
@@ -101,15 +101,15 @@
 
 <p>When you try to apply effects like shine to regular sprites that aren’t part of an atlas, it’s pretty simple. The UV coordinates (which tell the shader where each pixel is on the texture) are nice and uniform, spanning the full 0–1 range across your image.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*d5a6NVr_Ge6GkCuqHL-H2w.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*d5a6NVr_Ge6GkCuqHL-H2w.png" alt="Diagram showing clean 0-1 UV coordinates on a non-atlased sprite"></figure>
 
 <p>But when your sprites come from a texture atlas? The UV coordinates only cover the tiny portion of the atlas where your sprite exists. Instead of clean 0–1 coordinates, you might get something like 0.2–0.4 on the X axis and 0.6–0.8 on the Y axis.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*maQg-k0JiOvaRQ-dlW-g3A.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*maQg-k0JiOvaRQ-dlW-g3A.png" alt="Diagram showing UV coordinates constrained to a small sub-region on an atlased sprite"></figure>
 
 <p>This creates a problem for effects like shine that need to sweep across the entire UI element. But since we don't know the coordinates of the ui element, we don't know how to move the shine. If we use a shine shader that would work on a non-Atlased sprite on an atlased sprite, it will just appear to glow on and off. Each sprite from the atlas will look different depending on its size and position.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*RZGZkP7OTiSiAZclg-CISg.gif" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*RZGZkP7OTiSiAZclg-CISg.gif" alt="Animation showing a shine effect glitching inconsistently across atlased UI sprites"></figure>
 
 <p>The solution involves two parts: Your mesh has 4 UV channels, even though we usually use one. First, we need to create proper UV coordinates that ignore the atlas constraints, and second, we need a shader that uses those coordinates to create our shine effect.</p>
 
@@ -117,7 +117,6 @@
 
 <p>Here’s our first piece of the puzzle — a script that calculates clean, uniform UV coordinates for our atlased images:</p>
 
-<p>csharp</p>
 
 <pre class="language-csharp"><code class="language-csharp">[ExecuteAlways]
 public class ImageUVCreator : BaseMeshEffect
@@ -126,7 +125,7 @@ public class ImageUVCreator : BaseMeshEffect
 
     public override void ModifyMesh(VertexHelper vertexHelper)
     {
-        var vertices = new List<UIVertex>();
+        var vertices = new List&lt;UIVertex&gt;();
         vertexHelper.GetUIVertexStream(vertices);
 
         // Find the actual bounds of our UI element
@@ -166,35 +165,39 @@ public class ImageUVCreator : BaseMeshEffect
 
 <p>What this script does is pretty clever. Instead of relying on Unity’s atlas-constrained UV coordinates, it looks at where each vertex sits in 3D space and creates brand new UV coordinates based on that.</p>
 
-<p>The key part is the<code>InverseLerp</code>function, which takes a position and figures out where it sits between the minimum and maximum bounds as a percentage. So if a pixel is exactly in the middle of our UI element, it gets UV coordinates of (0.5, 0.5) — nice and predictable.</p>
+<p>The key part is the <code>InverseLerp</code> function, which takes a position and figures out where it sits between the minimum and maximum bounds as a percentage. So if a pixel is exactly in the middle of our UI element, it gets UV coordinates of (0.5, 0.5) — nice and predictable.</p>
 
-<p>The<code>ModifyMesh</code>function only executes when the UI element is built or modified - not every frame. This happens during layout rebuilds, which typically occur when you change the UI (resize, enable/disable, etc.). For static UI elements, this means zero ongoing performance cost.</p>
+<p>The <code>ModifyMesh</code> function only executes when the UI element is built or modified - not every frame. This happens during layout rebuilds, which typically occur when you change the UI (resize, enable/disable, etc.). For static UI elements, this means zero ongoing performance cost.</p>
 
 <h2 class="section-heading">Part 2: The Shine Shader</h2>
 
 <p>Now that we have clean UV coordinates, we can create our shine effect. The shader is surprisingly straightforward in concept:</p>
 
-<p><strong>The Basic Idea:</strong>Think of the shine as an invisible line that moves across your UI element over time. The shader looks at each pixel and asks “how close am I to that moving line?” Pixels that are close to the line get brightened up (the shine effect), while pixels far away stay their normal color.</p>
+<p><strong>The Basic Idea:</strong> Think of the shine as an invisible line that moves across your UI element over time. The shader looks at each pixel and asks “how close am I to that moving line?” Pixels that are close to the line get brightened up (the shine effect), while pixels far away stay their normal color.</p>
 
-<p><strong>How it moves:</strong>The line starts off-screen on one side and sweeps across to the other side. We use Unity’s built-in time to make this movement automatic and smooth. You can control how fast it moves and at what angle it sweeps.</p>
+<p><strong>How it moves:</strong> The line starts off-screen on one side and sweeps across to the other side. We use Unity’s built-in time to make this movement automatic and smooth. You can control how fast it moves and at what angle it sweeps.</p>
 
-<p><strong>Keeping it contained:</strong>This is where our custom UV coordinates become crucial. The shader reads these custom coordinates from the UV1 channel (texcoord1) that our script created, rather than the original UV coordinates that were constrained by the atlas. The shader uses them to make sure the shine only appears within the boundaries of your UI element, not spilling over onto other parts of the screen.</p>
+<p><strong>Keeping it contained:</strong> This is where our custom UV coordinates become crucial. The shader reads these custom coordinates from the UV1 channel (texcoord1) that our script created, rather than the original UV coordinates that were constrained by the atlas. The shader uses them to make sure the shine only appears within the boundaries of your UI element, not spilling over onto other parts of the screen.</p>
 
-<p><strong>Customization options:</strong>The shader gives you control over the shine color, how bright it is, how wide the shine band is, and the angle it sweeps at. You can even turn it on and off, or trigger it to start at specific times.</p>
+<p><strong>Customization options:</strong> The shader gives you control over the shine color, how bright it is, how wide the shine band is, and the angle it sweeps at. You can even turn it on and off, or trigger it to start at specific times.</p>
 
 <p>The clever part is that no matter how your button is sized or positioned on screen, the shine will always sweep cleanly from edge to edge because we’re using those normalized UV coordinates we created earlier.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*i6kG6q1l8SQdjF4CQDIYDg.gif" alt=""></figure><h2 class="section-heading">How to Use It</h2>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*i6kG6q1l8SQdjF4CQDIYDg.gif" alt="Animation showing the finished shine effect sweeping cleanly from edge to edge"></figure>
+
+<h2 class="section-heading">How to Use It</h2>
 
 <p>Setting this up is straightforward:</p>
 
-<strong>Add the UV Creator</strong>: Attach the ImageUVCreator script to any UI Image component that uses a sprite from a texture atlas</li>
-<strong>Apply the shader</strong>: Create a new Material using the “UI/Shine” shader</li>
-<strong>Assign the material</strong>: Apply your new material to the Image component</li>
-<strong>Tweak the settings</strong>: Adjust the shine properties in the material inspector until it looks just right</li>
-<p>Below, you can see a simple shine shader</p>
+<ol>
+  <li><strong>Add the UV Creator</strong>: Attach the ImageUVCreator script to any UI Image component that uses a sprite from a texture atlas</li>
+  <li><strong>Apply the shader</strong>: Create a new Material using the “UI/Shine” shader</li>
+  <li><strong>Assign the material</strong>: Apply your new material to the Image component</li>
+  <li><strong>Tweak the settings</strong>: Adjust the shine properties in the material inspector until it looks just right</li>
+</ol>
+<p>Below, you can see a simple shine shader:</p>
 
-<pre><code class="language-cpp">Shader "UI/ShineImproved"
+<pre class="language-hlsl"><code class="language-hlsl">Shader "UI/ShineImproved"
 {
     Properties
     {
@@ -402,8 +405,10 @@ public class ImageUVCreator : BaseMeshEffect
 <!-- PRISM.JS FOR SYNTAX HIGHLIGHTING -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-hlsl.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
 
 </body>
 </html>

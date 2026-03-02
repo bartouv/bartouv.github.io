@@ -83,8 +83,6 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <h2>Fighting Entropy In Unity — Taming Git Chaos with Custom Commands</h2>
-
 <p>You’re working on a feature branch in Unity when you need to quickly switch to<code>develop</code>to check something. Your working directory has uncommitted changes and experimental code.</p>
 
 <p>Most Unity developers reach for their Git GUI — Fork, SourceTree, GitKraken, or Unity’s built-in version control. Click through the interface: stash changes, switch branch, pull latest, deal with any conflicts. These tools are great for visualizing your repository state and handling complex merges, but they still require you to manually orchestrate multi-step workflows.</p>
@@ -101,7 +99,7 @@
 
 <p>This means you can take a complex sequence like:</p>
 
-<pre><code class="language-lua">git reset --hard
+<pre class="language-bash"><code class="language-bash">git reset --hard
 git clean -fd
 git fetch
 git checkout develop
@@ -112,7 +110,7 @@ git status</code></pre>
 
 <p>And turn it into a single, reliable command:</p>
 
-<pre><code class="language-typescript">git dev</code></pre>
+<pre class="language-bash"><code class="language-bash">git dev</code></pre>
 
 <p>These aren’t just aliases — they’re full bash scripts (or batch files on Windows) that can include logic, error handling, and Unity-specific operations. You can pass parameters, check for conditions, and even integrate with Unity’s project structure.</p>
 
@@ -122,7 +120,7 @@ git status</code></pre>
 
 <p>Unity development amplifies Git’s complexity. You’re constantly switching between feature branches, dealing with binary assets that don’t merge cleanly, and working with files that Unity regenerates (like<code>.meta</code>files and project settings). A simple branch switch can turn into a multi-step process:</p>
 
-<pre class="language-csharp"><code class="language-csharp"># The manual ritual
+<pre class="language-bash"><code class="language-bash"># The manual ritual
 git add .
 git stash
 git checkout develop
@@ -286,8 +284,6 @@ git status</code></pre>
 <p>Custom Git commands won’t solve all your version control problems, but they’ll eliminate the most common sources of friction and error. When switching branches becomes as simple as<code>git dev</code>, you can focus on what matters: building your game instead of fighting your tools.</p>
 
 <p>The next time Git’s verbosity gets in the way of your Unity development flow, you’ll know exactly how to fight back.</p>
-
-<p></p>
 
 
 

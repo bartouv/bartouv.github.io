@@ -83,8 +83,6 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <h2>An Intro to rendering</h2>
-
 <h2 class="section-heading">What is a frame?</h2>
 
 <p></p>
@@ -105,7 +103,7 @@
 
 <p>Shaders draw 3d objects. These 3d objects are comprised of many points called vertices. The vertices together make up a Mesh. In order to draw the 3d object the shader needs information on each vertex and it also needs the shader properties which are in the material that the 3d object has.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*2jxZ9FYn6ZRtqObSZ7D2Mw.png" alt=""></figure><h2 class="section-heading">What data does a vertex have?</h2>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*2jxZ9FYn6ZRtqObSZ7D2Mw.png" alt="Diagram illustrating a 3D object composed of vertices forming a mesh"></figure><h2 class="section-heading">What data does a vertex have?</h2>
 
 <p>The Vertex is comprised of a Vertex Position, Vertex Color, Vertex Normal, and UV.</p>
 
@@ -114,7 +112,7 @@
 <li>Vertex Normal — Each vertex has a vector that tells us the direction that that vertex is looking at. Since vectors are composed of x,y, and z values we can translate them to R.G.B values and display them as colors:</li>
 </ul>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*8nxDAw8VFdqY0P0uk5GusA.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*8nxDAw8VFdqY0P0uk5GusA.png" alt="Visualization of vertex normals displayed as RGB color values on a 3D mesh"></figure>
 
 <ul><li>UV — is a set of coordinates for mapping  a 2D texture onto a 3D object. This is achieved by mapping each vertex of the 3D object to a specific location on the texture. The UV coordinates range from (0,0) to (1,1) and define the position of a vertex on the texture. The name “UV Mapping” comes from the use of the letters “U” and “V” to denote the axes of the 2D texture. This is because the axes of the 3D object are already defined as “X”, “Y”, and “Z” in model space, and “W” is used for calculating quaternion rotations, a common operation in computer graphics.</li>
 </ul>
@@ -125,7 +123,7 @@
 
 <h2 class="section-heading">What Is the queue on the material?</h2>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*u9Xda0ugL0p3IoHEQHvFiQ.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*u9Xda0ugL0p3IoHEQHvFiQ.png" alt="Unity Material Inspector showing the render queue settings for controlling draw order"></figure>
 
 <p>The render queue in Unity determines the order in which objects are drawn in the scene. Objects are drawn from lowest to highest render queue value, allowing for control over the draw order and achieving various visual effects:</p>
 
@@ -149,17 +147,13 @@
 
 <h2 class="section-heading">What Is a sorting order?</h2>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*rGiZRkn_wTPoX3AQQqux8g.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*rGiZRkn_wTPoX3AQQqux8g.png" alt="Unity Inspector showing the Sorting Order field on a Renderer component"></figure>
 
 <p>You might have noticed that canvases in unity have sorting order. If you’ll look closely you'll see that renderers also have this Renderer.sortingOrder. The sorting order is another step in the order of rendering. Things are drawn from the lowest to the highest order of that queue. So an object of sorting order 1 on queue 3000 will be drawn before an object of sorting order 12 on queue 3000, but an object of sorting order 33 on queue 3000 will be drawn before an object of sorting order 2 on queue 3003.</p>
 
-<h2 class="section-heading"></h2>
-
 <h2 class="section-heading">How does the GPU know that it needs to use a shader to draw something?</h2>
 
-<p>In a previous <a href="https://medium.com/@galbartouv/fighting-entropy-in-unity-optimizing-draw-calls-c98230aa9ad3" target="_blank" rel="noopener">post</a>I explained this, but ill recap. In each frame draw calls are requested between the CPU to the GPU. The draw call contains the vertex data and the shader properties of the object that needs to be drawn. some times several of these calls are batched and sent together.</p>
-
-<h2 class="section-heading">I</h2>
+<p>In a previous <a href="https://medium.com/@galbartouv/fighting-entropy-in-unity-optimizing-draw-calls-c98230aa9ad3" target="_blank" rel="noopener">post</a> I explained this, but ill recap. In each frame draw calls are requested between the CPU to the GPU. The draw call contains the vertex data and the shader properties of the object that needs to be drawn. some times several of these calls are batched and sent together.</p>
 
 <p>Shader Object — A Shader object is a Unity-specific way of working with shader programs; it is a wrapper for shader programs and other information. It lets you define multiple shader programs in the same file, and tell Unity how to use them.</p>
 
@@ -168,7 +162,7 @@
 <ul><li><a href="https://vulkan-tutorial.com/Drawing_a_triangle/Graphics_pipeline_basics/Introduction" target="_blank" rel="noopener">In what order do the shader programs run?</a></li>
 </ul>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*LSGm4klFqcStzTh-" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*LSGm4klFqcStzTh-" alt="Diagram showing the order of shader program stages in the graphics pipeline"></figure>
 
 <p>Vertex shader — All the data about the mesh that needs to be rendered is passed to the vertex shader also known as the vertex function. The vertex shader is responsible for the calculation of the vertex position in screen space. It can manipulate the mesh data for creating special effects. It can change the mesh position, color, vertex Normals, and texture mapping.</p>
 
@@ -190,7 +184,7 @@
 
 <p>In Unity 2019+ if you use the <a href="https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@11.0/manual/" target="_blank" rel="noopener">URP</a> or <a href="https://unity.com/srp/High-Definition-Render-Pipeline" target="_blank" rel="noopener">HDRP</a> you have the choice of using Shader Graph. Shader Graph is a visual scripting tool that lets you write shaders visually without complex syntax. While Shader Graph is missing features and cant replace writing shader in <a href="https://docs.unity3d.com/Manual/SL-ShadingLanguage.html" target="_blank" rel="noopener">HLSL</a> completely, it does make our lives much easier in kin to writing in C# and not Assembly. Under the hood, Shader Graph converts the Visual scripts of the shader to HLSL. It’s just much easier to understand. I’ll note that for best performance it’s probably best to write directly in HLSL since Shader Graph auto generation does not necessarily create the most optimized HLSL code.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*DPJvMCJqY7X0ZC_e" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*DPJvMCJqY7X0ZC_e" alt="Screenshot of Unity Shader Graph showing a visual shader network with connected nodes"></figure>
 
 <p>Shader Graph is not the only Visual Shader editor there are others like <a href="https://github.com/FreyaHolmer/ShaderForge" target="_blank" rel="noopener">Shader Forge</a> by <a href="https://twitter.com/FreyaHolmer" target="_blank" rel="noopener">Freya Holmer</a> and <a href="http://amplify.pt/unity/amplify-shader-editor/" target="_blank" rel="noopener">Amplify Shader</a>.</p>
 
@@ -209,12 +203,12 @@
 <ul><li>Back — Don’t render polygons facing away from the viewer (default).:</li>
 </ul>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*ktcBzFC2U4mYFqOg" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*ktcBzFC2U4mYFqOg" alt="Diagram showing back-face culling removing polygons facing away from the camera"></figure>
 
 <ul><li>Front — Don’t render polygons facing toward the viewer. Used for turning objects inside-out.</li>
 </ul>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*fxDCgpU9vh7pCN7t" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*fxDCgpU9vh7pCN7t" alt="Diagram showing front-face culling removing polygons facing toward the camera"></figure>
 
 <ul><li>Off — Disables culling — all faces are drawn. Used for special effects.</li>
 </ul>

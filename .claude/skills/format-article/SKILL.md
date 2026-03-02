@@ -14,9 +14,17 @@ Use this skill when:
 
 When this skill is invoked, follow these steps:
 
+### 0. Resolve the Article File
+
+The user may pass a slug, partial name, or title. Resolve it to a file:
+
+1. Try `articles/{arg}.html` directly — use it if it exists
+2. If not found, fuzzy-match `{arg}` against filenames and `<title>` tags of files in `articles/`
+3. If still ambiguous (multiple close matches), list candidates and ask the user which one to use
+
 ### 1. Read the Article
 
-Read the specified article HTML file from the `articles/` directory.
+Read the resolved article HTML file from the `articles/` directory.
 
 ### 2. Analyze Structure & Hierarchy
 
@@ -27,8 +35,9 @@ Check for proper heading hierarchy:
 - ✗ **Problem**: Skipping heading levels (H1 → H3 without H2)
 - ✗ **Problem**: Multiple H1 tags in article body
 - ✗ **Problem**: Using headings for styling instead of semantic structure
+- ✗ **Problem**: H2/H3 inside `<article class="article-body">` missing `class="section-heading"` — this is a required CSS class for this blog. Common on the first heading of each section and on Medium imports.
 
-**Action**: Report any heading hierarchy issues and suggest fixes.
+**Action**: Report any heading hierarchy issues and suggest fixes. All H2 and H3 elements inside `<article class="article-body">` must have `class="section-heading"`.
 
 ### 3. Check Paragraph Length
 
@@ -81,12 +90,43 @@ For long articles (>1000 words), check for visual breaks:
 For technical articles with code:
 - ✓ **Good**: Code wrapped in `<pre><code>` blocks
 - ✓ **Good**: Inline code for short snippets (`<code>`)
+- ✓ **Good**: Proper indentation and newlines preserved
+- ✓ **Good**: HTML entities used for `<` and `>` inside code (`&lt;`, `&gt;`)
 - ✗ **Problem**: Code in plain paragraphs
 - ✗ **Problem**: Missing language specification for syntax highlighting
+- ✗ **Problem**: Collapsed/minified code — all whitespace stripped, keywords run together (e.g. `publicclassCardConfig`, `privatestring`, `privatebool`). Common with Medium imports.
+- ✗ **Problem**: Double colons `::` appearing before code blocks (Medium artifact — should be a single colon `:` or removed entirely)
+- ✗ **Problem**: Shader code (Unity ShaderLab/HLSL) tagged as `language-cpp` — should be `language-hlsl`
+- ✗ **Problem**: Article missing `prism-hlsl.min.js` script when it contains HLSL shader blocks
 
-**Action**: Report any code formatting issues.
+**Language reference for Prism.js classes (all from cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/):**
+| Code type | Class | Script to load |
+|---|---|---|
+| C# | `language-csharp` | `prism-csharp.min.js` |
+| HLSL / Unity ShaderLab | `language-hlsl` | `prism-c.min.js` then `prism-hlsl.min.js` (hlsl extends c — both required) |
+| GLSL | `language-glsl` | `prism-glsl.min.js` |
+| Bash / shell | `language-bash` | `prism-bash.min.js` |
+| YAML | `language-yaml` | `prism-yaml.min.js` |
 
-### 9. Link Quality
+Both the `<pre>` and `<code>` tags need the class: `<pre class="language-hlsl"><code class="language-hlsl">...</code></pre>`.
+
+When fixing shader code language, also add the corresponding `<script>` tag to the article's Prism.js script block if it isn't already there.
+
+**Action**: Report any code formatting issues. If collapsed code is found, reformat it with proper indentation, newlines, and spacing. Reconstruct the correct C# (or other language) formatting based on context. Use `&lt;` and `&gt;` for angle brackets inside HTML code blocks. Replace any `::` before code blocks with `:`. Fix incorrect language classes (especially `language-cpp` on shader code — use `language-hlsl` instead).
+
+### 9. Medium Import Artifact Check
+
+Check specifically for artifacts introduced by Medium imports:
+
+- ✗ **Empty alt text**: `alt=""` on `<figure><img>` — auto-fix with descriptive text based on surrounding context (caption, nearby headings, or code content)
+- ✗ **Collapsed/duplicate heading**: An H2 whose text matches or closely echoes the article's `<title>` — remove it (the page title already appears in `.article-title`)
+- ✗ **Unicode spaces in headings**: Hair space (U+200A) or non-breaking space (U+00A0) inside heading text — replace with regular spaces
+- ✗ **Double colons before code blocks**: `::` preceding a `<pre>` — replace with single colon `:`
+- ✗ **Missing `<figure>` wrapper**: Bare `<img>` not wrapped in `<figure>` — wrap it in `<figure>...</figure>`
+
+**Action**: List all Medium import artifacts found. These are always safe to fix automatically.
+
+### 10. Link Quality
 
 Check links in article:
 - Verify links use descriptive anchor text (not "click here")
@@ -95,7 +135,7 @@ Check links in article:
 
 **Action**: Report any link quality issues.
 
-### 10. Generate Formatting Report
+### 11. Generate Formatting Report
 
 Provide a structured report:
 
@@ -132,12 +172,14 @@ If user requests formatting fixes (not just analysis):
 
 1. **Ask for confirmation** before making changes
 2. **Apply fixes** in order of priority:
-   - Fix heading hierarchy issues (high priority)
-   - Break up overly long paragraphs (high priority)
-   - Convert prose lists to HTML lists (medium priority)
-   - Add emphasis to key terms (low priority)
+   1. Fix collapsed/minified code blocks (high — unreadable)
+   2. Fix heading hierarchy + add missing `class="section-heading"` (high)
+   3. Clean up Medium import artifacts: duplicate headings, unicode spaces, double colons, empty alt text (high)
+   4. Break up overly long paragraphs (medium)
+   5. Convert prose lists to HTML lists (medium)
+   6. Add emphasis to key terms (low)
 3. **Preserve content**: NEVER change the actual content, meaning, or information
-4. **Report changes**: List all modifications made
+4. **Apply all at once**: When the user confirms, apply ALL identified fixes in a single pass — do NOT re-ask for confirmation on each individual change. Report a summary of what was changed after.
 
 ## Best Practices Reference
 
@@ -146,6 +188,7 @@ If user requests formatting fixes (not just analysis):
 - H2: Major sections (Introduction, Implementation, Conclusion, etc.)
 - H3: Subsections within H2s
 - Never skip heading levels
+- All H2/H3 inside `.article-body` must have `class="section-heading"`
 
 ### Paragraphs
 - Keep to 2-3 sentences (40-75 words) for web reading

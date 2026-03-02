@@ -85,11 +85,9 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <h2>Fighting Entropy In Unity — Optimizing Draw Calls</h2>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*ER_uz6k95MPDTyVbnzwWnQ.png" alt="Article banner: Optimizing Draw Calls"></figure>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*ER_uz6k95MPDTyVbnzwWnQ.png" alt=""></figure>
-
-<h2>What Are Draw Calls?</h2>
+<h2 class="section-heading">What Are Draw Calls?</h2>
 
 <p>As a game developer, it's important to learn about draw calls because they can have a big impact on the performance and success of your game. By optimizing the number of draw calls in your game, you can make it run smoothly on a wider range of devices, which means you can reach a larger audience and potentially make more money.</p>
 
@@ -101,19 +99,19 @@
 
 <p>Draw calls are sent for each frame we want to render. We usually want between 30 to 60 frames per second. We can calculate the time we have to draw the frame as the fps/1000ms since there is 1000 ms in a second. And so our budget is between 32.666 to 16.666 ms to render a frame. During that 32 to 16 ms we also need to do all the game logic and other stuff so each ms is important. If we don’t manage to do all the tasks we have in the budgeted time we will have frame drops with visual stutters.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*Us4GBW1JubvMfhQa.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*Us4GBW1JubvMfhQa.png" alt="Diagram illustrating the frame time budget for 30fps and 60fps rendering"></figure>
 
-<h2>Batching Techniques</h2>
+<h2 class="section-heading">Batching Techniques</h2>
 
 <p>Imagine that the CPU and GPU are connected by a road. Draw calls are like cars traveling on this road from CPU city to GPU city to get to work. When there are only a few cars on the road, traffic flows smoothly and everyone arrives at their destination efficiently.</p>
 
 <p>However, as the number of cars increases, traffic slows down and it takes longer for everyone to reach their destination. In this situation, we can alleviate the traffic by encouraging more people to use public transportation, such as buses. In the context of draw calls, "batching" is equivalent to using a bus. By grouping multiple draw calls into a single batch, we can reduce the number of cars on the road and improve performance by reducing the amount of traffic on the road between the CPU and GPU.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*fjsaSIIDl7bK_gb7.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*fjsaSIIDl7bK_gb7.png" alt="Diagram showing draw call batching as buses grouping multiple calls for efficient CPU to GPU transport"></figure>
 
 <p>Batching is the process of combining multiple draw calls into a single one to reduce traffic between the CPU and GPU, much like how a bus is used to transport a large number of people in a single vehicle. There are several different types of batching, each with its benefits and limitations.</p>
 
-<h3>Types of Batching</h3>
+<h3 class="section-heading">Types of Batching</h3>
 
 <ul>
   <li><strong>Static batching</strong> is a process in Unity that combines multiple static meshes into a single mesh at import time, in order to reduce the number of draw calls made to the GPU and improve rendering performance. The combined mesh is stored in memory on the CPU and can be accessed by the GPU when needed. However, static batching is only applied to static meshes and cannot be used with meshes that are animated or modified at runtime.</li>
@@ -131,13 +129,13 @@
 
 <p>Batching is an effective way to reduce traffic between the CPU and GPU, but it is not without its costs. All batching techniques, except static batching, require processing on every frame, which can impact performance. To minimize the impact of batching on performance, we can try to reduce the number of draw calls that need to be batched. One way to do this is to “bake” or combine meshes that are unnecessarily separated. This would be like asking our draw calls to work from home.</p>
 
-<figure><img src="https://cdn-images-1.medium.com/max/800/0*Qw0BAd_yh_uvl5d3.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/0*Qw0BAd_yh_uvl5d3.png" alt="Diagram showing mesh baking as a technique to reduce the number of draw calls"></figure>
 
-<h2>Culling Techniques</h2>
+<h2 class="section-heading">Culling Techniques</h2>
 
 <p>It's important to understand culling as well. Culling are techniques of reducing the things we need to render. It's like telling people who are sick to stay home cause they aren't needed today and we don't want to waste energy on them.</p>
 
-<h3>Types of Culling</h3>
+<h3 class="section-heading">Types of Culling</h3>
 
 <ul>
   <li><strong>Frustum Culling</strong> is a technique where we don't try to render things that are out of the camera's frustum.</li>
@@ -149,7 +147,7 @@
   <li><strong>Occlusion Culling</strong> is a technique involving discarding objects or triangles that are not visible to the user due to being occluded by other objects in the scene. This can be done using a variety of techniques, such as bounding volume hierarchies or occlusion maps.</li>
 </ul>
 
-<h2>Optimizing Draw Call Content</h2>
+<h2 class="section-heading">Optimizing Draw Call Content</h2>
 
 <p>We also have to consider the content of the draw calls. While you might think that having 10 draw calls is better than 100 you might be wrong, because it depends. Each draw call is a unique butterfly. Each one has data it passes and a shader it wants to use. The more complex the shader the more time it will take the GPU to calculate what color the pixel should be. So like cars the more weight they carry the slower they are. If we want to go faster we have to give our draw call a weight and simplify what it does.</p>
 
@@ -157,7 +155,7 @@
 
 <p>The shader has a vertex function and a fragment function. The fragment function goes over each fragment and the vertex function goes over each vertex. So the fewer fragments and verts we have the less work there is to be done. We can create models which have a low poly count that way we reduce the number of verts, and we can lower the render scale in that way instead of a fragment being 1:1 with the screen pixel we can have a single fragment represent 4 or more pixels, this will make it so there are fewer fragments overall.</p>
 
-<h2>Summary</h2>
+<h2 class="section-heading">Summary</h2>
 
 <p>So if we sum this up if we want our road to be clear we need to reduce traffic. To reduce traffic we replace cars with public transportation like buses. Each bus has its own limitations so we need to make sure that we make It so we can pack as many people as we can on a bus. To improve the traffic, even more, we ask people to work from home. And lastly, we ask people who commute to diet so they weigh less. I think that sums it up nicely.</p>
 

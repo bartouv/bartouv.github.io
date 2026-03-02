@@ -83,8 +83,6 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <h2>Fighting Entropy In Unity — Seeded Random for Debugging</h2>
-
 <p>In this post, we will explore how we can enhance our debugging process by implementing seeded random number generation. We will demonstrate how this approach can lead to reproducible bugs that are easy to track down and fix, ultimately saving us hours of frustration and reducing the number of unfixable issues in our project.</p>
 
 <h2 class="section-heading">Why is randomness horrible for debugging?</h2>
@@ -105,9 +103,9 @@
 
 <p>Seeded random number generation is a way of controlling randomness by providing an initial value (called a seed) that determines the entire sequence of random numbers that follow. This allows for predictable randomness — the same seed will always produce the exact same sequence of “random” numbers, making bugs reproducible while maintaining the appearance of chaos for players.</p>
 
-<p>If we take a look at what seeded randomness looks like:::::</p>
+<p>If we take a look at what seeded randomness looks like:</p>
 
-<pre><code class="language-scss">// Using the same seed always produces the same sequence
+<pre class="language-csharp"><code class="language-csharp">// Using the same seed always produces the same sequence
 Random.InitState(12345);
 Debug.Log(Random.Range(0, 100)); // Will always output: 64
 Debug.Log(Random.Range(0, 100)); // Will always output: 12
@@ -123,7 +121,7 @@ Debug.Log(Random.Range(0, 100)); // 89 again</code></pre>
 
 <p>Our problem is that we need control over our debugging environment while maintaining true randomness for players. Imagine that we’re creating a debugging system that has logic in it. In that way, we will be able to reproduce any bug scenario by simply using the same seed that caused the original issue.</p>
 
-<p>Let’s take a look at some example code. In the class below we have an example of a random service that can switch between development (seeded) and production (truly random) modes::</p>
+<p>Let’s take a look at some example code. In the class below we have an example of a random service that can switch between development (seeded) and production (truly random) modes:</p>
 
 <pre class="language-csharp"><code class="language-csharp">public static class RandomService
 {
@@ -265,7 +263,7 @@ Debug.Log(Random.Range(0, 100)); // 89 again</code></pre>
 
 <p>Now that we have our seeded random system, we want to create editor tools that make it easy to test different scenarios and switch between seeds during development.</p>
 
-<pre><code class="language-cpp">#if UNITY_EDITOR
+<pre class="language-csharp"><code class="language-csharp">#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine;</code></pre>
 
@@ -315,7 +313,7 @@ using UnityEngine;</code></pre>
 
 <h2 class="section-heading">Real-world example: Enemy spawner system</h2>
 
-<p>Let’s look at how this system transforms a typical enemy spawner from an unpredictable debugging nightmare into a controlled, reproducible system::</p>
+<p>Let’s look at how this system transforms a typical enemy spawner from an unpredictable debugging nightmare into a controlled, reproducible system:</p>
 
 <pre class="language-csharp"><code class="language-csharp">public class EnemySpawner : MonoBehaviour
 {
@@ -406,7 +404,7 @@ using UnityEngine;</code></pre>
 
 <p>The key is to use conditional compilation to automatically handle this decision:</p>
 
-<pre><code class="language-cpp">#if UNITY_EDITOR || DEVELOPMENT_BUILD
+<pre class="language-csharp"><code class="language-csharp">#if UNITY_EDITOR || DEVELOPMENT_BUILD
     // Use seeded random for debugging
     SetFixedSeed(12345);
 #else

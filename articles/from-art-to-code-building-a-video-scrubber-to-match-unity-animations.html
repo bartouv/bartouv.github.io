@@ -83,10 +83,6 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <h2></h2>
-
-<h2 class="section-heading">From Art to Code: Building a Video Scrubber to Match Unity Animations</h2>
-
 <p>Ever had an artist hand you a video and say "just recreate this in Unity"? Yeah, me too. Eyeballing animations is hell.</p>
 
 <h2 class="section-heading">The Problem</h2>
@@ -101,12 +97,14 @@
 
 <p>The VideoScrubber tool does three things:</p>
 
-Loads a reference video in Unity</li>
-Lets you scrub frame-by-frame with a slider</li>
-Overlays your Unity scene on top for direct comparison</li>
+<ul>
+<li>Loads a reference video in Unity</li>
+<li>Lets you scrub frame-by-frame with a slider</li>
+<li>Overlays your Unity scene on top for direct comparison</li>
+</ul>
 <p>Here's the core scrubbing logic:</p>
 
-<pre><code class="language-cpp">public void ScrubToProgress(float normalizedTime)
+<pre class="language-csharp"><code class="language-csharp">public void ScrubToProgress(float normalizedTime)
 {
     if (!isVideoReady || videoDuration <= 0) return;
     
@@ -124,7 +122,7 @@ Overlays your Unity scene on top for direct comparison</li>
 
 <p>Two-way binding between the slider and video:</p>
 
-<pre><code class="language-typescript">void Update()
+<pre class="language-csharp"><code class="language-csharp">void Update()
 {
     if (!isVideoReady) return;
     
@@ -144,11 +142,13 @@ Overlays your Unity scene on top for direct comparison</li>
 
 <h2 class="section-heading">The Workflow</h2>
 
-Drop video into Unity</li>
-Set up VideoScrubber component</li>
-Create an Animation Clip that animates the progress field from 0 to 1</li>
-Play your Unity animation - the video plays in perfect sync</li>
-Match timing precisely by adjusting keyframes</li>
+<ol>
+<li>Drop video into Unity</li>
+<li>Set up VideoScrubber component</li>
+<li>Create an Animation Clip that animates the progress field from 0 to 1</li>
+<li>Play your Unity animation - the video plays in perfect sync</li>
+<li>Match timing precisely by adjusting keyframes</li>
+</ol>
 <p>What used to take hours now takes minutes. No more alt-tabbing or guessing.</p>
 
 <h2 class="section-heading">Why This Matters</h2>

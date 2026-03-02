@@ -83,8 +83,6 @@
   <div class="article-container">
 
     <!-- ARTICLE CONTENT GOES HERE -->
-    <h2>Fighting Entropy In Development — Taming the PR Chaos</h2>
-
 <p>How a simple Python script saved our team from drowning in forgotten PRs and turned chaos into clarity</p>
 
 <p>As a development team grows, so does the chaos. Pull requests pile up, reviewers forget to respond, authors lose track of feedback, and that critical bug fix sits in limbo for days. Sound familiar? If you've ever found yourself scrolling through endless GitHub notifications trying to figure out which PRs need attention, you're not alone.</p>
@@ -150,7 +148,7 @@
 
 <p>The script is built around several key functions that each handle a specific aspect of PR analysis:</p>
 
-<pre><code class="language-typescript">def get_change_requester(owner, repo, pr_number):
+<pre class="language-python"><code class="language-python">def get_change_requester(owner, repo, pr_number):
     # Identifies who requested changes by parsing review history
     # Returns the most recent reviewer who requested changes
     
@@ -170,7 +168,7 @@ def build_plaintext_section(title, emoji, pr_list, include_reviewer=False):
 <strong>Analyze review status</strong>— Look at the most recent review decision</li>
 <strong>Count comments</strong>— Differentiate between fresh PRs and those with feedback</li>
 <strong>Combine signals</strong>— Use multiple data points to determine true status</li>
-<pre><code class="language-typescript">if latest == "APPROVED":
+<pre class="language-python"><code class="language-python">if latest == "APPROVED":
     waiting_to_be_merged.append(pr)
 elif latest == "CHANGES_REQUESTED":
     stuck_in_review.append(pr)
@@ -185,7 +183,7 @@ elif comments_count > 0:
 
 <p>One of our favorite features is the automatic DM system for stuck PRs:</p>
 
-<pre><code class="language-typescript"># DM authors of stuck PRs with specific reviewer information
+<pre class="language-python"><code class="language-python"># DM authors of stuck PRs with specific reviewer information
 for author, prs in stuck_by_author.items():
     message_lines = [f"👋 Hey {mention}, you have {len(prs)} PR(s) stuck in review:"]
     for pr in sort_prs(prs):
@@ -247,6 +245,7 @@ for author, prs in stuck_by_author.items():
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 
 </body>
 </html>

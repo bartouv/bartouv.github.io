@@ -86,10 +86,10 @@
 
     <p>Handling complex inheritance hierarchies in Unity's serialization system is a recurring challenge in production game development. When you need to serialize polymorphic objects — objects that share a base type but have different implementations — Unity's default serialization system can feel limiting.</p>
 
-    <h2>The Challenge</h2>
+    <h2 class="section-heading">The Challenge</h2>
     <p>Unity's serialization system was designed for simplicity and performance, but it struggles with polymorphism out of the box. When you have a base class or interface and multiple derived types, you need a strategy to persist that data while maintaining type information.</p>
 
-    <h2>Four Approaches</h2>
+    <h2 class="section-heading">Four Approaches</h2>
     <p>This article compares four different approaches to serializing polymorphic objects in Unity:</p>
 
     <ul>
@@ -101,27 +101,88 @@
 
     <p>Each approach has trade-offs in terms of Inspector usability, performance, maintainability, and scalability.</p>
 
-    <h2>Fighting Entropy In Unity — Taming Polymorphic Serialization</h2>
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*8xMRZ0I5aSL_Jr7GrmVygA.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*8xMRZ0I5aSL_Jr7GrmVygA.png" alt="Unity Inspector showing a List of CardAction with empty object slots, unable to display polymorphic type properties"></figure>
 
 <p>You’re making a card game about a goblin developers struggling with bugs and deadlines. Your “Coffee” card should give your goblin focus while also causing anxiety (because, well, it’s coffee). You’ve built a clean system where each card has a list of actions — some reduce anxiety, others add focus, and a few apply debuffs like “Call of the Bathroom.”</p>
 <p>Your polymorphic design is solid. Each action type has its own class with specific properties. The code compiles beautifully. Then you try to configure your cards in Unity’s inspector.</p>
 <p>The<code>List<CardAction></code>field appears, but then the reality hits… Unity can't show you the individual action properties. You’re left staring at a list of empty object slots, unable to set up even a simple coffee card. How do you serialize a list of polymorphic objects on a ScriptableObject without losing your sanity?</p>
 <h2 class="section-heading">Approach 1: The Monolithic Class</h2>
 <p>The traditional approach: abandon polymorphism entirely and cram everything into one massive class.</p>
-<pre class="language-csharp"><code class="language-csharp">[CreateAssetMenu(fileName = "CardConfig", menuName = "Cards/CardConfig")]publicclassCardConfig : ScriptableObject{    [SerializeField] privatestring cardName;    [SerializeField] privateint energyCost;    [SerializeField] private List<CardAction> actions;}[Serializable]publicclassCardAction{    [SerializeField] private CardActionType actionType;// Damage action fields    [SerializeField, ShowIf("actionType", CardActionType.Damage)] privateint damageAmount;    [SerializeField, ShowIf("actionType", CardActionType.Damage)] private DamageType damageType;// Healing action fields      [SerializeField, ShowIf("actionType", CardActionType.Healing)]privateint healAmount;    [SerializeField, ShowIf("actionType", CardActionType.Healing)]privatebool canOverheal;// Energy action fields    [SerializeField, ShowIf("actionType", CardActionType.Energy)]privateint energyGain;    [SerializeField, ShowIf("actionType", CardActionType.Energy)]privatebool isPermanent;// And so on for every action type...}</code></pre>
+<pre class="language-csharp"><code class="language-csharp">[CreateAssetMenu(fileName = "CardConfig", menuName = "Cards/CardConfig")]
+public class CardConfig : ScriptableObject
+{
+    [SerializeField] private string cardName;
+    [SerializeField] private int energyCost;
+    [SerializeField] private List&lt;CardAction&gt; actions;
+}
+
+[Serializable]
+public class CardAction
+{
+    [SerializeField] private CardActionType actionType;
+
+    // Damage action fields
+    [SerializeField, ShowIf("actionType", CardActionType.Damage)] private int damageAmount;
+    [SerializeField, ShowIf("actionType", CardActionType.Damage)] private DamageType damageType;
+
+    // Healing action fields
+    [SerializeField, ShowIf("actionType", CardActionType.Healing)] private int healAmount;
+    [SerializeField, ShowIf("actionType", CardActionType.Healing)] private bool canOverheal;
+
+    // Energy action fields
+    [SerializeField, ShowIf("actionType", CardActionType.Energy)] private int energyGain;
+    [SerializeField, ShowIf("actionType", CardActionType.Energy)] private bool isPermanent;
+
+    // And so on for every action type...
+}</code></pre>
 
 <p>This is what it looks like without the Show If attributes …</p>
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*5e6MUJCKoQf5AmUtP3F7Yg.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*5e6MUJCKoQf5AmUtP3F7Yg.png" alt="Unity Inspector showing the monolithic CardAction class with all fields for every action type visible simultaneously, creating a cluttered inspector"></figure>
 
 <p>This approach violates the Single Responsibility Principle so hard it should be a crime. Every time you add a new action type, you modify this class. Your switch statement grows longer. Your inspector becomes cluttered with irrelevant fields. Runtime performance suffers from type checking.</p>
 <p>But it works. And sometimes, when deadlines loom and entropy presses in, “it works” is enough.</p>
 <h2 class="section-heading">Approach 2: Individual ScriptableObjects</h2>
 <p>Make each action type its own ScriptableObject. Clean architecture at the cost of workflow hell.</p>
-<pre class="language-csharp"><code class="language-csharp">// Base classpublicabstractclassCardAction : ScriptableObject{publicabstractvoidExecute();}// Derived types[CreateAssetMenu(menuName = "Actions/Damage Action")]publicclassDamageAction : CardAction{    [SerializeField] privateint damageAmount;    [SerializeField] private DamageType damageType;publicoverridevoidExecute() { /* damage logic */ }}[CreateAssetMenu(menuName = "Actions/Heal Action")]publicclassHealAction : CardAction{    [SerializeField] privateint healAmount;    [SerializeField] privatebool canOverheal;publicoverridevoidExecute() { /* heal logic */ }}//...// Other Card Actions//...// CardConfig references these[CreateAssetMenu(fileName = "CardConfig", menuName = "Cards/CardConfig")]publicclassCardConfig : ScriptableObject{    [SerializeField] privatestring cardName;    [SerializeField] privateint energyCost;    [SerializeField] private List<CardAction> actions; // References to other ScriptableObjects}</code></pre>
+<pre class="language-csharp"><code class="language-csharp">// Base class
+public abstract class CardAction : ScriptableObject
+{
+    public abstract void Execute();
+}
+
+// Derived types
+[CreateAssetMenu(menuName = "Actions/Damage Action")]
+public class DamageAction : CardAction
+{
+    [SerializeField] private int damageAmount;
+    [SerializeField] private DamageType damageType;
+
+    public override void Execute() { /* damage logic */ }
+}
+
+[CreateAssetMenu(menuName = "Actions/Heal Action")]
+public class HealAction : CardAction
+{
+    [SerializeField] private int healAmount;
+    [SerializeField] private bool canOverheal;
+
+    public override void Execute() { /* heal logic */ }
+}
+
+//...
+// Other Card Actions
+//...
+
+// CardConfig references these
+[CreateAssetMenu(fileName = "CardConfig", menuName = "Cards/CardConfig")]
+public class CardConfig : ScriptableObject
+{
+    [SerializeField] private string cardName;
+    [SerializeField] private int energyCost;
+    [SerializeField] private List&lt;CardAction&gt; actions; // References to other ScriptableObjects
+}</code></pre>
 
 <p>This is what it looks like:</p>
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*aSOfojg0J7e8ACvF8jmezQ.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*aSOfojg0J7e8ACvF8jmezQ.png" alt="Unity Inspector showing a CardConfig ScriptableObject referencing individual CardAction asset files via object fields"></figure>
 
 <p>Your architecture is beautiful. Each action is focused and maintainable. True polymorphism works perfectly. Version control loves you.</p>
 <p>Your designers hate you.</p>
@@ -129,13 +190,62 @@
 <p><strong>When to use:</strong>You want a good, “SOLID” solution, and you hate whoever needs to do the configuration.</p>
 <h2 class="section-heading">Approach 3: SerializeReference</h2>
 <p>Unity 2019.3 brought salvation: [<a href="https://docs.unity3d.com/6000.2/Documentation/ScriptReference/SerializeReference.html" target="_blank" rel="noopener">SerializeReference</a>]. True polymorphic serialization with inline editing. The promised land.</p>
-<pre class="language-csharp"><code class="language-csharp">// Base class (regular class, not ScriptableObject)[Serializable] publicabstractclassCardAction{publicabstract CardActionType ActionType { get; }publicabstractvoidExecute();}// Derived types[Serializable] publicclassDamageAction : CardAction{    [SerializeField] privateint damageAmount;    [SerializeField] private DamageType damageType;publicoverride CardActionType ActionType => CardActionType.Damage;publicoverridevoidExecute() { /* damage logic */ }}// CardConfig with the magic attribute[CreateAssetMenu(fileName = "CardConfig", menuName = "Cards/CardConfig")]publicclassCardConfig : ScriptableObject{    [SerializeField] privatestring cardName;    [SerializeField] privateint energyCost;    [SerializeReference] private List<CardAction> actions; // ✨ Magic happens herepublicvoidExecuteActions()    {foreach (var action in actions)        {            action.Execute(); // True polymorphism!        }    }}</code></pre>
+<pre class="language-csharp"><code class="language-csharp">// Base class (regular class, not ScriptableObject)
+[Serializable]
+public abstract class CardAction
+{
+    public abstract CardActionType ActionType { get; }
+    public abstract void Execute();
+}
+
+// Derived types
+[Serializable]
+public class DamageAction : CardAction
+{
+    [SerializeField] private int damageAmount;
+    [SerializeField] private DamageType damageType;
+
+    public override CardActionType ActionType =&gt; CardActionType.Damage;
+    public override void Execute() { /* damage logic */ }
+}
+
+// CardConfig with the magic attribute
+[CreateAssetMenu(fileName = "CardConfig", menuName = "Cards/CardConfig")]
+public class CardConfig : ScriptableObject
+{
+    [SerializeField] private string cardName;
+    [SerializeField] private int energyCost;
+    [SerializeReference] private List&lt;CardAction&gt; actions; // ✨ Magic happens here
+
+    public void ExecuteActions()
+    {
+        foreach (var action in actions)
+        {
+            action.Execute(); // True polymorphism!
+        }
+    }
+}</code></pre>
 
 <p>Here is what it looks like</p>
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*x-Jq8uQ_qZUmbuwgbmzaAQ.png" alt=""></figure><h2 class="section-heading">Understanding SerializeReference</h2>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*x-Jq8uQ_qZUmbuwgbmzaAQ.png" alt="Unity Inspector showing SerializeReference in action with polymorphic CardAction types displayed inline with their specific fields"></figure><h3 class="section-heading">Understanding SerializeReference</h3>
 <p>SerializeReference fundamentally changes how Unity handles serialization. Instead of serializing objects by value (copying all their data), it serializes them by reference while preserving type information.</p>
 <p>Here’s what Unity stores internally:</p>
-<pre class="language-yaml"><code class="language-yaml">references:version:2RefIds:-rid:6603490093986218049type: {class:AddFocusAction, ns:Scripts.Cards, asm:Assembly-CSharp}data:amount:3-rid:6603490093986218050type: {class:GainAnxietyAction, ns:Scripts.Cards, asm:Assembly-CSharp}data:amount:2-rid:6603490093986218052type: {class:ApplyDebuffAction, ns:Scripts.Cards, asm:Assembly-CSharp}data:debuffName:CalloftheBathroomduration:3</code></pre>
+<pre class="language-yaml"><code class="language-yaml">references:
+  version: 2
+  RefIds:
+  - rid: 6603490093986218049
+    type: {class: AddFocusAction, ns: Scripts.Cards, asm: Assembly-CSharp}
+    data:
+      amount: 3
+  - rid: 6603490093986218050
+    type: {class: GainAnxietyAction, ns: Scripts.Cards, asm: Assembly-CSharp}
+    data:
+      amount: 2
+  - rid: 6603490093986218052
+    type: {class: ApplyDebuffAction, ns: Scripts.Cards, asm: Assembly-CSharp}
+    data:
+      debuffName: Call of the Bathroom
+      duration: 3</code></pre>
 
 <p>Unity assigns each SerializeReference object a unique ID and stores the full type name (class, namespace, assembly) to recreate the correct type during deserialization.</p>
 <p>This enables:</p>
@@ -147,7 +257,7 @@
 </ul>
 
 <p>But there’s a catch. There’s always a catch.</p>
-<h2 class="section-heading">The SerializeReference Fragility Problem</h2>
+<h3 class="section-heading">The SerializeReference Fragility Problem</h3>
 <p>SerializeReference is powerful but fragile. Unity stores type names as strings. If it can’t find the exact type during deserialization, references become null.<strong>Silently.</strong></p>
 <p>What breaks everything:</p>
 
@@ -160,13 +270,53 @@
 <p>One careless refactor can destroy all your data with no warning. Your carefully configured cards become lists of null references overnight.</p>
 <p>You’ll also need custom editors for a good user experience. Unity’s built-in inspector can’t handle SerializeReference fields elegantly on its own.</p>
 <p><strong>When to use:</strong>When you're part of a small dev team that wants minimal asset hell, and you know you're not going to do many refactors.</p>
-<h2 class="section-heading">Path 4: The Hybrid Solution</h2>
+<h2 class="section-heading">Approach 4: The Hybrid Solution</h2>
 <p>What if you could have clean ScriptableObject architecture AND inline editing? You can.</p>
 <p>This approach uses individual ScriptableObjects but with a custom editor that creates the illusion of inline editing. You get the best of both worlds.</p>
-<pre class="language-csharp"><code class="language-csharp">[CustomEditor(typeof(CardConfig))]publicclassCardConfigEditor : UnityEditor.Editor{privatereadonly Dictionary<CardAction, SerializedObject> _actionSerializedObjects = new();publicoverride VisualElement CreateInspectorGUI()    {var root = new VisualElement();// Standard card fields        CreateCoreFields(root);// Magic: inline editing of referenced ScriptableObjects        CreateInlineActionEditor(root);return root;    }private VisualElement CreateInlineActionEditor(VisualElement root)    {var actionsProperty = serializedObject.FindProperty("actions");for (int i = 0; i < actionsProperty.arraySize; i++)        {var actionRef = actionsProperty.GetArrayElementAtIndex(i);var actionObject = actionRef.objectReferenceValue as CardAction;if (actionObject != null)            {// Create SerializedObject for the referenced assetvar serializedAction = new SerializedObject(actionObject);// Display its properties inlinevar actionEditor = CreateInlinePropertyFields(serializedAction);                root.Add(actionEditor);            }        }return root;    }}</code></pre>
+<pre class="language-csharp"><code class="language-csharp">[CustomEditor(typeof(CardConfig))]
+public class CardConfigEditor : UnityEditor.Editor
+{
+    private readonly Dictionary&lt;CardAction, SerializedObject&gt; _actionSerializedObjects = new();
+
+    public override VisualElement CreateInspectorGUI()
+    {
+        var root = new VisualElement();
+
+        // Standard card fields
+        CreateCoreFields(root);
+
+        // Magic: inline editing of referenced ScriptableObjects
+        CreateInlineActionEditor(root);
+
+        return root;
+    }
+
+    private VisualElement CreateInlineActionEditor(VisualElement root)
+    {
+        var actionsProperty = serializedObject.FindProperty("actions");
+
+        for (int i = 0; i &lt; actionsProperty.arraySize; i++)
+        {
+            var actionRef = actionsProperty.GetArrayElementAtIndex(i);
+            var actionObject = actionRef.objectReferenceValue as CardAction;
+
+            if (actionObject != null)
+            {
+                // Create SerializedObject for the referenced asset
+                var serializedAction = new SerializedObject(actionObject);
+
+                // Display its properties inline
+                var actionEditor = CreateInlinePropertyFields(serializedAction);
+                root.Add(actionEditor);
+            }
+        }
+
+        return root;
+    }
+}</code></pre>
 
 <p>Here is what it looks like:</p>
-<figure><img src="https://cdn-images-1.medium.com/max/800/1*4W-iDnDTFQZcABSXV-mx9g.png" alt=""></figure>
+<figure><img src="https://cdn-images-1.medium.com/max/800/1*4W-iDnDTFQZcABSXV-mx9g.png" alt="Unity Inspector showing the hybrid custom editor with ScriptableObject actions displayed inline as if they were part of the same asset"></figure>
 
 <p>This custom editor creates SerializedObject wrappers for each referenced action and displays their properties inline. When you edit an action’s properties, you’re actually editing the individual asset file, but it feels like everything is in one place.</p>
 <p><strong>When to use:</strong>Teams that want clean architecture without workflow sacrifices, where refactoring safety is paramount. And that have the time to create custom editors.</p>
