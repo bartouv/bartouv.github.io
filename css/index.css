@@ -196,6 +196,20 @@
   color: var(--muted);
 }
 
+/* POST IMAGE */
+.post-image {
+  display: block;
+  width: calc(100% + 64px);
+  height: 180px;
+  object-fit: cover;
+  margin: -32px -32px 0 -32px;
+}
+
+.post-card.featured .post-image {
+  width: calc(100% + 32px);
+  margin: -32px 0 16px -32px;
+}
+
 /* POSTS GRID */
 .posts-grid {
   display: grid;
