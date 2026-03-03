@@ -18,7 +18,7 @@ const SharedComponents = {
   // Navigation with theme switcher
   navigation: `<!-- NAV -->
 <nav role="navigation" aria-label="Main navigation">
-  <div class="nav-logo">GB<span>/</span>DEV</div>
+  <div class="nav-logo">Gal Bartouv</div>
   <ul class="nav-links">
     <li><a href="../index.html#posts">Articles</a></li>
     <li><a href="../index.html#about">About</a></li>
@@ -141,7 +141,7 @@ const SharedComponents = {
   // Navigation for index page (with all 5 links using local anchors)
   navigationIndex: `<!-- NAV -->
 <nav role="navigation" aria-label="Main navigation">
-  <div class="nav-logo">GB<span>/</span>DEV</div>
+  <div class="nav-logo">Gal Bartouv</div>
   <ul class="nav-links">
     <li><a href="#posts">Articles</a></li>
     <li><a href="#podcast">Podcast</a></li>
