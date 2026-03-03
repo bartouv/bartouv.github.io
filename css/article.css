@@ -288,6 +288,14 @@
   margin-top: 8px;
 }
 
+/* COMMENTS */
+.comments-section {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 48px 80px;
+  border-top: 1px solid var(--border);
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .article-hero {
@@ -314,6 +322,10 @@
   .article-container pre {
     padding: 16px;
     font-size: 12px;
+  }
+
+  .comments-section {
+    padding: 0 24px 60px;
   }
 
   .article-share {
