@@ -87,6 +87,22 @@ const SharedComponents = {
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ffa850,#50a0ff)"></span>
         <span>Peach & Blue</span>
       </button>
+      <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#182030,#4898ff,#40e0cc)"></span>
+        <span>Cobalt</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#1a2c2a,#38d0b4,#ffb840)"></span>
+        <span>Teal & Gold</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#141c2c,#38c0f0,#7050f0)"></span>
+        <span>Deep Ocean</span>
+      </button>
+      <button class="theme-option" data-theme="p18" onclick="setTheme('p18')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#1c2630,#70d0ff,#ff7060)"></span>
+        <span>Arctic</span>
+      </button>
     </div>
 </nav>`,
 
@@ -212,6 +228,22 @@ const SharedComponents = {
       <button class="theme-option" data-theme="p13" onclick="setTheme('p13')">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#ffa850,#50a0ff)"></span>
         <span>Peach & Blue</span>
+      </button>
+      <button class="theme-option" data-theme="p15" onclick="setTheme('p15')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#182030,#4898ff,#40e0cc)"></span>
+        <span>Cobalt</span>
+      </button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#1a2c2a,#38d0b4,#ffb840)"></span>
+        <span>Teal & Gold</span>
+      </button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#141c2c,#38c0f0,#7050f0)"></span>
+        <span>Deep Ocean</span>
+      </button>
+      <button class="theme-option" data-theme="p18" onclick="setTheme('p18')">
+        <span class="theme-swatch" style="background:linear-gradient(135deg,#1c2630,#70d0ff,#ff7060)"></span>
+        <span>Arctic</span>
       </button>
     </div>
   </div>

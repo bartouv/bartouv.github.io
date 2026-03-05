@@ -29,8 +29,8 @@ function initRoleGlitch() {
     setTimeout(glitch, delay);
   }
 
-  // Start after the hero has fully animated in
-  setTimeout(schedule, 2500);
+  // Trigger on page show, then cycle randomly
+  setTimeout(glitch, 4000);
 }
 
 if (document.readyState === 'loading') {

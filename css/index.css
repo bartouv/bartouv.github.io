@@ -839,8 +839,8 @@
 }
 
 /* Per-element beam color and stagger */
-.featured-badge::after { background: color-mix(in srgb, var(--accent3) 30%, white); animation-delay: 3.5s; }
-.btn-primary::after    { background: color-mix(in srgb, var(--accent)  30%, white); animation-delay: 2s; }
+.featured-badge::after { background: color-mix(in srgb, var(--accent3) 60%, white); animation-delay: 3.5s; }
+.btn-primary::after    { background: color-mix(in srgb, var(--accent)  60%, white); animation-delay: 2s; }
 
 @keyframes btnScan {
   0%        { left: -80%; }
