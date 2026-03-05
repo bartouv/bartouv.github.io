@@ -1,17 +1,17 @@
 /* GB/DEV Unity Blog - Shared Styles */
 
 :root {
-  --bg: #170f28;
-  --bg2: #1d1432;
-  --bg3: #23193c;
-  --panel: #291e46;
-  --border: rgba(160, 80, 255, 0.15);
-  --accent: #bf5fff;
-  --accent2: #e040fb;
-  --accent3: #ff4db8;
-  --text: #ede8ff;
-  --muted: #b09ad0;
-  --dim: #4a3070;
+  --bg: #141c2c;
+  --bg2: #1a2438;
+  --bg3: #202c44;
+  --panel: #263450;
+  --border: rgba(56, 192, 240, 0.22);
+  --accent: #38c0f0;
+  --accent2: #7050f0;
+  --accent3: #60d0ff;
+  --text: #e4f2ff;
+  --muted: #6888b0;
+  --dim: #2e3c54;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
