@@ -1,6 +1,6 @@
 // Hero page dynamic effects
 
-// "Dev Blog" role text — the "o" in "Blog" occasionally loses its neon and flickers back on
+// "Dev Blog" role text — all letters flicker off and back on together
 function initRoleGlitch() {
   const role = document.querySelector('.hero h1 .role');
   if (!role) return;
@@ -11,18 +11,15 @@ function initRoleGlitch() {
     char === ' ' ? ' ' : `<span class="role-char">${char}</span>`
   ).join('');
 
-  // Spans: [D, e, v, B, l, o, g] — "o" is index 5 (space is not wrapped)
-  const bChar = role.querySelectorAll('.role-char')[5];
-  if (!bChar) return;
-
-  // o lives in the bright state by default
-  bChar.style.opacity = '1';
+  // Spans: [D, e, v, B, l, o, g] — pick "e" (1) and "o" (5)
+  const all = role.querySelectorAll('.role-char');
+  const chars = [all[1], all[5]];
+  if (!chars[0] || !chars[1]) return;
 
   function glitch() {
-    bChar.classList.add('glitching');
+    chars.forEach(char => char.classList.add('glitching'));
     setTimeout(() => {
-      bChar.classList.remove('glitching');
-      bChar.style.opacity = '1';
+      chars.forEach(char => char.classList.remove('glitching'));
       schedule(); // only schedule the next cycle after this one fully completes
     }, 7100);
   }
