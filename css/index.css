@@ -756,6 +756,101 @@
   line-height: 1.6;
 }
 
+/* ============================================================
+   DYNAMIC VISUAL EFFECTS
+   ============================================================ */
+
+/* Name neon glow — uses theme accent color */
+.hero h1 .name {
+  text-shadow: 0 0 4px var(--accent);
+}
+
+/* "Dev Blog" outline text — always-on neon glow, theme-aware */
+.hero h1 .role {
+  -webkit-text-stroke: 1px var(--accent);
+  filter: drop-shadow(0 0 8px var(--accent));
+}
+
+/* Individual char spans for JS-driven glitch */
+.role-char {
+  display: inline-block;
+}
+
+/* "B" in "Blog" — normally dim, neon-style ignition then back off */
+@keyframes charGlitch {
+  0%    { opacity: 1; }      /* fully on resting state */
+  1.5%  { opacity: 0.15; }   /* snaps dark */
+  2.5%  { opacity: 0.8; }    /* spark */
+  4%    { opacity: 0.15; }   /* dim */
+  50%   { opacity: 0.15; }   /* stable hold (~3s) */
+  51.5% { opacity: 0.8; }    /* spark */
+  52.5% { opacity: 0.15; }   /* dark */
+  54%   { opacity: 1; }      /* fully on */
+  100%  { opacity: 1; }      /* stays on */
+}
+
+.role-char.glitching {
+  animation: charGlitch 7s linear 1 forwards;
+}
+
+/* Avatar CRT scanline overlay */
+.avatar-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.1) 3px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  animation: scanFlicker 7s ease-in-out 2s infinite;
+}
+
+@keyframes scanFlicker {
+  0%, 85%, 91%, 95%, 100% { opacity: 1; }
+  88%  { opacity: 0.65; }
+  93%  { opacity: 0.8; }
+}
+
+/* Latest badge + CTA button — shared scanning beam setup */
+.featured-badge,
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.featured-badge::after,
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -80%;
+  width: 40%;
+  height: 200%;
+  transform: rotate(25deg);
+  animation: btnScan 7s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Per-element beam color and stagger */
+.featured-badge::after { background: color-mix(in srgb, var(--accent3) 30%, white); animation-delay: 3.5s; }
+.btn-primary::after    { background: color-mix(in srgb, var(--accent)  30%, white); animation-delay: 2s; }
+
+@keyframes btnScan {
+  0%        { left: -80%; }
+  40%, 100% { left: 180%; }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .hero { padding: 100px 24px 80px; }
