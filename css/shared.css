@@ -266,6 +266,10 @@ footer {
 
 .footer-links a:hover { color: var(--accent); }
 
+.footer-rss { display: flex; align-items: center; gap: 5px; }
+
+.nav-rss { display: flex; align-items: center; }
+
 /* THEME SWITCHER */
 .theme-switcher {
   position: relative;

@@ -20,7 +20,9 @@
       "Bash(if grep -q \"toggleThemePanel\\(false\\);\" \"$file\")",
       "Bash(du:*)",
       "Bash(cat:*)",
-      "WebFetch(domain:cdnjs.cloudflare.com)"
+      "WebFetch(domain:cdnjs.cloudflare.com)",
+      "Bash(git push:*)",
+      "Bash(xargs sed:*)"
     ]
   }
 }

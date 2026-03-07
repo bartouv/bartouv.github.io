@@ -5,7 +5,7 @@
     "category": "Fighting Entropy In Unity",
     "date": "2025-09",
     "readTime": "6 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity", "Serialization", "Polymorphism", "Unity Inspector", "Game Development"]
   },
   "ui-shine-effect.html": {
@@ -14,7 +14,7 @@
     "category": "UI Effects",
     "date": "2025-09",
     "readTime": "5 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity UI", "Shader Effects", "UI Animation", "Visual Effects", "Unity"]
   },
   "rectmask2d-performance.html": {
@@ -23,7 +23,7 @@
     "category": "Performance",
     "date": "2025-09",
     "readTime": "7 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Performance", "RectMask2D", "UI Optimization", "Unity UI", "Mobile Optimization"]
   },
   "input-locks.html": {
@@ -32,7 +32,7 @@
     "category": "Input Systems",
     "date": "2023-02",
     "readTime": "6 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Input", "Input Management", "Game Architecture", "State Management", "Unity"]
   },
   "optimizing-draw-calls.html": {
@@ -41,7 +41,7 @@
     "category": "Optimization",
     "date": "2023-02",
     "readTime": "8 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Optimization", "Draw Calls", "Batching", "SRP Batcher", "Rendering Performance"]
   },
   "turning-events-into-commands.html": {
@@ -50,7 +50,7 @@
     "category": "Architecture",
     "date": "2023-01",
     "readTime": "10 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Architecture", "Command Pattern", "Event Systems", "Game Design Patterns", "Software Architecture"]
   },
   "warnings.html": {
@@ -59,7 +59,7 @@
     "category": "Code Quality",
     "date": "2023-01",
     "readTime": "5 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity", "Compiler Warnings", "Code Quality", "csc.rsp", "Pragmas"]
   },
   "cameras-and-rendering.html": {
@@ -68,7 +68,7 @@
     "category": "Rendering",
     "date": "2023-01",
     "readTime": "12 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Camera", "Rendering Pipeline", "Culling", "Layers", "Unity Graphics"]
   },
   "shader-breakdown-recreating-night-in-the-woods-wobbly-dialogue-effect.html": {
@@ -77,7 +77,7 @@
     "category": "Shaders",
     "date": "2025-09",
     "readTime": "15 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Shaders", "Shader Graph", "Text Effects", "Vertex Displacement", "Game Effects"]
   },
   "making-games-responsive-to-different-devices.html": {
@@ -86,7 +86,7 @@
     "category": "Cross-Platform",
     "date": "2025-09",
     "readTime": "9 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Mobile", "Responsive Design", "Cross-Platform", "Screen Adaptation", "UI Scaling"]
   },
   "fighting-entropy-in-unity-structure-based-on-domains.html": {
@@ -95,7 +95,7 @@
     "category": "Architecture",
     "date": "2023-01",
     "readTime": "11 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Project Structure", "Domain-Driven Design", "Software Architecture", "Team Scaling", "Unity"]
   },
   "fighting-entropy-in-unity-seeded-random-for-debugging.html": {
@@ -104,7 +104,7 @@
     "category": "Debugging",
     "date": "2023-01",
     "readTime": "7 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Debugging", "Random Number Generation", "Seeded RNG", "Game Testing", "Reproducible Bugs"]
   },
   "fighting-entropy-in-development-taming-the-pr-chaos.html": {
@@ -113,7 +113,7 @@
     "category": "Development Process",
     "date": "2023-01",
     "readTime": "8 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Code Review", "Pull Requests", "Team Development", "Git Workflow", "Development Process"]
   },
   "fighting-entropy-in-git-custom-commands-that-actually-save-time.html": {
@@ -122,7 +122,7 @@
     "category": "Git",
     "date": "2023-01",
     "readTime": "6 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Git", "Git Aliases", "Unity Workflow", "Version Control", "Automation"]
   },
   "fighting-entropy-in-unity-taming-git-chaos-with-custom-commands.html": {
@@ -131,7 +131,7 @@
     "category": "Git",
     "date": "2023-01",
     "readTime": "9 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Git", "Unity Git Workflow", "Binary Files", "Merge Conflicts", "Version Control"]
   },
   "an-intro-to-rendering.html": {
@@ -140,7 +140,7 @@
     "category": "Rendering",
     "date": "2023-01",
     "readTime": "14 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Rendering", "Rendering Pipeline", "Graphics Programming", "Unity Graphics", "3D Rendering"]
   },
   "from-art-to-code-building-a-video-scrubber-to-match-unity-animations.html": {
@@ -149,7 +149,7 @@
     "category": "Tools",
     "date": "2023-01",
     "readTime": "10 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Editor", "Custom Tools", "Animation", "Video Scrubber", "Unity Development"]
   },
   "scene-tool.html": {
@@ -158,7 +158,7 @@
     "category": "Editor Tools",
     "date": "2023-01",
     "readTime": "8 min read",
-    "image": "https://galbartouv.com/Avatar.png",
+    "image": "https://bartouv.github.io/images/Avatar.png",
     "keywords": ["Unity Editor", "Scene View", "Level Design", "Custom Tools", "Unity Development"]
   }
 }

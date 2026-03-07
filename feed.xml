@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GB/DEV — Unity Dev Blog</title>
+    <link>https://bartouv.github.io</link>
+    <description>Unity game development articles on architecture, rendering, optimization, and tooling.</description>
+    <language>en-us</language>
+    <atom:link href="https://bartouv.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Taming Polymorphic Serialization — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/taming-polymorphic-serialization.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/taming-polymorphic-serialization.html</guid>
+      <description>Handling complex inheritance hierarchies in Unity's serialization system. Learn how to serialize polymorphic types cleanly without losing data or breaking the Inspector.</description>
+      <pubDate>Mon, 01 Sep 2025 00:00:00 GMT</pubDate>
+      <category>Fighting Entropy In Unity</category>
+    </item>
+    <item>
+      <title>UI Shine Effect — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/ui-shine-effect.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/ui-shine-effect.html</guid>
+      <description>Creating sweeping shine effects for Unity UI. Learn how to add polished, eye-catching visual feedback to your game's interface elements.</description>
+      <pubDate>Mon, 01 Sep 2025 00:00:00 GMT</pubDate>
+      <category>UI Effects</category>
+    </item>
+    <item>
+      <title>The Hidden Performance Killer: RectMask2D — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/rectmask2d-performance.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/rectmask2d-performance.html</guid>
+      <description>RectMask2D can silently destroy your UI performance. Discover why this seemingly innocent component causes massive overhead and what to do about it.</description>
+      <pubDate>Mon, 01 Sep 2025 00:00:00 GMT</pubDate>
+      <category>Performance</category>
+    </item>
+    <item>
+      <title>Shader Breakdown: Night in the Woods' Wobbly Dialogue Effect — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/shader-breakdown-recreating-night-in-the-woods-wobbly-dialogue-effect.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/shader-breakdown-recreating-night-in-the-woods-wobbly-dialogue-effect.html</guid>
+      <description>Recreating the distinctive wobbly text shader from Night in the Woods. A deep dive into vertex displacement and shader graph techniques.</description>
+      <pubDate>Mon, 01 Sep 2025 00:00:00 GMT</pubDate>
+      <category>Shaders</category>
+    </item>
+    <item>
+      <title>Making Games Responsive to Different Devices — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/making-games-responsive-to-different-devices.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/making-games-responsive-to-different-devices.html</guid>
+      <description>Building adaptive layouts that work across mobile, tablet, and desktop. Handling different aspect ratios and screen sizes gracefully.</description>
+      <pubDate>Mon, 01 Sep 2025 00:00:00 GMT</pubDate>
+      <category>Cross-Platform</category>
+    </item>
+    <item>
+      <title>Input Locks — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/input-locks.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/input-locks.html</guid>
+      <description>Managing complex input state across multiple systems. A clean pattern for preventing input conflicts in cutscenes, dialogs, and overlapping game states.</description>
+      <pubDate>Wed, 01 Feb 2023 00:00:00 GMT</pubDate>
+      <category>Input Systems</category>
+    </item>
+    <item>
+      <title>Optimizing Draw Calls — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/optimizing-draw-calls.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/optimizing-draw-calls.html</guid>
+      <description>Understanding batching, static meshes, and SRP batcher. Practical techniques to reduce draw calls and improve rendering performance in production.</description>
+      <pubDate>Wed, 01 Feb 2023 00:00:00 GMT</pubDate>
+      <category>Optimization</category>
+    </item>
+    <item>
+      <title>Turning Events into Commands — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/turning-events-into-commands.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/turning-events-into-commands.html</guid>
+      <description>Moving from loose event systems to structured command patterns. How to build maintainable, testable game architecture at scale.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Architecture</category>
+    </item>
+    <item>
+      <title>Warnings — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/warnings.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/warnings.html</guid>
+      <description>Over 600 compiler warnings at startup? Learn how to use Pragmas and the csc.rsp file to take back control of your Unity console.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Code Quality</category>
+    </item>
+    <item>
+      <title>Cameras and Rendering — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/cameras-and-rendering.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/cameras-and-rendering.html</guid>
+      <description>Deep dive into Unity's camera system and rendering pipeline. Understanding culling, layers, and multi-camera setups for complex scenes.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Rendering</category>
+    </item>
+    <item>
+      <title>Structure Based on Domains — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/fighting-entropy-in-unity-structure-based-on-domains.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/fighting-entropy-in-unity-structure-based-on-domains.html</guid>
+      <description>Organizing Unity projects by business domains instead of technical layers. A scalable approach to project structure for growing teams.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Architecture</category>
+    </item>
+    <item>
+      <title>Seeded Random for Debugging — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/fighting-entropy-in-unity-seeded-random-for-debugging.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/fighting-entropy-in-unity-seeded-random-for-debugging.html</guid>
+      <description>Making randomness reproducible for testing. Using seeded RNG to create deterministic gameplay that's easy to debug and test.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Debugging</category>
+    </item>
+    <item>
+      <title>Taming the PR Chaos — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/fighting-entropy-in-development-taming-the-pr-chaos.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/fighting-entropy-in-development-taming-the-pr-chaos.html</guid>
+      <description>Managing pull requests in game development teams. Strategies for code review, merge conflicts, and keeping development velocity high.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Development Process</category>
+    </item>
+    <item>
+      <title>Git Custom Commands That Actually Save Time — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/fighting-entropy-in-git-custom-commands-that-actually-save-time.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/fighting-entropy-in-git-custom-commands-that-actually-save-time.html</guid>
+      <description>Creating git aliases and custom commands for common Unity workflows. Automate repetitive tasks and streamline your version control.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Git</category>
+    </item>
+    <item>
+      <title>Taming Git Chaos with Custom Commands — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/fighting-entropy-in-unity-taming-git-chaos-with-custom-commands.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/fighting-entropy-in-unity-taming-git-chaos-with-custom-commands.html</guid>
+      <description>Advanced git workflows for Unity projects. Handle binary files, solve merge conflicts, and maintain clean commit history in team environments.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Git</category>
+    </item>
+    <item>
+      <title>An Intro to Rendering — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/an-intro-to-rendering.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/an-intro-to-rendering.html</guid>
+      <description>Understanding the fundamentals of rendering pipelines. From vertices to pixels, learn how Unity transforms your 3D scenes into images.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Rendering</category>
+    </item>
+    <item>
+      <title>Building a Video Scrubber to Match Unity Animations — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/from-art-to-code-building-a-video-scrubber-to-match-unity-animations.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/from-art-to-code-building-a-video-scrubber-to-match-unity-animations.html</guid>
+      <description>Creating custom editor tools to sync video references with animation timelines. Bridge the gap between concept art and implementation.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Tools</category>
+    </item>
+    <item>
+      <title>Scene Tool — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/scene-tool.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/scene-tool.html</guid>
+      <description>Building custom scene view tools for level design workflows. Extend Unity's editor to match your team's specific needs.</description>
+      <pubDate>Sun, 01 Jan 2023 00:00:00 GMT</pubDate>
+      <category>Editor Tools</category>
+    </item>
+  </channel>
+</rss>
