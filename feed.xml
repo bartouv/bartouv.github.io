@@ -7,6 +7,14 @@
     <language>en-us</language>
     <atom:link href="https://bartouv.github.io/feed.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Ghost Textures: The Hidden Cause of Unexplained Memory — Unity Dev Blog</title>
+      <link>https://bartouv.github.io/articles/ghost-textures-hidden-cause-of-unexplained-memory.html</link>
+      <guid isPermaLink="true">https://bartouv.github.io/articles/ghost-textures-hidden-cause-of-unexplained-memory.html</guid>
+      <description>Stale texture references inside .mat files silently drag unintended asset bundles into memory at runtime. Learn how to detect and eliminate ghost textures with a simple editor tool.</description>
+      <pubDate>Sun, 01 Mar 2026 00:00:00 GMT</pubDate>
+      <category>Performance</category>
+    </item>
+    <item>
       <title>Taming Polymorphic Serialization — Unity Dev Blog</title>
       <link>https://bartouv.github.io/articles/taming-polymorphic-serialization.html</link>
       <guid isPermaLink="true">https://bartouv.github.io/articles/taming-polymorphic-serialization.html</guid>

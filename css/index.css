@@ -234,15 +234,35 @@
 /* POST IMAGE */
 .post-image {
   display: block;
-  width: calc(100% + 64px);
+  width: 100%;
   height: 180px;
   object-fit: cover;
-  margin: -32px -32px 0 -32px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.post-card.featured {
+  align-items: stretch;
+}
+
+.featured-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.featured-image-wrap {
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 .post-card.featured .post-image {
-  width: calc(100% + 32px);
-  margin: -32px 0 16px -32px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  margin: 0;
+  display: block;
 }
 
 /* POSTS GRID */
@@ -383,10 +403,11 @@
 }
 
 .podcast-image {
-  width: 280px;
-  height: 280px;
+  width: calc(280px - 32px);
+  height: calc(280px - 32px);
   object-fit: cover;
-  border-right: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 16px;
 }
 
 .podcast-content {
@@ -464,10 +485,11 @@
 }
 
 .game-image {
-  width: 280px;
-  height: 280px;
+  width: calc(280px - 32px);
+  height: calc(280px - 32px);
   object-fit: cover;
-  border-right: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 16px;
 }
 
 .game-content {
@@ -550,10 +572,11 @@
 }
 
 .project-image {
-  width: 100%;
+  width: calc(100% - 32px);
   height: 200px;
   object-fit: cover;
-  border-bottom: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 16px 16px 0 16px;
 }
 
 .project-content {
@@ -899,10 +922,10 @@
   .post-card.featured { grid-template-columns: 1fr; }
 
   .podcast-card { grid-template-columns: 1fr; }
-  .podcast-image { width: 100%; height: 240px; border-right: none; border-bottom: 1px solid var(--border); }
+  .podcast-image { width: calc(100% - 32px); height: 240px; }
 
   .game-card { grid-template-columns: 1fr; }
-  .game-image { width: 100%; height: 240px; border-right: none; border-bottom: 1px solid var(--border); }
+  .game-image { width: calc(100% - 32px); height: 240px; }
 
   .projects-grid { grid-template-columns: 1fr; }
 

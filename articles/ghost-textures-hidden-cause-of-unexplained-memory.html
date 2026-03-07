@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EQQ75KMY2R"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-EQQ75KMY2R');
+</script>
+<link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ghost Textures and the Dependencies You Didn't Ask For — Gal Bartouv</title>
+<!-- SEO Meta Tags -->
+<meta name="description" content="Stale texture references inside .mat files silently drag unintended asset bundles into memory at runtime. Learn how to detect and eliminate ghost textures with a simple editor tool.">
+<meta name="keywords" content="Unity, Asset Bundles, Memory Optimization, Textures, Performance">
+
+<!-- Open Graph Tags -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ghost Textures and the Dependencies You Didn't Ask For — Unity Dev Blog">
+<meta property="og:description" content="Stale texture references inside .mat files silently drag unintended asset bundles into memory at runtime. Learn how to detect and eliminate ghost textures with a simple editor tool.">
+<meta property="og:url" content="https://bartouv.github.io/articles/ghost-textures-hidden-cause-of-unexplained-memory.html">
+<meta property="og:image" content="https://bartouv.github.io/images/ghost-textures.png">
+<meta property="article:published_time" content="2026-03-01">
+<meta property="article:author" content="Gal Bartouv">
+<meta property="article:section" content="Performance">
+<meta property="article:tag" content="Unity">
+
+<!-- Twitter Card Tags -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ghost Textures and the Dependencies You Didn't Ask For — Unity Dev Blog">
+<meta name="twitter:description" content="Stale texture references inside .mat files silently drag unintended asset bundles into memory at runtime. Learn how to detect and eliminate ghost textures with a simple editor tool.">
+<meta name="twitter:image" content="https://bartouv.github.io/images/ghost-textures.png">
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Ghost Textures and the Dependencies You Didn't Ask For",
+  "description": "Stale texture references inside .mat files silently drag unintended asset bundles into memory at runtime. Learn how to detect and eliminate ghost textures with a simple editor tool.",
+  "image": "https://bartouv.github.io/images/ghost-textures.png",
+  "author": {
+    "@type": "Person",
+    "name": "Gal Bartouv",
+    "url": "https://bartouv.github.io"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Gal Bartouv"
+  },
+  "datePublished": "2026-03-01",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://bartouv.github.io/articles/ghost-textures-hidden-cause-of-unexplained-memory.html"
+  }
+}
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/shared.css">
+<link rel="stylesheet" href="../css/article.css">
+<link rel="stylesheet" href="../css/prism-dracula.css">
+</head>
+<body>
+
+<div id="reading-progress-placeholder"></div>
+
+<div id="skip-link-placeholder"></div>
+
+<div id="bg-glows-placeholder"></div>
+
+<div id="nav-placeholder"></div>
+
+<main class="page-container" role="main" id="main-content">
+
+<!-- ARTICLE HERO -->
+<section class="article-hero">
+  <div class="article-header">
+    <a href="../index.html#posts" class="back-link">← Back to Articles</a>
+    <div class="article-tag">// Performance</div>
+    <h1 class="article-title">Ghost Textures and the Dependencies You Didn't Ask For</h1>
+    <div class="article-meta">
+      <span class="article-date">March 2026</span>
+      <span class="article-read-time">8 min read</span>
+    </div>
+  </div>
+</section>
+
+<!-- ARTICLE BODY -->
+<article class="article-body">
+  <div class="article-container">
+
+    <figure><img src="../images/ghost-textures.png" alt="Ghost Textures and the Dependencies You Didn't Ask For"></figure>
+
+    <p>You load a scene. It's a small level — a few props, simple materials, nothing heavy. But the memory profiler tells a different story. There are large textures loaded that have nothing to do with this scene. You didn't reference them. Nothing visible is using them. They're just there, consuming memory silently.</p>
+
+    <p>In a project with asset bundles, this compounds further. Bundles you never explicitly loaded show up as resident in memory. Bundles containing assets for completely different parts of the game. No errors, no warnings, no stack trace pointing at anything.</p>
+
+    <p>We hit this in our project. Hundreds of asset bundles, and the profiler kept showing unexpected ones in memory during gameplay. It took a while to find the cause. It wasn't a bug in our loading code. It wasn't a missing <code>Unload</code> call. It was ghost textures — stale references hiding inside material files, silently dragging unintended assets into memory wherever those materials were used.</p>
+
+    <h2 class="section-heading">How Unity Loads More Than You Asked For</h2>
+
+    <p>To understand the problem, you need to understand how Unity handles asset dependencies at runtime — starting at the scene level.</p>
+
+    <p>When you load a scene, Unity resolves every asset that scene references: meshes, materials, textures, audio clips. If a material used in the scene references a texture, that texture gets loaded too. This is expected. The problem is that Unity resolves dependencies based on what's <em>serialized</em>, not what's <em>actually used by the current shader</em>.</p>
+
+    <p>A material can hold texture references that are invisible in the Inspector — properties that belonged to a previous shader, never cleaned up, still sitting in the <code>.mat</code> file. Unity doesn't know they're irrelevant. It sees a reference, and it loads the asset.</p>
+
+    <p>In a project with asset bundles, this compounds further. When you load a bundle, Unity inspects its assets and resolves their dependencies. If a material in Bundle A has a stale texture reference pointing to an asset in Bundle B, Unity loads Bundle B — automatically, silently, without any warning. And if Bundle B contains materials with their own stale references, more bundles get pulled in. The chain grows.</p>
+
+    <p>You end up with bundles in memory you never loaded, for content that's never on screen, tracing back to a <code>.mat</code> file with a texture slot that hasn't been relevant since an artist switched shaders six months ago.</p>
+
+    <h2 class="section-heading">Seeing the Ghost</h2>
+
+    <p>Here's how easy it is to create this problem.</p>
+
+    <p>Take any material. Assign a shader that has a texture slot — say, a custom shader with a <code>_DetailAlbedoMap</code> property. Drag a texture into that slot. Now switch the material to a different shader, one that has no <code>_DetailAlbedoMap</code> property. The material looks correct. The new shader renders fine.</p>
+
+    <p>Open the <code>.mat</code> file in a text editor. You'll see something like this:</p>
+
+    <pre class="language-yaml"><code class="language-yaml">m_SavedProperties:
+  m_TexEnvs:
+  - _BumpMap:
+      m_Texture: {fileID: 0}
+  - _DetailAlbedoMap:
+      m_Texture: {fileID: 2800000, guid: a1b2c3d4e5f6..., type: 3}
+  - _MainTex:
+      m_Texture: {fileID: 0}</code></pre>
+
+    <p>That <code>_DetailAlbedoMap</code> entry — with a real guid pointing at a real texture asset — is still there. The current shader doesn't declare <code>_DetailAlbedoMap</code>. Unity won't render it. But the reference is serialized, and Unity's dependency resolver doesn't care whether the shader uses it. It sees a reference, it follows it.</p>
+
+    <p>That texture will be included in your asset bundle. And at runtime, the bundle containing that texture will be loaded whenever this material's bundle is loaded.</p>
+
+    <p>This is the ghost.</p>
+
+    <h2 class="section-heading">Why It Compounds</h2>
+
+    <p>In isolation, one ghost texture is a minor problem. In a real project, it compounds fast.</p>
+
+    <p>Materials get duplicated. Artists iterate on shaders. Projects migrate from Built-in to URP. Asset store imports arrive with materials configured for shaders you don't use. Every one of these workflows can introduce stale texture references, and none of them produce any visible errors.</p>
+
+    <p>In a project with hundreds of asset bundles, the dependency graph becomes a web of real and phantom edges. Bundles pull in other bundles that pull in more bundles. Your memory profiler shows allocations you can't explain. You spend hours auditing your loading code looking for a bug that isn't there.</p>
+
+    <p>The actual cause is sitting in a <code>.mat</code> file, four lines of YAML that nobody thought to clean up.</p>
+
+    <h2 class="section-heading">The Fix</h2>
+
+    <p>We can build a small editor tool that resolves this. It lives under <strong>Tools &gt; Clear Unused Textures From Materials</strong>.</p>
+
+    <pre class="language-csharp"><code class="language-csharp">public class ClearUnusedTexturesFromMaterials
+{
+    public const string KMenuPath = "Tools/Clear Unused Textures From Materials";
+
+    [MenuItem(KMenuPath)]
+    public static void ClearUnusedTextures()
+    {
+        var materials = EditorUtils.GetAssets&lt;Material&gt;();
+        foreach (var material in materials)
+        {
+            material.ClearUnusedTextures();
+        }
+        AssetDatabase.SaveAssets();
+    }
+}</code></pre>
+
+    <p>The real logic lives in the extension method:</p>
+
+    <pre class="language-csharp"><code class="language-csharp">public static void ClearUnusedTextures(this Material material)
+{
+    var shader = material.shader;
+    var propertiesCount = ShaderUtil.GetPropertyCount(shader);
+    var usedPropertyNames = new List&lt;string&gt;();
+
+    for (var propertyIndex = 0; propertyIndex &lt; propertiesCount; propertyIndex++)
+    {
+        var propertyName = ShaderUtil.GetPropertyName(shader, propertyIndex);
+        if (string.IsNullOrEmpty(propertyName))
+        {
+            continue;
+        }
+        usedPropertyNames.Add(propertyName);
+    }
+
+    foreach (var texturePropertyName in material.GetTexturePropertyNames())
+    {
+        var isUsedProperty = usedPropertyNames.Contains(texturePropertyName);
+        if (isUsedProperty)
+        {
+            continue;
+        }
+        material.SetTexture(texturePropertyName, null);
+        EditorUtility.SetDirty(material);
+    }
+}</code></pre>
+
+    <p>The algorithm is a straightforward diff:</p>
+
+    <ol>
+      <li>Ask the shader what properties it actually declares, using <code>ShaderUtil.GetPropertyCount</code> and <code>ShaderUtil.GetPropertyName</code>. This is the ground truth.</li>
+      <li>Ask the material what texture properties it has serialized, using <code>Material.GetTexturePropertyNames()</code>. This includes everything — current and leftover.</li>
+      <li>Compare. Any texture property on the material that isn't declared by the shader is a ghost. Null it out, mark the material dirty, let Unity re-serialize it clean.</li>
+    </ol>
+
+    <p>After running this and rebuilding bundles, those unexplained entries in the memory profiler were gone.</p>
+
+    <h2 class="section-heading">Make It Automatic</h2>
+
+    <p>The manual tool is a good first pass — but it won't stay solved. Ghost textures aren't a one-time cleanup problem. They're a workflow problem.</p>
+
+    <p>Any developer can accidentally introduce one. An artist swaps a shader, a material gets duplicated from an older prefab, a new asset store package lands with materials configured for a different render pipeline. None of these leave a warning. None of them show up in the Inspector. The stale reference appears silently, and by the time you notice unexpected bundles in the profiler, it's already in your build.</p>
+
+    <p>Running the tool manually before every build asks the team to remember something that has no visible feedback loop. Someone will forget. Someone new won't know to do it. The ghost will come back.</p>
+
+    <p>The real fix is to call <code>ClearUnusedTexturesFromMaterials.ClearUnusedTextures()</code> as the first step in your build pipeline, before any bundles are created. That way it doesn't matter what happened during development. Every build starts clean. Ghost textures never make it to a bundle, regardless of how they got there.</p>
+
+    <h2 class="section-heading">The Pattern Is Broader</h2>
+
+    <p>The same problem appears in ScriptableObjects and Prefabs. A common trigger is <code>[Flags]</code> enum conditionals — a field that's only shown when a certain flag is active:</p>
+
+    <pre class="language-csharp"><code class="language-csharp">[Flags]
+public enum GameMode { None = 0, Singleplayer = 1, Multiplayer = 2, Coop = 4 }
+
+public GameMode supportedModes;
+
+[ShowIf(nameof(supportedModes), GameMode.Multiplayer)]
+public GameObject multiplayerLobbyPrefab;</code></pre>
+
+    <p>You assign a prefab while <code>Multiplayer</code> is active. Later the flag gets removed — mode got cut, feature deprecated. The field disappears from the Inspector. It looks clean. But the reference is still serialized. Unity hid the field visually, it didn't remove the data.</p>
+
+    <h2 class="section-heading">The Takeaway</h2>
+
+    <p>The memory profiler showing unexpected assets — whether in scenes or bundles — is a symptom, not the problem. The problem is that Unity's dependency resolution is honest: it follows every reference it finds, whether or not that reference still reflects intent.</p>
+
+    <p>A stale texture slot in a <code>.mat</code> file is a real dependency as far as the runtime is concerned. It loads assets into scenes that don't need them. In a project with asset bundles, it pulls in entire bundles you never asked for, which pull in more bundles, compounding silently across your entire dependency graph. The same is true for any serialized reference hiding behind a flag that was turned off, a shader that was swapped, or a feature that was deprecated.</p>
+
+    <p>If you want to see how many ghosts are haunting your project, I put the full <strong>StaleReferenceScanner</strong> on GitHub: <a href="https://github.com/bartouv/unity-stale-reference-scanner">bartouv/unity-stale-reference-scanner</a>. It scans materials, ScriptableObjects, Prefabs, AnimatorControllers, and Timelines in one pass. Open it from <strong>Tools &gt; Stale Asset Scanner</strong> and run it — the results might surprise you.</p>
+
+
+  </div>
+</article>
+
+<div id="social-share-placeholder"></div>
+
+<!-- ARTICLE NAVIGATION -->
+<div class="article-nav">
+  <a href="taming-polymorphic-serialization.html" class="article-nav-next">
+    <div class="nav-label">Next →</div>
+    <div class="nav-title">Taming Polymorphic Serialization</div>
+  </a>
+</div>
+
+</main>
+
+<!-- COMMENTS -->
+<section class="comments-section">
+  <script src="https://giscus.app/client.js"
+          data-repo="bartouv/bartouv.github.io"
+          data-repo-id="R_kgDORczumg"
+          data-category="General"
+          data-category-id="DIC_kwDORczums4C3nbz"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="dark_dimmed"
+          data-lang="en"
+          crossorigin="anonymous"
+          async>
+  </script>
+</section>
+
+<div id="footer-placeholder"></div>
+
+<!-- THEME SCRIPT -->
+<script src="../js/shared-components.js"></script>
+<script src="../js/theme.js"></script>
+<script src="../js/mobile-nav.js"></script>
+
+<!-- ARTICLE FEATURES -->
+<script src="../js/article-share.js"></script>
+<script src="../js/reading-progress.js"></script>
+
+<!-- PRISM.JS FOR SYNTAX HIGHLIGHTING -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-csharp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-yaml.min.js"></script>
+
+
+</body>
+</html>

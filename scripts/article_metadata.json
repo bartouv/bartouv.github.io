@@ -1,4 +1,13 @@
 {
+  "ghost-textures-hidden-cause-of-unexplained-memory.html": {
+    "title": "Ghost Textures: The Hidden Cause of Unexplained Memory — Unity Dev Blog",
+    "description": "Stale texture references inside .mat files silently drag unintended asset bundles into memory at runtime. Learn how to detect and eliminate ghost textures with a simple editor tool.",
+    "category": "Performance",
+    "date": "2026-03",
+    "readTime": "8 min read",
+    "image": "https://bartouv.github.io/images/ghost-textures.png",
+    "keywords": ["Unity", "Asset Bundles", "Memory Optimization", "Textures", "Performance"]
+  },
   "taming-polymorphic-serialization.html": {
     "title": "Taming Polymorphic Serialization — Unity Dev Blog",
     "description": "Handling complex inheritance hierarchies in Unity's serialization system. Learn how to serialize polymorphic types cleanly without losing data or breaking the Inspector.",
