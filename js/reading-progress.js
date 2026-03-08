@@ -22,9 +22,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const doc = new DOMParser().parseFromString(html, 'text/html');
         const container = doc.querySelector('.article-container');
         if (!container) return;
-        const words = (container.innerText || '').trim().split(/\s+/).filter(Boolean).length;
+        const words = (container.textContent || '').trim().split(/\s+/).filter(Boolean).length;
         const minutes = Math.max(1, Math.round(words / WPM));
-        el.textContent = el.textContent.replace(/\d+ min read/, minutes + ' min read');
+        const label = minutes + ' min read';
+        if (/\d+ min read/.test(el.textContent)) {
+          el.textContent = el.textContent.replace(/\d+ min read/, label);
+        } else {
+          el.textContent = el.textContent + ' · ' + label;
+        }
       })
       .catch(() => {});
   });
