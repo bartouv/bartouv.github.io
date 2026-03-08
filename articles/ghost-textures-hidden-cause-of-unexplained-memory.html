@@ -99,8 +99,6 @@
 
     <p>In a project with asset bundles, this compounds further. Bundles you never explicitly loaded show up as resident in memory. Bundles containing assets for completely different parts of the game. No errors, no warnings, no stack trace pointing at anything.</p>
 
-    <p>We hit this in our project. Hundreds of asset bundles, and the profiler kept showing unexpected ones in memory during gameplay. It took a while to find the cause. It wasn't a bug in our loading code. It wasn't a missing <code>Unload</code> call. It was ghost textures: stale references hiding inside material files, silently dragging unintended assets into memory wherever those materials were used.</p>
-
     <h2 class="section-heading">How Unity Loads More Than You Asked For</h2>
 
     <p>Unity's dependency resolution starts at the scene level.</p>
@@ -138,9 +136,9 @@
 
     <h2 class="section-heading">Why It Compounds</h2>
 
-    <p>In isolation, one ghost texture is a minor problem. In a real project, it compounds fast.</p>
+    <p>One ghost texture on its own is barely worth caring about. In a real project, it compounds fast.</p>
 
-    <p>Materials get duplicated. Artists iterate on shaders. Projects migrate from the Built in render pipeline to URP. Asset store imports arrive with materials configured for shaders you don't use. Any of these can leave stale references behind, and none of them produce any visible errors.</p>
+    <p>Materials get duplicated, artists swap shaders, projects migrate from Built in to URP, asset store imports land with materials configured for pipelines you don't use — any of it can leave stale references behind, and none of it produces a visible error.</p>
 
     <p>In a project with hundreds of asset bundles, bundles start pulling in other bundles for no obvious reason. Your memory profiler shows allocations you can't explain. You spend hours auditing your loading code looking for a bug that isn't there.</p>
 
@@ -196,13 +194,7 @@
     }
 }</code></pre>
 
-    <p>Three steps:</p>
-
-    <ol>
-      <li>Ask the shader what properties it actually declares, using <code>ShaderUtil.GetPropertyCount</code> and <code>ShaderUtil.GetPropertyName</code>. This is the ground truth.</li>
-      <li>Ask the material what texture properties it has serialized, using <code>Material.GetTexturePropertyNames()</code>. This includes everything: current and leftover.</li>
-      <li>Compare. Any texture property on the material that isn't declared by the shader is a ghost. Null it out, mark the material dirty, let Unity serialize it clean.</li>
-    </ol>
+    <p>It asks the shader what properties it actually declares via <code>ShaderUtil.GetPropertyCount</code> and <code>ShaderUtil.GetPropertyName</code> — that's the ground truth. Then it checks what the material has serialized using <code>Material.GetTexturePropertyNames()</code>, which returns everything: properties the current shader uses, and ones it doesn't. Any property in the second list but not the first is a ghost. Null it out, mark the material dirty, let Unity serialize it clean.</p>
 
     <p>After running this and rebuilding bundles, those unexplained entries in the memory profiler were gone.</p>
 
@@ -218,7 +210,7 @@
 
     <h2 class="section-heading">The Pattern Is Broader</h2>
 
-    <p>The same problem appears in ScriptableObjects and Prefabs. A common trigger is <code>[Flags]</code> enum conditionals: a field that's only shown when a certain flag is active:</p>
+    <p>Materials aren't the only place this happens. ScriptableObjects and Prefabs have the same issue, and <code>[Flags]</code> enum conditionals are a common trigger — a field that only appears when a certain flag is set:</p>
 
     <pre class="language-csharp"><code class="language-csharp">[Flags]
 public enum GameMode { None = 0, Singleplayer = 1, Multiplayer = 2, Coop = 4 }
@@ -232,7 +224,7 @@ public GameObject multiplayerLobbyPrefab;</code></pre>
 
     <h2 class="section-heading">The Takeaway</h2>
 
-    <p>The memory profiler showing unexpected assets (whether in scenes or bundles) is a symptom, not the problem. The problem is that Unity's dependency resolution is honest: it follows every reference it finds, whether or not that reference still reflects intent.</p>
+    <p>Those unexpected entries in the memory profiler are a symptom, not the problem. The problem is that Unity's dependency resolution is honest: it follows every reference it finds, whether or not that reference still reflects intent.</p>
 
     <p>A stale texture slot in a <code>.mat</code> file is a real dependency as far as the runtime is concerned. It loads assets into scenes that don't need them. In a project with asset bundles, it pulls in entire bundles you never asked for, which pull in more bundles, compounding silently across the project. The same is true for any reference that outlived the context it was created in.</p>
 
