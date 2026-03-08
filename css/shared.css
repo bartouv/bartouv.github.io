@@ -131,6 +131,7 @@ nav {
 
 .nav-links {
   display: flex;
+  align-items: center;
   gap: 36px;
   list-style: none;
 }
@@ -269,6 +270,7 @@ footer {
 .footer-rss { display: flex; align-items: center; gap: 5px; }
 
 .nav-rss { display: flex; align-items: center; }
+.nav-rss::after { display: none; }
 
 /* THEME SWITCHER */
 .theme-switcher {

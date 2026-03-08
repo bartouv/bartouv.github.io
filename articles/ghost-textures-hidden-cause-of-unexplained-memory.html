@@ -103,9 +103,9 @@
 
     <h2 class="section-heading">How Unity Loads More Than You Asked For</h2>
 
-    <p>To understand the problem, you need to understand how Unity handles asset dependencies at runtime, starting at the scene level.</p>
+    <p>Unity's dependency resolution starts at the scene level.</p>
 
-    <p>When you load a scene, Unity resolves every asset that scene references: meshes, materials, textures, audio clips. If a material used in the scene references a texture, that texture gets loaded too. This is expected. The problem is that Unity resolves dependencies based on what's <em>serialized</em>, not what's <em>actually used by the current shader</em>.</p>
+    <p>When you load a scene, Unity resolves every asset that scene references: meshes, materials, textures, audio clips. If a material references a texture, that texture gets loaded too. The problem is that Unity resolves dependencies based on what's <em>serialized</em>, not what's <em>actually used by the current shader</em>.</p>
 
     <p>A material can hold texture references that are invisible in the Inspector, properties that belonged to a previous shader, never cleaned up, still sitting in the <code>.mat</code> file. Unity doesn't know they're irrelevant. It sees a reference, and it loads the asset.</p>
 
@@ -140,9 +140,9 @@
 
     <p>In isolation, one ghost texture is a minor problem. In a real project, it compounds fast.</p>
 
-    <p>Materials get duplicated. Artists iterate on shaders. Projects migrate from Built-in to URP. Asset store imports arrive with materials configured for shaders you don't use. Every one of these workflows can introduce stale texture references, and none of them produce any visible errors.</p>
+    <p>Materials get duplicated. Artists iterate on shaders. Projects migrate from the Built in render pipeline to URP. Asset store imports arrive with materials configured for shaders you don't use. Any of these can leave stale references behind, and none of them produce any visible errors.</p>
 
-    <p>In a project with hundreds of asset bundles, the dependency graph becomes a web of real and phantom edges. Bundles pull in other bundles that pull in more bundles. Your memory profiler shows allocations you can't explain. You spend hours auditing your loading code looking for a bug that isn't there.</p>
+    <p>In a project with hundreds of asset bundles, bundles start pulling in other bundles for no obvious reason. Your memory profiler shows allocations you can't explain. You spend hours auditing your loading code looking for a bug that isn't there.</p>
 
     <p>The actual cause is sitting in a <code>.mat</code> file, four lines of YAML that nobody thought to clean up.</p>
 
@@ -196,19 +196,19 @@
     }
 }</code></pre>
 
-    <p>The algorithm is a straightforward diff:</p>
+    <p>Three steps:</p>
 
     <ol>
       <li>Ask the shader what properties it actually declares, using <code>ShaderUtil.GetPropertyCount</code> and <code>ShaderUtil.GetPropertyName</code>. This is the ground truth.</li>
       <li>Ask the material what texture properties it has serialized, using <code>Material.GetTexturePropertyNames()</code>. This includes everything: current and leftover.</li>
-      <li>Compare. Any texture property on the material that isn't declared by the shader is a ghost. Null it out, mark the material dirty, let Unity re-serialize it clean.</li>
+      <li>Compare. Any texture property on the material that isn't declared by the shader is a ghost. Null it out, mark the material dirty, let Unity serialize it clean.</li>
     </ol>
 
     <p>After running this and rebuilding bundles, those unexplained entries in the memory profiler were gone.</p>
 
     <h2 class="section-heading">Make It Automatic</h2>
 
-    <p>The manual tool is a good first pass, but it won't stay solved. Ghost textures aren't a one-time cleanup problem. They're a workflow problem.</p>
+    <p>The manual tool is a good first pass, but it won't stay solved. Ghost textures aren't a problem you clean up once. They're a workflow problem.</p>
 
     <p>Any developer can accidentally introduce one. An artist swaps a shader, a material gets duplicated from an older prefab, a new asset store package lands with materials configured for a different render pipeline. None of these leave a warning. None of them show up in the Inspector. The stale reference appears silently, and by the time you notice unexpected bundles in the profiler, it's already in your build.</p>
 
@@ -234,9 +234,9 @@ public GameObject multiplayerLobbyPrefab;</code></pre>
 
     <p>The memory profiler showing unexpected assets (whether in scenes or bundles) is a symptom, not the problem. The problem is that Unity's dependency resolution is honest: it follows every reference it finds, whether or not that reference still reflects intent.</p>
 
-    <p>A stale texture slot in a <code>.mat</code> file is a real dependency as far as the runtime is concerned. It loads assets into scenes that don't need them. In a project with asset bundles, it pulls in entire bundles you never asked for, which pull in more bundles, compounding silently across your entire dependency graph. The same is true for any serialized reference hiding behind a flag that was turned off, a shader that was swapped, or a feature that was deprecated.</p>
+    <p>A stale texture slot in a <code>.mat</code> file is a real dependency as far as the runtime is concerned. It loads assets into scenes that don't need them. In a project with asset bundles, it pulls in entire bundles you never asked for, which pull in more bundles, compounding silently across the project. The same is true for any reference that outlived the context it was created in.</p>
 
-    <p>If you want to see how many ghosts are haunting your project, I put the full <strong>StaleReferenceScanner</strong> on GitHub: <a href="https://github.com/bartouv/unity-stale-reference-scanner">bartouv/unity-stale-reference-scanner</a>. It scans materials, ScriptableObjects, Prefabs, AnimatorControllers, and Timelines in one pass. Open it from <strong>Tools &gt; Stale Asset Scanner</strong> and run it. The results might surprise you.</p>
+    <p>I put the <strong>StaleReferenceScanner</strong> on GitHub: <a href="https://github.com/bartouv/unity-stale-reference-scanner">bartouv/unity-stale-reference-scanner</a>. Drop it in, open <strong>Tools &gt; Stale Asset Scanner</strong>, and scan your project. You'll probably find more than you expect.</p>
 
 
   </div>

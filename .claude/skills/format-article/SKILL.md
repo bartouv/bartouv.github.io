@@ -131,7 +131,17 @@ Check specifically for artifacts introduced by Medium imports:
 
 **Action**: List all Medium import artifacts found. These are always safe to fix automatically.
 
-### 10. Link Quality
+### 10. Hyphen Check
+
+Scan prose text (outside `<pre>`, `<code>`, HTML attributes, URLs, and meta tags) for hyphens:
+- ✗ **Em dashes** (`—`) in body text — rewrite the sentence without them
+- ✗ **Hyphenated compound words** (e.g. `re-serialize`, `one-time`, `Built-in`, `auto-fix`) — rewrite naturally without the hyphen
+
+**How to scan**: Strip HTML tags from each line (excluding `<pre>` blocks) and look for `\b\w+-\w+\b` patterns. Ignore matches inside HTML attributes, URLs, class names, and code blocks.
+
+**Action**: Report all hyphenated words found in prose. When fixing, rewrite the phrase naturally — don't just delete the hyphen mechanically (e.g. `re-serialize` → `serialize`, not `reserialize`).
+
+### 11. Link Quality
 
 Check links in article:
 - Verify links use descriptive anchor text (not "click here")
@@ -180,7 +190,8 @@ If user requests formatting fixes (not just analysis):
    1. Fix collapsed/minified code blocks (high — unreadable)
    2. Fix heading hierarchy + add missing `class="section-heading"` (high)
    3. Clean up Medium import artifacts: hair-space em dashes, unicode spaces in headings, broken Markdown links, `</figure><h2>` on same line, duplicate headings, double colons, empty alt text (high)
-   4. Break up overly long paragraphs (medium)
+   4. Remove hyphens from prose: rewrite hyphenated compounds and em dashes naturally (high)
+   5. Break up overly long paragraphs (medium)
    5. Convert prose lists to HTML lists (medium)
    6. Convert `Term — Description` paragraphs to H3 headings + bold term, when they are clearly sub-topics of a section (medium)
    7. Add emphasis to key terms; use `<code>` for inline identifiers and function names (low)
@@ -213,10 +224,11 @@ If user requests formatting fixes (not just analysis):
 - Don't overuse (max 2-3 bold items per section)
 - Use `<code>` for inline technical identifiers (e.g. `Renderer.sortingOrder`, `pow`, `sin`) — not bold
 
-### Dashes
-- This blog uses ` - ` (space + hyphen + space) for definition separators in article body, **not** em dashes (`—`)
+### Dashes and Hyphens
+- This blog uses **no hyphens in prose text** — neither em dashes (`—`) nor hyphenated compound words (e.g. `re-serialize`, `one-time`, `Built-in`)
+- Rewrite hyphenated compounds naturally: `re-serialize` → `serialize`, `one-time` → `a problem you fix once`, `Built-in` → `the Built in render pipeline`, etc.
 - Sub-topics formatted as `Term — Description` in plain paragraphs should become H3 headings with the term bolded: `<h3 class="section-heading">Term</h3>` followed by the description in a `<p>`
-- Never replace dashes in `<title>`, meta tags, or nav elements — only in article body content
+- Never replace dashes in `<title>`, meta tags, nav elements, URLs, HTML attributes, or code blocks — only in visible prose body text
 
 ### Visuals
 - Add images every 300-400 words for long articles
