@@ -2,6 +2,34 @@
 // Shows scroll progress through article content and index page
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  // READ TIME CALCULATION
+  const WPM = 200;
+
+  // Article pages: calculate from body content, overwrite hardcoded value
+  const articleContainer = document.querySelector('.article-container');
+  const readTimeEl = document.querySelector('.article-read-time');
+  if (articleContainer && readTimeEl) {
+    const words = (articleContainer.innerText || '').trim().split(/\s+/).filter(Boolean).length;
+    readTimeEl.textContent = Math.max(1, Math.round(words / WPM)) + ' min read';
+  }
+
+  // Index page: fetch linked articles to calculate read time
+  document.querySelectorAll('[data-read-time-src]').forEach(el => {
+    fetch(el.getAttribute('data-read-time-src'))
+      .then(r => r.text())
+      .then(html => {
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+        const container = doc.querySelector('.article-container');
+        if (!container) return;
+        const words = (container.innerText || '').trim().split(/\s+/).filter(Boolean).length;
+        const minutes = Math.max(1, Math.round(words / WPM));
+        el.textContent = el.textContent.replace(/\d+ min read/, minutes + ' min read');
+      })
+      .catch(() => {});
+  });
+
+  // READING PROGRESS BAR
   const progressBar = document.querySelector('.reading-progress-bar');
   const progressContainer = document.querySelector('.reading-progress');
 

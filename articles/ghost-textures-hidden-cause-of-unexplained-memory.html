@@ -95,21 +95,21 @@
 
     <figure><img src="../images/ghost-textures.webp" alt="Ghost Textures and the Dependencies You Didn't Ask For"></figure>
 
-    <p>You load a scene. It's a small level — a few props, simple materials, nothing heavy. But the memory profiler tells a different story. There are large textures loaded that have nothing to do with this scene. You didn't reference them. Nothing visible is using them. They're just there, consuming memory silently.</p>
+    <p>You load a scene. It's a small level, a few props, simple materials, nothing heavy. But the memory profiler tells a different story. There are large textures loaded that have nothing to do with this scene. You didn't reference them. Nothing visible is using them. They're just there, consuming memory silently.</p>
 
     <p>In a project with asset bundles, this compounds further. Bundles you never explicitly loaded show up as resident in memory. Bundles containing assets for completely different parts of the game. No errors, no warnings, no stack trace pointing at anything.</p>
 
-    <p>We hit this in our project. Hundreds of asset bundles, and the profiler kept showing unexpected ones in memory during gameplay. It took a while to find the cause. It wasn't a bug in our loading code. It wasn't a missing <code>Unload</code> call. It was ghost textures — stale references hiding inside material files, silently dragging unintended assets into memory wherever those materials were used.</p>
+    <p>We hit this in our project. Hundreds of asset bundles, and the profiler kept showing unexpected ones in memory during gameplay. It took a while to find the cause. It wasn't a bug in our loading code. It wasn't a missing <code>Unload</code> call. It was ghost textures: stale references hiding inside material files, silently dragging unintended assets into memory wherever those materials were used.</p>
 
     <h2 class="section-heading">How Unity Loads More Than You Asked For</h2>
 
-    <p>To understand the problem, you need to understand how Unity handles asset dependencies at runtime — starting at the scene level.</p>
+    <p>To understand the problem, you need to understand how Unity handles asset dependencies at runtime, starting at the scene level.</p>
 
     <p>When you load a scene, Unity resolves every asset that scene references: meshes, materials, textures, audio clips. If a material used in the scene references a texture, that texture gets loaded too. This is expected. The problem is that Unity resolves dependencies based on what's <em>serialized</em>, not what's <em>actually used by the current shader</em>.</p>
 
-    <p>A material can hold texture references that are invisible in the Inspector — properties that belonged to a previous shader, never cleaned up, still sitting in the <code>.mat</code> file. Unity doesn't know they're irrelevant. It sees a reference, and it loads the asset.</p>
+    <p>A material can hold texture references that are invisible in the Inspector, properties that belonged to a previous shader, never cleaned up, still sitting in the <code>.mat</code> file. Unity doesn't know they're irrelevant. It sees a reference, and it loads the asset.</p>
 
-    <p>In a project with asset bundles, this compounds further. When you load a bundle, Unity inspects its assets and resolves their dependencies. If a material in Bundle A has a stale texture reference pointing to an asset in Bundle B, Unity loads Bundle B — automatically, silently, without any warning. And if Bundle B contains materials with their own stale references, more bundles get pulled in. The chain grows.</p>
+    <p>In a project with asset bundles, this compounds further. When you load a bundle, Unity inspects its assets and resolves their dependencies. If a material in Bundle A has a stale texture reference pointing to an asset in Bundle B, Unity loads Bundle B automatically, silently, without any warning. And if Bundle B contains materials with their own stale references, more bundles get pulled in. The chain grows.</p>
 
     <p>You end up with bundles in memory you never loaded, for content that's never on screen, tracing back to a <code>.mat</code> file with a texture slot that hasn't been relevant since an artist switched shaders six months ago.</p>
 
@@ -117,7 +117,7 @@
 
     <p>Here's how easy it is to create this problem.</p>
 
-    <p>Take any material. Assign a shader that has a texture slot — say, a custom shader with a <code>_DetailAlbedoMap</code> property. Drag a texture into that slot. Now switch the material to a different shader, one that has no <code>_DetailAlbedoMap</code> property. The material looks correct. The new shader renders fine.</p>
+    <p>Take any material. Assign a shader that has a texture slot, say, a custom shader with a <code>_DetailAlbedoMap</code> property. Drag a texture into that slot. Now switch the material to a different shader, one that has no <code>_DetailAlbedoMap</code> property. The material looks correct. The new shader renders fine.</p>
 
     <p>Open the <code>.mat</code> file in a text editor. You'll see something like this:</p>
 
@@ -130,7 +130,7 @@
   - _MainTex:
       m_Texture: {fileID: 0}</code></pre>
 
-    <p>That <code>_DetailAlbedoMap</code> entry — with a real guid pointing at a real texture asset — is still there. The current shader doesn't declare <code>_DetailAlbedoMap</code>. Unity won't render it. But the reference is serialized, and Unity's dependency resolver doesn't care whether the shader uses it. It sees a reference, it follows it.</p>
+    <p>That <code>_DetailAlbedoMap</code> entry, with a real guid pointing at a real texture asset, is still there. The current shader doesn't declare <code>_DetailAlbedoMap</code>. Unity won't render it. But the reference is serialized, and Unity's dependency resolver doesn't care whether the shader uses it. It sees a reference, it follows it.</p>
 
     <p>That texture will be included in your asset bundle. And at runtime, the bundle containing that texture will be loaded whenever this material's bundle is loaded.</p>
 
@@ -200,7 +200,7 @@
 
     <ol>
       <li>Ask the shader what properties it actually declares, using <code>ShaderUtil.GetPropertyCount</code> and <code>ShaderUtil.GetPropertyName</code>. This is the ground truth.</li>
-      <li>Ask the material what texture properties it has serialized, using <code>Material.GetTexturePropertyNames()</code>. This includes everything — current and leftover.</li>
+      <li>Ask the material what texture properties it has serialized, using <code>Material.GetTexturePropertyNames()</code>. This includes everything: current and leftover.</li>
       <li>Compare. Any texture property on the material that isn't declared by the shader is a ghost. Null it out, mark the material dirty, let Unity re-serialize it clean.</li>
     </ol>
 
@@ -208,7 +208,7 @@
 
     <h2 class="section-heading">Make It Automatic</h2>
 
-    <p>The manual tool is a good first pass — but it won't stay solved. Ghost textures aren't a one-time cleanup problem. They're a workflow problem.</p>
+    <p>The manual tool is a good first pass, but it won't stay solved. Ghost textures aren't a one-time cleanup problem. They're a workflow problem.</p>
 
     <p>Any developer can accidentally introduce one. An artist swaps a shader, a material gets duplicated from an older prefab, a new asset store package lands with materials configured for a different render pipeline. None of these leave a warning. None of them show up in the Inspector. The stale reference appears silently, and by the time you notice unexpected bundles in the profiler, it's already in your build.</p>
 
@@ -218,7 +218,7 @@
 
     <h2 class="section-heading">The Pattern Is Broader</h2>
 
-    <p>The same problem appears in ScriptableObjects and Prefabs. A common trigger is <code>[Flags]</code> enum conditionals — a field that's only shown when a certain flag is active:</p>
+    <p>The same problem appears in ScriptableObjects and Prefabs. A common trigger is <code>[Flags]</code> enum conditionals: a field that's only shown when a certain flag is active:</p>
 
     <pre class="language-csharp"><code class="language-csharp">[Flags]
 public enum GameMode { None = 0, Singleplayer = 1, Multiplayer = 2, Coop = 4 }
@@ -228,15 +228,15 @@ public GameMode supportedModes;
 [ShowIf(nameof(supportedModes), GameMode.Multiplayer)]
 public GameObject multiplayerLobbyPrefab;</code></pre>
 
-    <p>You assign a prefab while <code>Multiplayer</code> is active. Later the flag gets removed — mode got cut, feature deprecated. The field disappears from the Inspector. It looks clean. But the reference is still serialized. Unity hid the field visually, it didn't remove the data.</p>
+    <p>You assign a prefab while <code>Multiplayer</code> is active. Later the flag gets removed. The mode got cut, the feature deprecated. The field disappears from the Inspector. It looks clean. But the reference is still serialized. Unity hid the field visually, it didn't remove the data.</p>
 
     <h2 class="section-heading">The Takeaway</h2>
 
-    <p>The memory profiler showing unexpected assets — whether in scenes or bundles — is a symptom, not the problem. The problem is that Unity's dependency resolution is honest: it follows every reference it finds, whether or not that reference still reflects intent.</p>
+    <p>The memory profiler showing unexpected assets (whether in scenes or bundles) is a symptom, not the problem. The problem is that Unity's dependency resolution is honest: it follows every reference it finds, whether or not that reference still reflects intent.</p>
 
     <p>A stale texture slot in a <code>.mat</code> file is a real dependency as far as the runtime is concerned. It loads assets into scenes that don't need them. In a project with asset bundles, it pulls in entire bundles you never asked for, which pull in more bundles, compounding silently across your entire dependency graph. The same is true for any serialized reference hiding behind a flag that was turned off, a shader that was swapped, or a feature that was deprecated.</p>
 
-    <p>If you want to see how many ghosts are haunting your project, I put the full <strong>StaleReferenceScanner</strong> on GitHub: <a href="https://github.com/bartouv/unity-stale-reference-scanner">bartouv/unity-stale-reference-scanner</a>. It scans materials, ScriptableObjects, Prefabs, AnimatorControllers, and Timelines in one pass. Open it from <strong>Tools &gt; Stale Asset Scanner</strong> and run it — the results might surprise you.</p>
+    <p>If you want to see how many ghosts are haunting your project, I put the full <strong>StaleReferenceScanner</strong> on GitHub: <a href="https://github.com/bartouv/unity-stale-reference-scanner">bartouv/unity-stale-reference-scanner</a>. It scans materials, ScriptableObjects, Prefabs, AnimatorControllers, and Timelines in one pass. Open it from <strong>Tools &gt; Stale Asset Scanner</strong> and run it. The results might surprise you.</p>
 
 
   </div>
