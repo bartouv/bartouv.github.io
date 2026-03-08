@@ -920,6 +920,8 @@
   .stat { flex: 1 1 50%; border-right: none; border-bottom: 1px solid var(--border); }
 
   .post-card.featured { grid-template-columns: 1fr; }
+  .post-card.featured .featured-image-wrap { order: -1; }
+  .post-card.featured .featured-content { order: 0; }
 
   .podcast-card { grid-template-columns: 1fr; }
   .podcast-image { width: calc(100% - 32px); height: 240px; }
