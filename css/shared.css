@@ -19,6 +19,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 64px; /* Account for fixed navbar */
+  background: var(--bg);
 }
 
 /* SKIP LINK (Accessibility) */
@@ -70,18 +71,7 @@ body {
   z-index: 1;
 }
 
-/* Grid texture overlay */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(160,80,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(160,80,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
-}
+
 
 /* Ambient glow blobs */
 .bg-glow {
@@ -94,12 +84,12 @@ body::before {
 .bg-glow.g1 {
   width: 600px; height: 600px;
   top: -200px; left: -200px;
-  background: radial-gradient(circle, rgba(160,80,255,0.08), transparent 70%);
+  background: radial-gradient(circle, rgba(160,80,255,0.05) 0%, rgba(160,80,255,0.02) 40%, transparent 70%);
 }
 .bg-glow.g2 {
   width: 500px; height: 500px;
   bottom: 100px; right: -100px;
-  background: radial-gradient(circle, rgba(224,64,251,0.06), transparent 70%);
+  background: radial-gradient(circle, rgba(224,64,251,0.04) 0%, rgba(224,64,251,0.01) 40%, transparent 70%);
 }
 
 /* NAV */

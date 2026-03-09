@@ -82,8 +82,7 @@ const SharedComponents = {
   skipLink: `<a href="#main-content" class="skip-link">Skip to main content</a>`,
 
   // Background glow effects
-  backgroundGlows: `<div class="bg-glow g1"></div>
-<div class="bg-glow g2"></div>`,
+  backgroundGlows: `<canvas id="bg-canvas" aria-hidden="true" style="position:fixed;top:0;left:0;pointer-events:none;z-index:0;"></canvas>`,
 
   // Navigation with theme switcher
   get navigation() { return `<!-- NAV -->
@@ -257,7 +256,101 @@ const SharedComponents = {
 
 // Auto-inject on page load (before other scripts that might depend on these elements)
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => SharedComponents.inject());
+  document.addEventListener('DOMContentLoaded', () => { SharedComponents.inject(); initBgCanvas(); });
 } else {
   SharedComponents.inject();
+  initBgCanvas();
+}
+
+function initBgCanvas() {
+  const canvas = document.getElementById('bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const TILE = 200;
+  const SPEED = TILE / (60 * 60) * 0.7;
+  let offset = 0;
+
+  function getAccentRgb() {
+    const hex = (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#38c0f0').replace('#','');
+    return `${parseInt(hex.slice(0,2),16)},${parseInt(hex.slice(2,4),16)},${parseInt(hex.slice(4,6),16)}`;
+  }
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function drawBrackets(ctx, x, y, scale, angle) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.scale(scale, scale);
+    ctx.font = '400 26px "Share Tech Mono", monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('{ }', 0, 0);
+    ctx.restore();
+  }
+
+  function drawDiamond(ctx, x, y, scale, angle) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.scale(scale, scale);
+    ctx.beginPath();
+    ctx.moveTo(0, -20);
+    ctx.lineTo(13, 0);
+    ctx.lineTo(0, 20);
+    ctx.lineTo(-13, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function getBgColors() {
+    const s = getComputedStyle(document.documentElement);
+    const bg     = s.getPropertyValue('--bg').trim()     || '#141c2c';
+    const accent = s.getPropertyValue('--accent').trim() || '#38c0f0';
+    const parse  = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+    const [bgR,bgG,bgB]   = parse(bg);
+    const [acR,acG,acB]   = parse(accent);
+    const t = 0.22; // accent tint for center
+    const center = `rgb(${Math.round(bgR+(acR-bgR)*t)},${Math.round(bgG+(acG-bgG)*t)},${Math.round(bgB+(acB-bgB)*t)})`;
+    const dark   = `rgb(${Math.round(bgR*0.6)},${Math.round(bgG*0.6)},${Math.round(bgB*0.6)})`;
+    return { center, dark };
+  }
+
+  function drawFrame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Radial gradient background — bright center, dark edges
+    const { center, dark } = getBgColors();
+    const cx = canvas.width / 2, cy = canvas.height * 0.45;
+    const bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.hypot(canvas.width, canvas.height) * 0.6);
+    bgGrad.addColorStop(0,    center);
+    bgGrad.addColorStop(0.12, center);
+    bgGrad.addColorStop(1,    dark);
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    offset = (offset + SPEED) % TILE;
+    const ox = offset, oy = -offset;
+    const halfW = canvas.width / 2;
+    const accentRgb = getAccentRgb();
+    for (let tx = -TILE + ox; tx < canvas.width + TILE; tx += TILE) {
+      const dist = Math.min(Math.abs(tx + TILE / 2 - halfW) / halfW, 1);
+      ctx.fillStyle = `rgba(${accentRgb},${(0.02 + dist * 0.03).toFixed(4)})`;
+      for (let ty = oy % TILE - TILE; ty < canvas.height + TILE; ty += TILE) {
+        drawBrackets(ctx, tx+50,  ty+55,  1.0, -12*Math.PI/180);
+        drawDiamond( ctx, tx+155, ty+42,  1.2,  10*Math.PI/180);
+        drawBrackets(ctx, tx+158, ty+155, 0.85, 18*Math.PI/180);
+        drawDiamond( ctx, tx+42,  ty+158, 1.1, -18*Math.PI/180);
+      }
+    }
+    requestAnimationFrame(drawFrame);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  drawFrame();
 }
