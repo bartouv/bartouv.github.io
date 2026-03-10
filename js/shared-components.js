@@ -89,8 +89,8 @@ const SharedComponents = {
 <nav role="navigation" aria-label="Main navigation">
   <div class="nav-logo">Gal Bartouv</div>
   <ul class="nav-links">
-    <li><a href="../index.html#posts">Articles</a></li>
-    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#posts"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg>Articles</a></li>
+    <li><a href="../index.html#about"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-5.33 0-8 2.67-8 4v1h16v-1c0-1.33-2.67-4-8-4z"/></svg>About</a></li>
     <li><a href="../feed.xml" aria-label="RSS Feed" class="nav-rss"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg></a></li>
   </ul>
   <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
