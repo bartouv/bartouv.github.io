@@ -9,7 +9,7 @@ main.page-container {
   background: var(--bg2);
   border-left: 1px solid var(--border);
   border-right: 1px solid var(--border);
-  margin-top: 88px;
+  margin: 88px auto 0;
 }
 
 /* ARTICLE HERO */
