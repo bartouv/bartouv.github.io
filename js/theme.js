@@ -45,6 +45,7 @@ function setTheme(name) {
     btn.classList.toggle('active', btn.dataset.theme === name);
   });
   localStorage.setItem('gb-theme', name);
+  document.dispatchEvent(new CustomEvent('themechange'));
   toggleThemePanel(false);
 }
 

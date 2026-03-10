@@ -136,7 +136,12 @@ nav {
   text-decoration: none;
   transition: color 0.2s;
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
+
+.nav-links a svg { flex-shrink: 0; }
 
 .nav-links a::after {
   content: '';

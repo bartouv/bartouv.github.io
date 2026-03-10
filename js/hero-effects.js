@@ -18,6 +18,8 @@ function initRoleGlitch() {
 
   function glitch() {
     chars.forEach(char => char.classList.add('glitching'));
+
+
     setTimeout(() => {
       chars.forEach(char => char.classList.remove('glitching'));
       schedule(); // only schedule the next cycle after this one fully completes
@@ -30,7 +32,7 @@ function initRoleGlitch() {
   }
 
   // Trigger on page show, then cycle randomly
-  setTimeout(glitch, 4000);
+  setTimeout(glitch, 2000);
 }
 
 if (document.readyState === 'loading') {

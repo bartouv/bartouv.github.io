@@ -14,25 +14,25 @@ document.addEventListener('DOMContentLoaded', () => {
     readTimeEl.textContent = Math.max(1, Math.round(words / WPM)) + ' min read';
   }
 
-  // Index page: fetch linked articles to calculate read time
-  document.querySelectorAll('[data-read-time-src]').forEach(el => {
-    fetch(el.getAttribute('data-read-time-src'))
-      .then(r => r.text())
-      .then(html => {
-        const doc = new DOMParser().parseFromString(html, 'text/html');
-        const container = doc.querySelector('.article-container');
-        if (!container) return;
-        const words = (container.textContent || '').trim().split(/\s+/).filter(Boolean).length;
-        const minutes = Math.max(1, Math.round(words / WPM));
-        const label = minutes + ' min read';
-        if (/\d+ min read/.test(el.textContent)) {
-          el.textContent = el.textContent.replace(/\d+ min read/, label);
-        } else {
-          el.textContent = el.textContent + ' · ' + label;
-        }
+  // Index page: read times from metadata (single fetch instead of one per article)
+  const readTimeEls = document.querySelectorAll('[data-read-time-src]');
+  if (readTimeEls.length) {
+    fetch('scripts/article_metadata.json')
+      .then(r => r.json())
+      .then(meta => {
+        readTimeEls.forEach(el => {
+          const slug = el.getAttribute('data-read-time-src').replace('articles/', '');
+          const readTime = meta[slug] && meta[slug].readTime;
+          if (!readTime) return;
+          if (/\d+ min read/.test(el.textContent)) {
+            el.textContent = el.textContent.replace(/\d+ min read/, readTime);
+          } else {
+            el.textContent = el.textContent + ' · ' + readTime;
+          }
+        });
       })
       .catch(() => {});
-  });
+  }
 
   // READING PROGRESS BAR
   const progressBar = document.querySelector('.reading-progress-bar');

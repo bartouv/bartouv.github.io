@@ -167,11 +167,11 @@ const SharedComponents = {
 <nav role="navigation" aria-label="Main navigation">
   <div class="nav-logo">Gal Bartouv</div>
   <ul class="nav-links">
-    <li><a href="#posts">Articles</a></li>
-    <li><a href="#podcast">Podcast</a></li>
-    <li><a href="#gamejam">Game Jam</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#about">About</a></li>
+    <li><a href="#posts"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg>Articles</a></li>
+    <li><a href="#podcast"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 1a4 4 0 0 1 4 4v6a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4zm-6 9a6 6 0 0 0 12 0h2a8 8 0 0 1-7 7.93V21h2v2H9v-2h2v-3.07A8 8 0 0 1 4 10h2z"/></svg>Podcast</a></li>
+    <li><a href="#gamejam"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 15H7v4h10v-4h-4v-4.17A4 4 0 0 0 16 7V5h1V3H7v2h1v2a4 4 0 0 0 3 3.83V15z"/></svg>Game Jam</a></li>
+    <li><a href="#projects"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z"/></svg>Projects</a></li>
+    <li><a href="#about"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-5.33 0-8 2.67-8 4v1h16v-1c0-1.33-2.67-4-8-4z"/></svg>About</a></li>
     <li><a href="feed.xml" aria-label="RSS Feed" class="nav-rss"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg></a></li>
   </ul>
   <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
@@ -270,10 +270,27 @@ function initBgCanvas() {
   const SPEED = TILE / (60 * 60) * 0.7;
   let offset = 0;
 
-  function getAccentRgb() {
-    const hex = (getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#38c0f0').replace('#','');
-    return `${parseInt(hex.slice(0,2),16)},${parseInt(hex.slice(2,4),16)},${parseInt(hex.slice(4,6),16)}`;
+  // Cached theme colors — recomputed once on init and on theme change
+  let cachedAccentRgb = '56,192,240';
+  let cachedBgColors  = { center: 'rgb(31,52,73)', dark: 'rgb(12,17,26)' };
+
+  function recomputeColors() {
+    const s   = getComputedStyle(document.documentElement);
+    const hex = (s.getPropertyValue('--accent').trim() || '#38c0f0').replace('#', '');
+    cachedAccentRgb = `${parseInt(hex.slice(0,2),16)},${parseInt(hex.slice(2,4),16)},${parseInt(hex.slice(4,6),16)}`;
+    const bg     = s.getPropertyValue('--bg').trim()     || '#141c2c';
+    const accent = s.getPropertyValue('--accent').trim() || '#38c0f0';
+    const parse  = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
+    const [bgR,bgG,bgB] = parse(bg);
+    const [acR,acG,acB] = parse(accent);
+    const t = 0.22;
+    cachedBgColors = {
+      center: `rgb(${Math.round(bgR+(acR-bgR)*t)},${Math.round(bgG+(acG-bgG)*t)},${Math.round(bgB+(acB-bgB)*t)})`,
+      dark:   `rgb(${Math.round(bgR*0.6)},${Math.round(bgG*0.6)},${Math.round(bgB*0.6)})`,
+    };
   }
+
+  document.addEventListener('themechange', recomputeColors);
 
   function resize() {
     canvas.width = window.innerWidth;
@@ -307,24 +324,10 @@ function initBgCanvas() {
     ctx.restore();
   }
 
-  function getBgColors() {
-    const s = getComputedStyle(document.documentElement);
-    const bg     = s.getPropertyValue('--bg').trim()     || '#141c2c';
-    const accent = s.getPropertyValue('--accent').trim() || '#38c0f0';
-    const parse  = h => [parseInt(h.slice(1,3),16), parseInt(h.slice(3,5),16), parseInt(h.slice(5,7),16)];
-    const [bgR,bgG,bgB]   = parse(bg);
-    const [acR,acG,acB]   = parse(accent);
-    const t = 0.22; // accent tint for center
-    const center = `rgb(${Math.round(bgR+(acR-bgR)*t)},${Math.round(bgG+(acG-bgG)*t)},${Math.round(bgB+(acB-bgB)*t)})`;
-    const dark   = `rgb(${Math.round(bgR*0.6)},${Math.round(bgG*0.6)},${Math.round(bgB*0.6)})`;
-    return { center, dark };
-  }
-
   function drawFrame() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Radial gradient background — bright center, dark edges
-    const { center, dark } = getBgColors();
+    const { center, dark } = cachedBgColors;
     const cx = canvas.width / 2, cy = canvas.height * 0.45;
     const bgGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.hypot(canvas.width, canvas.height) * 0.6);
     bgGrad.addColorStop(0,    center);
@@ -336,10 +339,9 @@ function initBgCanvas() {
     offset = (offset + SPEED) % TILE;
     const ox = offset, oy = -offset;
     const halfW = canvas.width / 2;
-    const accentRgb = getAccentRgb();
     for (let tx = -TILE + ox; tx < canvas.width + TILE; tx += TILE) {
       const dist = Math.min(Math.abs(tx + TILE / 2 - halfW) / halfW, 1);
-      ctx.fillStyle = `rgba(${accentRgb},${(0.02 + dist * 0.03).toFixed(4)})`;
+      ctx.fillStyle = `rgba(${cachedAccentRgb},${(0.02 + dist * 0.03).toFixed(4)})`;
       for (let ty = oy % TILE - TILE; ty < canvas.height + TILE; ty += TILE) {
         drawBrackets(ctx, tx+50,  ty+55,  1.0, -12*Math.PI/180);
         drawDiamond( ctx, tx+155, ty+42,  1.2,  10*Math.PI/180);
@@ -352,5 +354,6 @@ function initBgCanvas() {
 
   window.addEventListener('resize', resize);
   resize();
+  recomputeColors();
   drawFrame();
 }

@@ -72,7 +72,8 @@
   margin: 0 auto;
 }
 
-.article-container h2 {
+.article-container h2,
+.article-container .section-heading {
   font-family: 'Rajdhani', sans-serif;
   font-weight: 600;
   font-size: 28px;
@@ -341,31 +342,6 @@
     width: 100%;
     justify-content: center;
   }
-}
-
-/* READING PROGRESS INDICATOR */
-.reading-progress {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: rgba(0, 0, 0, 0.3);
-  z-index: 200; /* Above nav (z-index: 100) */
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.reading-progress.visible {
-  opacity: 1;
-}
-
-.reading-progress-bar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
-  transition: width 0.1s ease-out;
-  box-shadow: 0 0 8px var(--accent);
 }
 
 /* SOCIAL SHARE BUTTONS */
