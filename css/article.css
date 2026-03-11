@@ -354,6 +354,15 @@ body > footer {
     font-size: 32px;
   }
 
+  .article-container p {
+    text-align: left;
+  }
+
+  .article-container code {
+    overflow-wrap: break-word;
+    word-break: break-all;
+  }
+
   .article-container pre {
     padding: 16px;
     font-size: 12px;
