@@ -20,6 +20,8 @@ body > footer {
   border-right: 1px solid var(--border);
   margin-left: auto;
   margin-right: auto;
+  position: relative;
+  z-index: 1;
 }
 
 body > footer {
