@@ -943,6 +943,13 @@
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
+  html { scroll-snap-type: y proximity; }
+
+  .post-card,
+  .podcast-card,
+  .game-card,
+  .project-card { scroll-snap-align: start; }
+
   .hero { padding: 100px 24px 80px; }
   .hero-inner { flex-direction: column; gap: 24px; }
   .hero-avatar { width: 100px; height: 100px; }
