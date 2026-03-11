@@ -945,6 +945,9 @@
 
   .posts-grid { grid-template-columns: 1fr; }
 
+  .post-card.in-view { background: var(--bg3); }
+  .post-card.in-view::before { transform: scaleY(1); }
+
   .post-card.featured { grid-template-columns: 1fr; }
   .post-card.featured .featured-image-wrap { order: -1; }
   .post-card.featured .featured-content { order: 0; }
