@@ -4,7 +4,15 @@
 html { scroll-behavior: auto; }
 
 /* ARTICLE PAGE PANEL — narrows to 900px and adds a bg panel over the canvas */
-main.page-container,
+main.page-container {
+  max-width: 900px;
+  background: var(--bg2);
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  margin: 88px auto 0;
+  min-height: calc(100vh - 88px);
+}
+
 .comments-section,
 body > footer {
   max-width: 900px;
@@ -13,13 +21,6 @@ body > footer {
   border-right: 1px solid var(--border);
   margin-left: auto;
   margin-right: auto;
-  position: relative;
-  z-index: 1;
-}
-
-main.page-container {
-  margin-top: 88px;
-  min-height: calc(100vh - 88px);
 }
 
 body > footer {
