@@ -20,6 +20,7 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 64px; /* Account for fixed navbar */
   background: var(--bg);
+  overflow-x: hidden;
 }
 
 /* SKIP LINK (Accessibility) */
@@ -412,6 +413,8 @@ footer {
 /* RESPONSIVE */
 @media (max-width: 768px) {
   nav { padding: 0 24px; }
+
+  .theme-label { display: none; }
 
   .hamburger { display: flex; }
 
