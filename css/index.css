@@ -292,8 +292,10 @@
   transform-origin: top;
 }
 
-.post-card:hover { background: var(--bg3); }
-.post-card:hover::before { transform: scaleY(1); }
+@media (hover: hover) {
+  .post-card:hover { background: var(--bg3); }
+  .post-card:hover::before { transform: scaleY(1); }
+}
 
 .post-tag {
   font-family: 'Share Tech Mono', monospace;
@@ -388,10 +390,12 @@
   clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
 }
 
-.podcast-card:hover {
-  background: var(--bg3);
-  border-color: var(--accent);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .podcast-card:hover {
+    background: var(--bg3);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
 }
 
 .podcast-image {
@@ -470,10 +474,12 @@
   clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
 }
 
-.game-card:hover {
-  background: var(--bg3);
-  border-color: var(--accent);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .game-card:hover {
+    background: var(--bg3);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
 }
 
 .game-image {
@@ -557,10 +563,12 @@
   clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
 }
 
-.project-card:hover {
-  background: var(--bg3);
-  border-color: var(--accent);
-  transform: translateY(-4px);
+@media (hover: hover) {
+  .project-card:hover {
+    background: var(--bg3);
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
 }
 
 .project-image {
