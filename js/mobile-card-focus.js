@@ -7,8 +7,6 @@ function initMobileCardFocus() {
   ));
   if (!cards.length) return;
 
-  let current = null;
-
   function update() {
     const mid = window.innerHeight / 2;
     let closest = null;
@@ -23,11 +21,8 @@ function initMobileCardFocus() {
       }
     });
 
-    if (closest !== current) {
-      if (current) current.classList.remove('in-view');
-      if (closest) closest.classList.add('in-view');
-      current = closest;
-    }
+    cards.forEach(card => card.classList.remove('in-view'));
+    if (closest) closest.classList.add('in-view');
   }
 
   window.addEventListener('scroll', update, { passive: true });
