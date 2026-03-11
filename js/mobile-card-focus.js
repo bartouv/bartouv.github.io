@@ -1,4 +1,5 @@
-// On mobile, highlight the post card whose centre is closest to the viewport centre
+// On mobile: highlight the card closest to screen centre,
+// and snap to the nearest card when scrolling stops.
 function initMobileCardFocus() {
   if (window.innerWidth > 768) return;
 
@@ -7,7 +8,10 @@ function initMobileCardFocus() {
   ));
   if (!cards.length) return;
 
-  function update() {
+  const NAV_H = 64;
+
+  // ── Highlight ────────────────────────────────────────────────
+  function updateHighlight() {
     const mid = window.innerHeight / 2;
     let closest = null;
     let closestDist = Infinity;
@@ -15,18 +19,43 @@ function initMobileCardFocus() {
     cards.forEach(card => {
       const rect = card.getBoundingClientRect();
       const dist = Math.abs((rect.top + rect.height / 2) - mid);
-      if (dist < closestDist) {
-        closestDist = dist;
-        closest = card;
-      }
+      if (dist < closestDist) { closestDist = dist; closest = card; }
     });
 
     cards.forEach(card => card.classList.remove('in-view'));
     if (closest) closest.classList.add('in-view');
   }
 
-  window.addEventListener('scroll', update, { passive: true });
-  update();
+  // ── Snap ─────────────────────────────────────────────────────
+  let snapTimer = null;
+  let isSnapping = false;
+
+  function snapToNearest() {
+    let closest = null;
+    let closestDist = Infinity;
+
+    cards.forEach(card => {
+      const dist = Math.abs(card.getBoundingClientRect().top - NAV_H);
+      if (dist < closestDist) { closestDist = dist; closest = card; }
+    });
+
+    if (closest && closestDist > 5) {
+      isSnapping = true;
+      const targetY = window.scrollY + closest.getBoundingClientRect().top - NAV_H;
+      window.scrollTo({ top: targetY, behavior: 'smooth' });
+      setTimeout(() => { isSnapping = false; }, 600);
+    }
+  }
+
+  // ── Scroll listener ──────────────────────────────────────────
+  window.addEventListener('scroll', () => {
+    updateHighlight();
+    if (isSnapping) return;
+    clearTimeout(snapTimer);
+    snapTimer = setTimeout(snapToNearest, 150);
+  }, { passive: true });
+
+  updateHighlight();
 }
 
 if (document.readyState === 'loading') {
