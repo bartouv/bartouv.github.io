@@ -1,25 +1,35 @@
-// On mobile, highlight whichever post card is most visible in the viewport
+// On mobile, highlight the post card whose centre is closest to the viewport centre
 function initMobileCardFocus() {
   if (window.innerWidth > 768) return;
 
-  const cards = document.querySelectorAll('.post-card');
+  const cards = Array.from(document.querySelectorAll('.post-card:not([hidden])'));
   if (!cards.length) return;
 
-  // rootMargin shrinks the top and bottom edges inward, creating a horizontal
-  // strip in the middle of the screen — card highlights when it enters that zone
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      entry.target.classList.toggle('in-view', entry.isIntersecting);
+  let current = null;
+
+  function update() {
+    const mid = window.innerHeight / 2;
+    let closest = null;
+    let closestDist = Infinity;
+
+    cards.forEach(card => {
+      const rect = card.getBoundingClientRect();
+      const dist = Math.abs((rect.top + rect.height / 2) - mid);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closest = card;
+      }
     });
-  }, { rootMargin: '-30% 0px -30% 0px', threshold: 0 });
 
-  cards.forEach(card => observer.observe(card));
-
-  window.addEventListener('resize', () => {
-    if (window.innerWidth > 768) {
-      cards.forEach(card => card.classList.remove('in-view'));
+    if (closest !== current) {
+      if (current) current.classList.remove('in-view');
+      if (closest) closest.classList.add('in-view');
+      current = closest;
     }
-  }, { passive: true });
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
 }
 
 if (document.readyState === 'loading') {
