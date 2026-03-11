@@ -412,7 +412,9 @@ footer {
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
-  nav { padding: 0 24px; }
+  nav { padding: 0 16px; }
+
+  .nav-logo { font-size: 12px; letter-spacing: 0.05em; }
 
   .theme-label { display: none; }
 
