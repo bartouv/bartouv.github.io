@@ -1,5 +1,5 @@
 // On mobile: highlight the card closest to screen centre,
-// and snap to the nearest card when scrolling stops.
+// and snap to the nearest card when scrolling fully stops.
 function initMobileCardFocus() {
   if (window.innerWidth > 768) return;
 
@@ -27,10 +27,11 @@ function initMobileCardFocus() {
   }
 
   // ── Snap ─────────────────────────────────────────────────────
-  let snapTimer = null;
   let isSnapping = false;
 
   function snapToNearest() {
+    if (isSnapping) return;
+
     let closest = null;
     let closestDist = Infinity;
 
@@ -39,21 +40,28 @@ function initMobileCardFocus() {
       if (dist < closestDist) { closestDist = dist; closest = card; }
     });
 
-    if (closest && closestDist > 5) {
+    if (closest && closestDist > 8) {
       isSnapping = true;
       const targetY = window.scrollY + closest.getBoundingClientRect().top - NAV_H;
       window.scrollTo({ top: targetY, behavior: 'smooth' });
-      setTimeout(() => { isSnapping = false; }, 600);
+      setTimeout(() => { isSnapping = false; }, 800);
     }
   }
 
-  // ── Scroll listener ──────────────────────────────────────────
-  window.addEventListener('scroll', () => {
-    updateHighlight();
-    if (isSnapping) return;
-    clearTimeout(snapTimer);
-    snapTimer = setTimeout(snapToNearest, 150);
-  }, { passive: true });
+  // ── Listeners ────────────────────────────────────────────────
+  window.addEventListener('scroll', updateHighlight, { passive: true });
+
+  // scrollend fires after inertia completes — much more reliable than debounce
+  if ('onscrollend' in window) {
+    window.addEventListener('scrollend', snapToNearest, { passive: true });
+  } else {
+    // fallback: wait longer than typical inertia duration
+    let snapTimer = null;
+    window.addEventListener('scroll', () => {
+      clearTimeout(snapTimer);
+      snapTimer = setTimeout(snapToNearest, 400);
+    }, { passive: true });
+  }
 
   updateHighlight();
 }

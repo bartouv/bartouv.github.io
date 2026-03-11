@@ -297,6 +297,16 @@
   .post-card:hover::before { transform: scaleY(1); }
 }
 
+.post-card.in-view { background: var(--bg3); }
+.post-card.in-view::before { transform: scaleY(1); }
+
+.podcast-card.in-view,
+.game-card.in-view,
+.project-card.in-view {
+  background: var(--bg3);
+  border-color: var(--accent);
+}
+
 .post-tag {
   font-family: 'Share Tech Mono', monospace;
   font-size: 10px;
@@ -952,16 +962,6 @@
   .stat { flex: 1 1 50%; border-right: none; border-bottom: 1px solid var(--border); }
 
   .posts-grid { grid-template-columns: 1fr; }
-
-  .post-card.in-view { background: var(--bg3); }
-  .post-card.in-view::before { transform: scaleY(1); }
-
-  .podcast-card.in-view,
-  .game-card.in-view,
-  .project-card.in-view {
-    background: var(--bg3);
-    border-color: var(--accent);
-  }
 
   .post-card.featured { grid-template-columns: 1fr; }
   .post-card.featured .featured-image-wrap { order: -1; }
