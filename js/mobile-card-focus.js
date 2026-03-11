@@ -5,11 +5,13 @@ function initMobileCardFocus() {
   const cards = document.querySelectorAll('.post-card');
   if (!cards.length) return;
 
+  // rootMargin shrinks the detection zone to the middle 40% of the screen,
+  // so a card is "in view" when it passes through the centre of the viewport
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       entry.target.classList.toggle('in-view', entry.isIntersecting);
     });
-  }, { threshold: 0.5 });
+  }, { rootMargin: '-30% 0px -30% 0px', threshold: 0 });
 
   cards.forEach(card => observer.observe(card));
 
