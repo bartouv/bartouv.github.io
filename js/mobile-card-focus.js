@@ -2,7 +2,9 @@
 function initMobileCardFocus() {
   if (window.innerWidth > 768) return;
 
-  const cards = Array.from(document.querySelectorAll('.post-card:not([hidden])'));
+  const cards = Array.from(document.querySelectorAll(
+    '.post-card:not([hidden]), .podcast-card, .game-card, .project-card'
+  ));
   if (!cards.length) return;
 
   let current = null;
