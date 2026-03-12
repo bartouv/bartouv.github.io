@@ -21,7 +21,6 @@ html {
   scroll-padding-top: 64px; /* Account for fixed navbar */
   background: var(--bg);
   overflow-x: hidden;
-  overscroll-behavior-y: none;
 }
 
 /* SKIP LINK (Accessibility) */
@@ -63,7 +62,6 @@ body {
   font-weight: 300;
   min-height: 100vh;
   overflow-x: hidden;
-  overscroll-behavior-y: none;
 }
 
 /* PAGE CONTAINER - Centers content on large screens */

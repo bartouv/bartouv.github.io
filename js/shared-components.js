@@ -82,7 +82,7 @@ const SharedComponents = {
   skipLink: `<a href="#main-content" class="skip-link">Skip to main content</a>`,
 
   // Background glow effects
-  backgroundGlows: `<canvas id="bg-canvas" aria-hidden="true" style="position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;"></canvas>`,
+  backgroundGlows: `<canvas id="bg-canvas" aria-hidden="true" style="position:fixed;top:0;left:0;pointer-events:none;z-index:0;"></canvas>`,
 
   // Navigation with theme switcher
   get navigation() { return `<!-- NAV -->
@@ -294,7 +294,9 @@ function initBgCanvas() {
 
   function resize() {
     canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Use screen.height so canvas covers the full screen even when the
+    // mobile browser URL bar hides/shows and innerHeight changes
+    canvas.height = window.screen.height;
   }
 
   function drawBrackets(ctx, x, y, scale, angle) {
@@ -353,6 +355,10 @@ function initBgCanvas() {
   }
 
   window.addEventListener('resize', resize);
+  // visualViewport fires during URL bar show/hide on mobile, keeping canvas in sync
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', resize);
+  }
   resize();
   recomputeColors();
   drawFrame();
