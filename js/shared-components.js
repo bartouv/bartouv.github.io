@@ -294,9 +294,7 @@ function initBgCanvas() {
 
   function resize() {
     canvas.width = window.innerWidth;
-    // Use screen.height so canvas covers the full screen even when the
-    // mobile browser URL bar hides/shows and innerHeight changes
-    canvas.height = window.screen.height;
+    canvas.height = window.innerHeight;
   }
 
   function drawBrackets(ctx, x, y, scale, angle) {
@@ -355,10 +353,6 @@ function initBgCanvas() {
   }
 
   window.addEventListener('resize', resize);
-  // visualViewport fires during URL bar show/hide on mobile, keeping canvas in sync
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', resize);
-  }
   resize();
   recomputeColors();
   drawFrame();
