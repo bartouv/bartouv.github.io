@@ -21,6 +21,7 @@ html {
   scroll-padding-top: 64px; /* Account for fixed navbar */
   background: var(--bg);
   overflow-x: hidden;
+  overscroll-behavior-y: none;
 }
 
 /* SKIP LINK (Accessibility) */

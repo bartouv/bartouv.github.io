@@ -82,7 +82,7 @@ const SharedComponents = {
   skipLink: `<a href="#main-content" class="skip-link">Skip to main content</a>`,
 
   // Background glow effects
-  backgroundGlows: `<canvas id="bg-canvas" aria-hidden="true" style="position:fixed;top:0;left:0;pointer-events:none;z-index:0;"></canvas>`,
+  backgroundGlows: `<canvas id="bg-canvas" aria-hidden="true" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>`,
 
   // Navigation with theme switcher
   get navigation() { return `<!-- NAV -->
