@@ -60,7 +60,6 @@ body {
   font-family: 'Inter', sans-serif;
   font-weight: 300;
   min-height: 100vh;
-  overflow-x: hidden;
 }
 
 /* PAGE CONTAINER - Centers content on large screens */
