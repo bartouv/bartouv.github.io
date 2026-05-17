@@ -91,9 +91,7 @@
 <article class="article-body">
   <div class="article-container">
 
-<p>Look at this.</p>
-
-<p>That's a real PR from our Unity project. Fourteen file types. <code>.meta</code> files alone account for 196 files — because Unity stamps a <code>.meta</code> on everything that breathes. If I want to review just the <code>.cs</code> files, I'm unchecking thirteen boxes. Every. Single. Time.</p>
+<p>Large PRs come with large file lists. If your project mixes source files with generated metadata, assets, or config, the GitHub extension filter quickly becomes a chore. You want to review one file type. GitHub has no built-in way to solo it. No "select only this" option. You're unchecking a dozen others to get there. Every. Single. Time.</p>
 
 <p>I got tired of it. So I fixed it.</p>
 
@@ -105,9 +103,9 @@
 
 <h2 class="section-heading">Getting there</h2>
 
-<p>GitHub's filter is a React component, which means the usual tricks don't work. <code>.click()</code> on list items is silently ignored. URL rewrites cause a full page reload — workable, but slow. <code>history.pushState</code> updates the URL but React doesn't react to it.</p>
+<p>GitHub's filter is a React component, which means the usual tricks don't work. <code>.click()</code> on list items is silently ignored. URL rewrites cause a full page reload. Workable, but slow. <code>history.pushState</code> updates the URL but React doesn't react to it.</p>
 
-<p>The actual solution: walk up the React fiber tree from the dropdown's DOM element until you find the component that owns the filter state. It has a function called <code>setFileFilterState</code>. Call it directly with all other extensions marked unselected, and the file list updates instantly — no navigation, no reload.</p>
+<p>The actual solution: walk up the React fiber tree from the dropdown's DOM element until you find the component that owns the filter state. It has a function called <code>setFileFilterState</code>. Call it directly with all other extensions marked unselected, and the file list updates instantly. No navigation, no reload.</p>
 
 <pre class="language-javascript"><code class="language-javascript">function getFilterProps() {
   const el = document.querySelector('.prc-ActionList-ActionList-rPFF2');
@@ -135,7 +133,7 @@ props.setFileFilterState({
 <ol>
   <li>Install <a href="https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo" target="_blank" rel="noopener">Tampermonkey</a></li>
   <li>Create a new script, paste the code below, save</li>
-  <li>Make sure Tampermonkey has permission to run on github.com — this one is easy to miss and will silently break everything</li>
+  <li>Make sure Tampermonkey has permission to run on github.com. Easy to miss, and it will silently break everything</li>
 </ol>
 
 <h2 class="section-heading">Full script</h2>
