@@ -8,6 +8,8 @@ main.page-container {
   max-width: 900px;
   background: var(--bg2);
   border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 18px 18px 0 0;
   margin: 88px auto 0;
   min-height: calc(100vh - 88px);
 }
@@ -26,6 +28,7 @@ body > footer {
 
 body > footer {
   border-bottom: 1px solid var(--border);
+  border-radius: 0 0 18px 18px;
 }
 
 /* ARTICLE HERO */
@@ -39,7 +42,7 @@ body > footer {
 
 .article-header {
   opacity: 0;
-  animation: fadeUp 0.6s 0.2s forwards;
+  animation: fadeUp 0.7s 0.2s var(--ease) forwards;
 }
 
 .back-link {
@@ -48,12 +51,12 @@ body > footer {
   font-size: 13px;
   color: var(--muted);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color var(--t-fast) var(--ease-soft), transform var(--t-fast) var(--ease-soft);
   display: inline-block;
   margin-bottom: 32px;
 }
 
-.back-link:hover { color: var(--accent); }
+.back-link:hover { color: var(--accent); transform: translateX(-3px); }
 
 .article-tag {
   font-family: 'Share Tech Mono', monospace;
@@ -102,12 +105,27 @@ body > footer {
 
 .article-container h2,
 .article-container .section-heading {
+  position: relative;
   font-family: 'Rajdhani', sans-serif;
   font-weight: 600;
   font-size: 28px;
   color: #fff;
   margin: 48px 0 24px;
+  padding-left: 18px;
   letter-spacing: 0.02em;
+}
+
+.article-container h2::before,
+.article-container .section-heading::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.16em;
+  bottom: 0.16em;
+  width: 3px;
+  background: var(--accent);
+  border-radius: 2px;
+  box-shadow: 0 0 10px var(--glow-accent);
 }
 
 .article-container h3 {
@@ -121,9 +139,9 @@ body > footer {
 .article-container p {
   font-size: 16px;
   line-height: 1.8;
-  color: var(--muted);
+  color: color-mix(in srgb, var(--muted) 52%, var(--text));
   margin-bottom: 20px;
-  text-align: justify;
+  text-align: left;
 }
 
 .article-container strong {
@@ -145,7 +163,7 @@ body > footer {
 .article-container li {
   font-size: 16px;
   line-height: 1.8;
-  color: var(--muted);
+  color: color-mix(in srgb, var(--muted) 52%, var(--text));
   margin-bottom: 12px;
 }
 
@@ -167,7 +185,7 @@ body > footer {
   background: var(--bg3);
   color: var(--accent);
   padding: 3px 8px;
-  border-radius: 3px;
+  border-radius: 6px;
 }
 
 .article-container pre {
@@ -178,7 +196,7 @@ body > footer {
   margin: 28px 0;
   overflow-x: auto;
   overflow-y: visible;
-  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  border-radius: 12px;
   position: relative;
   white-space: pre !important;
   word-wrap: normal !important;
@@ -196,6 +214,11 @@ body > footer {
   overflow-wrap: normal !important;
   word-break: keep-all !important;
   word-wrap: normal !important;
+}
+
+/* Win over Prism's own border-radius (loaded after this file) */
+.article-container pre[class*="language-"] {
+  border-radius: 12px;
 }
 
 /* BLOCKQUOTES */
@@ -217,6 +240,7 @@ body > footer {
   height: auto;
   margin: 32px 0;
   border: 1px solid var(--border);
+  border-radius: 12px;
   display: block;
 }
 
@@ -256,19 +280,21 @@ body > footer {
 .article-nav a {
   text-decoration: none;
   padding: 24px;
-  background: var(--panel);
+  background: linear-gradient(180deg, var(--panel), var(--bg3));
   border: 1px solid var(--border);
-  transition: all 0.2s;
-  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  border-radius: var(--r-card);
+  box-shadow: inset 0 1px 0 0 color-mix(in srgb, var(--text) 6%, transparent), 0 10px 26px -20px rgba(0,0,0,0.8);
+  transition: transform var(--t-med) var(--ease-soft), border-color var(--t-med) var(--ease-soft), background var(--t-med) var(--ease-soft), box-shadow var(--t-med) var(--ease-soft);
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
 .article-nav a:hover {
-  border-color: var(--accent);
-  background: var(--bg3);
-  transform: translateY(-2px);
+  border-color: var(--ring);
+  background: linear-gradient(180deg, var(--bg3), var(--panel));
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -24px var(--glow-accent);
 }
 
 .article-nav a:only-child {
@@ -301,12 +327,12 @@ body > footer {
 
 /* READ ON MEDIUM CALLOUT */
 .read-on-medium {
-  background: var(--panel);
+  background: linear-gradient(180deg, var(--panel), var(--bg3));
   border: 1px solid var(--border);
   border-left: 3px solid var(--accent);
   padding: 24px;
   margin: 40px 0;
-  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+  border-radius: 12px;
 }
 
 .read-on-medium p {
@@ -418,11 +444,11 @@ body > footer {
   padding: 10px 16px;
   background: var(--panel);
   border: 1px solid var(--border);
-  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  border-radius: 9px;
   text-decoration: none;
   font-family: 'Share Tech Mono', monospace;
   font-size: 12px;
-  transition: all 0.2s;
+  transition: transform var(--t-fast) var(--ease-soft), border-color var(--t-fast) var(--ease-soft), background var(--t-fast) var(--ease-soft), color var(--t-fast) var(--ease-soft);
   cursor: pointer;
 }
 

@@ -54,6 +54,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/shared.css">
 <link rel="stylesheet" href="css/index.css">
+<script>try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-reveal');}catch(e){}</script>
 </head>
 <body>
 <div id="reading-progress-placeholder"></div>
@@ -93,7 +94,7 @@
 
 <!-- POSTS -->
 <div class="section" id="posts">
-  <div class="section-header">
+  <div class="section-header" data-reveal>
     <h2 class="section-title">Articles</h2>
     <div class="section-line"></div>
     <span class="section-count" id="article-count">// 11 ARTICLES</span>
@@ -102,7 +103,7 @@
   <div class="posts-grid">
 
     <!-- Featured post -->
-    <a class="post-card featured" href="articles/ghost-textures-hidden-cause-of-unexplained-memory.html">
+    <a class="post-card featured" data-reveal href="articles/ghost-textures-hidden-cause-of-unexplained-memory.html">
       <div class="featured-content">
         <span class="featured-badge">Latest</span>
         <div class="post-tag">// Performance</div>
@@ -118,8 +119,11 @@
       </div>
     </a>
 
+    <div class="scroller-wrap">
+    <div class="posts-scroller">
+
     <!-- Mar 2026 -->
-    <a class="post-card" href="articles/taming-polymorphic-serialization.html">
+    <a class="post-card" data-reveal href="articles/taming-polymorphic-serialization.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*8xMRZ0I5aSL_Jr7GrmVygA.png" alt="Taming Polymorphic Serialization" loading="lazy">
       <div class="post-tag">// Fighting Entropy In Unity</div>
       <div class="post-title">Taming Polymorphic Serialization</div>
@@ -131,7 +135,7 @@
     </a>
 
     <!-- Sept 2025 -->
-    <a class="post-card" href="articles/ui-shine-effect.html">
+    <a class="post-card" data-reveal href="articles/ui-shine-effect.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*qwpagYja8zh1lyukute-Jw.png" alt="UI Shine Effect" loading="lazy">
       <div class="post-tag">// UI Effects</div>
       <div class="post-title">UI Shine Effect</div>
@@ -142,7 +146,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/rectmask2d-performance.html">
+    <a class="post-card" data-reveal href="articles/rectmask2d-performance.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/0*NG8fxb_CmUTFaEs7" alt="The Hidden Performance Killer: RectMask2D" loading="lazy">
       <div class="post-tag">// Performance</div>
       <div class="post-title">The Hidden Performance Killer: RectMask2D</div>
@@ -153,7 +157,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/shader-breakdown-recreating-night-in-the-woods-wobbly-dialogue-effect.html">
+    <a class="post-card" data-reveal href="articles/shader-breakdown-recreating-night-in-the-woods-wobbly-dialogue-effect.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*7SpTu3gXQHd6O5qH8_YaEg.gif" alt="Shader Breakdown: Night in the Woods' Wobbly Dialogue Effect" loading="lazy">
       <div class="post-tag">// Shaders</div>
       <div class="post-title">Shader Breakdown: Night in the Woods' Wobbly Dialogue Effect</div>
@@ -164,7 +168,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/making-games-responsive-to-different-devices.html">
+    <a class="post-card" data-reveal href="articles/making-games-responsive-to-different-devices.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*z9ecNiV1bQJxwJ0CvDOf9g.png" alt="Making Games Responsive to Different Devices" loading="lazy">
       <div class="post-tag">// Cross-Platform</div>
       <div class="post-title">Making Games Responsive to Different Devices</div>
@@ -176,7 +180,7 @@
     </a>
 
     <!-- Feb 2023 -->
-    <a class="post-card" href="articles/input-locks.html">
+    <a class="post-card" data-reveal href="articles/input-locks.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*BaW1yio88GdvdfG4MMdPYg.png" alt="Input Locks" loading="lazy">
       <div class="post-tag">// Input Systems</div>
       <div class="post-title">Input Locks</div>
@@ -187,7 +191,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/optimizing-draw-calls.html">
+    <a class="post-card" data-reveal href="articles/optimizing-draw-calls.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*ER_uz6k95MPDTyVbnzwWnQ.png" alt="Optimizing Draw Calls" loading="lazy">
       <div class="post-tag">// Optimization</div>
       <div class="post-title">Optimizing Draw Calls</div>
@@ -199,7 +203,7 @@
     </a>
 
     <!-- Jan 2023 -->
-    <a class="post-card" href="articles/turning-events-into-commands.html">
+    <a class="post-card" data-reveal href="articles/turning-events-into-commands.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*s3NWY0RoZbSMcLqUgZgV0Q.png" alt="Turning Events into Commands" loading="lazy">
       <div class="post-tag">// Architecture</div>
       <div class="post-title">Turning Events into Commands</div>
@@ -210,7 +214,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/warnings.html">
+    <a class="post-card" data-reveal href="articles/warnings.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*nq9c9ZkVq8xBMfrNSNF8nQ.png" alt="Warnings" loading="lazy">
       <div class="post-tag">// Code Quality</div>
       <div class="post-title">Warnings</div>
@@ -221,7 +225,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/cameras-and-rendering.html">
+    <a class="post-card" data-reveal href="articles/cameras-and-rendering.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*pKtCW1yUNqQQn3VPkhQiCg.png" alt="Cameras and Rendering" loading="lazy">
       <div class="post-tag">// Rendering</div>
       <div class="post-title">Cameras and Rendering</div>
@@ -232,7 +236,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/fighting-entropy-in-unity-structure-based-on-domains.html">
+    <a class="post-card" data-reveal href="articles/fighting-entropy-in-unity-structure-based-on-domains.html">
       <img class="post-image" src="https://cdn-images-1.medium.com/max/800/1*BT3-dFabFc6MIzzaYH_Aig.png" alt="Structure Based on Domains" loading="lazy">
       <div class="post-tag">// Architecture</div>
       <div class="post-title">Structure Based on Domains</div>
@@ -244,7 +248,7 @@
     </a>
 
     <!-- Drafts (hidden) -->
-    <a class="post-card" href="articles/fighting-entropy-in-unity-seeded-random-for-debugging.html" hidden>
+    <a class="post-card" data-reveal href="articles/fighting-entropy-in-unity-seeded-random-for-debugging.html" hidden>
       <div class="post-tag">// Debugging</div>
       <div class="post-title">Seeded Random for Debugging</div>
       <p class="post-excerpt">Making randomness reproducible for testing. Using seeded RNG to create deterministic gameplay that's easy to debug and test.</p>
@@ -254,7 +258,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/fighting-entropy-in-development-taming-the-pr-chaos.html" hidden>
+    <a class="post-card" data-reveal href="articles/fighting-entropy-in-development-taming-the-pr-chaos.html" hidden>
       <div class="post-tag">// Development Process</div>
       <div class="post-title">Taming the PR Chaos</div>
       <p class="post-excerpt">Managing pull requests in game development teams. Strategies for code review, merge conflicts, and keeping development velocity high.</p>
@@ -264,7 +268,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/fighting-entropy-in-git-custom-commands-that-actually-save-time.html" hidden>
+    <a class="post-card" data-reveal href="articles/fighting-entropy-in-git-custom-commands-that-actually-save-time.html" hidden>
       <div class="post-tag">// Git</div>
       <div class="post-title">Git Custom Commands That Actually Save Time</div>
       <p class="post-excerpt">Creating git aliases and custom commands for common Unity workflows. Automate repetitive tasks and streamline your version control.</p>
@@ -274,7 +278,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/fighting-entropy-in-unity-taming-git-chaos-with-custom-commands.html" hidden>
+    <a class="post-card" data-reveal href="articles/fighting-entropy-in-unity-taming-git-chaos-with-custom-commands.html" hidden>
       <div class="post-tag">// Git</div>
       <div class="post-title">Taming Git Chaos with Custom Commands</div>
       <p class="post-excerpt">Advanced git workflows for Unity projects. Handle binary files, solve merge conflicts, and maintain clean commit history in team environments.</p>
@@ -284,7 +288,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/an-intro-to-rendering.html" hidden>
+    <a class="post-card" data-reveal href="articles/an-intro-to-rendering.html" hidden>
       <div class="post-tag">// Rendering</div>
       <div class="post-title">An Intro to Rendering</div>
       <p class="post-excerpt">Understanding the fundamentals of rendering pipelines. From vertices to pixels, learn how Unity transforms your 3D scenes into images.</p>
@@ -294,7 +298,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/from-art-to-code-building-a-video-scrubber-to-match-unity-animations.html" hidden>
+    <a class="post-card" data-reveal href="articles/from-art-to-code-building-a-video-scrubber-to-match-unity-animations.html" hidden>
       <div class="post-tag">// Tools</div>
       <div class="post-title">Building a Video Scrubber to Match Unity Animations</div>
       <p class="post-excerpt">Creating custom editor tools to sync video references with animation timelines. Bridge the gap between concept art and implementation.</p>
@@ -304,7 +308,7 @@
       </div>
     </a>
 
-    <a class="post-card" href="articles/scene-tool.html" hidden>
+    <a class="post-card" data-reveal href="articles/scene-tool.html" hidden>
       <div class="post-tag">// Editor Tools</div>
       <div class="post-title">Scene Tool</div>
       <p class="post-excerpt">Building custom scene view tools for level design workflows. Extend Unity's editor to match your team's specific needs.</p>
@@ -314,18 +318,26 @@
       </div>
     </a>
 
+    </div>
+    <button class="scroller-btn prev" type="button" aria-label="Previous articles">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="scroller-btn next" type="button" aria-label="More articles">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+    </div>
   </div>
 </div>
 
 <!-- PODCAST -->
 <div class="section" id="podcast">
-  <div class="section-header">
+  <div class="section-header" data-reveal>
     <h2 class="section-title">Podcast</h2>
     <div class="section-line"></div>
     <span class="section-count">// FEATURED APPEARANCE</span>
   </div>
 
-  <a class="podcast-card" href="https://open.spotify.com/episode/7xRcR1yZD1YJ4IUOqY7Gov?si=f3968ad6c81b4269" target="_blank" rel="noopener">
+  <a class="podcast-card" data-reveal href="https://open.spotify.com/episode/7xRcR1yZD1YJ4IUOqY7Gov?si=f3968ad6c81b4269" target="_blank" rel="noopener">
     <img src="https://i.scdn.co/image/ab67656300005f1fb380909f4467deb665c901e8" alt="Podcast Episode Cover" class="podcast-image">
     <div class="podcast-content">
       <div class="podcast-tag">// GPU OPTIMIZATION</div>
@@ -345,13 +357,13 @@
 
 <!-- GAME JAM -->
 <div class="section" id="gamejam">
-  <div class="section-header">
+  <div class="section-header" data-reveal>
     <h2 class="section-title">Game Jam</h2>
     <div class="section-line"></div>
     <span class="section-count">// PROJECTS</span>
   </div>
 
-  <a class="game-card" href="https://bartouv.itch.io/rise-of-the-machines-2" target="_blank" rel="noopener">
+  <a class="game-card" data-reveal href="https://bartouv.itch.io/rise-of-the-machines-2" target="_blank" rel="noopener">
     <img src="https://img.itch.zone/aW1nLzEwOTI4MTU3LnBuZw==/347x500/VNpPtr.png" alt="Rise Of The Machines Cover" class="game-image">
     <div class="game-content">
       <div class="game-tag">// SHOOTER · HTML5</div>
@@ -371,7 +383,7 @@
 
 <!-- PROJECTS -->
 <div class="section" id="projects">
-  <div class="section-header">
+  <div class="section-header" data-reveal>
     <h2 class="section-title">Projects</h2>
     <div class="section-line"></div>
     <span class="section-count">// SHIPPED GAMES</span>
@@ -379,7 +391,7 @@
 
   <div class="projects-grid">
 
-    <a class="project-card" href="https://www.youtube.com/results?search_query=Swap+Heroes+Glaive+gameplay" target="_blank" rel="noopener">
+    <a class="project-card" data-reveal href="https://www.youtube.com/results?search_query=Swap+Heroes+Glaive+gameplay" target="_blank" rel="noopener">
       <picture>
         <img src="images/projects/swap-heroes.png" alt="Swap Heroes" class="project-image" loading="lazy">
       </picture>
@@ -396,7 +408,7 @@
       </div>
     </a>
 
-    <a class="project-card" href="https://www.youtube.com/results?search_query=Solaria+Dawn+of+Heroes+gameplay" target="_blank" rel="noopener">
+    <a class="project-card" data-reveal href="https://www.youtube.com/results?search_query=Solaria+Dawn+of+Heroes+gameplay" target="_blank" rel="noopener">
       <picture>
         <source srcset="images/projects/solaria.webp" type="image/webp">
         <img src="images/projects/solaria.png" alt="Solaria: Dawn of Heroes" class="project-image" loading="lazy">
@@ -414,7 +426,7 @@
       </div>
     </a>
 
-    <a class="project-card" href="https://www.youtube.com/results?search_query=Dice+Life+Playtika+gameplay" target="_blank" rel="noopener">
+    <a class="project-card" data-reveal href="https://www.youtube.com/results?search_query=Dice+Life+Playtika+gameplay" target="_blank" rel="noopener">
       <picture>
         <source srcset="images/projects/dice-life.webp" type="image/webp">
         <img src="images/projects/dice-life.png" alt="Dice Life" class="project-image" loading="lazy">
@@ -432,7 +444,7 @@
       </div>
     </a>
 
-    <a class="project-card" href="https://www.youtube.com/results?search_query=Merge+Stories+Playtika+gameplay" target="_blank" rel="noopener">
+    <a class="project-card" data-reveal href="https://www.youtube.com/results?search_query=Merge+Stories+Playtika+gameplay" target="_blank" rel="noopener">
       <picture>
         <source srcset="images/projects/merge-stories.webp" type="image/webp">
         <img src="images/projects/merge-stories.png" alt="Merge Stories" class="project-image" loading="lazy">
@@ -450,7 +462,7 @@
       </div>
     </a>
 
-    <div class="project-card">
+    <div class="project-card" data-reveal>
       <picture>
         <img src="images/projects/card-kings.jpg" alt="Card Kings" class="project-image" loading="lazy">
       </picture>
@@ -465,7 +477,7 @@
       </div>
     </div>
 
-    <a class="project-card" href="https://www.youtube.com/results?search_query=Merge+Tower+Bots+gameplay" target="_blank" rel="noopener">
+    <a class="project-card" data-reveal href="https://www.youtube.com/results?search_query=Merge+Tower+Bots+gameplay" target="_blank" rel="noopener">
       <picture>
         <source srcset="images/projects/merge-tower-bots.webp" type="image/webp">
         <img src="images/projects/merge-tower-bots.png" alt="Merge Tower Bots" class="project-image" loading="lazy">
@@ -483,7 +495,7 @@
       </div>
     </a>
 
-    <a class="project-card" href="https://www.youtube.com/results?search_query=Monster+Blasters+Jelly+Button+gameplay" target="_blank" rel="noopener">
+    <a class="project-card" data-reveal href="https://www.youtube.com/results?search_query=Monster+Blasters+Jelly+Button+gameplay" target="_blank" rel="noopener">
       <picture>
         <source srcset="images/projects/monster-blasters.webp" type="image/webp">
         <img src="images/projects/monster-blasters.jpg" alt="Monster Blasters" class="project-image" loading="lazy">
@@ -501,7 +513,7 @@
       </div>
     </a>
 
-    <a class="project-card" href="https://www.youtube.com/results?search_query=Pirate+Kings+gameplay" target="_blank" rel="noopener">
+    <a class="project-card" data-reveal href="https://www.youtube.com/results?search_query=Pirate+Kings+gameplay" target="_blank" rel="noopener">
       <picture>
         <source srcset="images/projects/pirate-kings.webp" type="image/webp">
         <img src="images/projects/pirate-kings.png" alt="Pirate Kings" class="project-image" loading="lazy">
@@ -524,14 +536,14 @@
 
 <!-- EXPERIENCE -->
 <div class="section" id="experience" style="padding-top: 0;">
-  <div class="section-header">
+  <div class="section-header" data-reveal>
     <h2 class="section-title">Experience</h2>
     <div class="section-line"></div>
     <span class="section-count">// CAREER</span>
   </div>
 
   <div class="timeline">
-    <div class="timeline-item">
+    <div class="timeline-item" data-reveal>
       <div class="timeline-dot current"></div>
       <div class="timeline-content">
         <div class="timeline-meta">
@@ -543,7 +555,7 @@
       </div>
     </div>
 
-    <div class="timeline-item">
+    <div class="timeline-item" data-reveal>
       <div class="timeline-dot"></div>
       <div class="timeline-content">
         <div class="timeline-meta">
@@ -555,7 +567,7 @@
       </div>
     </div>
 
-    <div class="timeline-item">
+    <div class="timeline-item" data-reveal>
       <div class="timeline-dot"></div>
       <div class="timeline-content">
         <div class="timeline-meta">
@@ -573,7 +585,7 @@
 
 <!-- ABOUT -->
 <div class="about-section" id="about">
-  <div class="about-inner">
+  <div class="about-inner" data-reveal>
     <div>
       <div class="about-label">// Who I am</div>
       <div class="about-name">Gal<br>Bartouv</div>
@@ -637,6 +649,7 @@
 <script src="js/hero-effects.js"></script>
 <script src="js/scroll-spy.js"></script>
 <script src="js/mobile-card-focus.js"></script>
+<script src="js/reveal.js"></script>
 
 </body>
 </html>
