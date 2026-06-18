@@ -649,6 +649,38 @@
   transition: transform var(--t-med) var(--ease);
 }
 
+/* CSS-rendered orrery cover (used where there's no screenshot yet) */
+.orrery-cover {
+  position: relative;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.12), transparent 12%),
+    radial-gradient(circle at 70% 70%, rgba(255,255,255,0.08), transparent 14%),
+    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 55%),
+    radial-gradient(circle at 50% 45%, #0c1830, #04060c 80%);
+  overflow: hidden;
+}
+.orrery-cover::before {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 46%; aspect-ratio: 1;
+  transform: translate(-50%, -50%) rotate(-16deg);
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent2) 18%, transparent),
+              0 0 22px -2px var(--glow-accent);
+}
+.orrery-cover::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 22%; aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, var(--accent3), var(--accent) 55%, color-mix(in srgb, var(--accent) 40%, #000) 100%);
+  box-shadow: 0 0 30px -2px var(--glow-accent), inset -6px -6px 14px rgba(0,0,0,0.55);
+}
+
 .game-content {
   padding: 32px;
   display: flex;

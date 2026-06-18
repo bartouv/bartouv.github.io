@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EQQ75KMY2R"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-EQQ75KMY2R');
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar System Orrery — Play in Browser | Gal Bartouv</title>
+
+<!-- SEO Meta Tags -->
+<meta name="description" content="An interactive real-time orrery of the solar system, built in Unity and playable directly in your browser via WebGPU/WebGL.">
+<meta name="keywords" content="Solar System, Orrery, Unity WebGL, Unity WebGPU, Space Simulation, Gal Bartouv">
+
+<!-- Open Graph Tags -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Solar System Orrery — Play in Browser">
+<meta property="og:description" content="An interactive real-time orrery of the solar system, built in Unity. Play it right in your browser.">
+<meta property="og:url" content="https://bartouv.github.io/projects/solar-system-orrery/">
+<meta property="og:image" content="https://bartouv.github.io/images/Avatar.png">
+
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Solar System Orrery — Play in Browser">
+<meta name="twitter:description" content="An interactive real-time orrery of the solar system, built in Unity. Play it right in your browser.">
+<meta name="twitter:image" content="https://bartouv.github.io/images/Avatar.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../css/shared.css">
+<link rel="stylesheet" href="../../css/index.css">
+<script>try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('js-reveal');}catch(e){}</script>
+
+<style>
+  /* ---- Solar System Orrery player ---- */
+  .play-wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+  .play-lead {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 720px;
+    margin: 0 0 28px;
+  }
+  .player-frame {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 960 / 600;
+    background: radial-gradient(circle at 50% 35%, #0a1426, #04060c 75%);
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    overflow: hidden;
+    box-shadow: inset 0 1px 0 0 color-mix(in srgb, var(--text) 6%, transparent),
+                0 26px 60px -30px var(--glow-accent);
+  }
+  #unity-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+  }
+
+  /* Launch overlay */
+  .play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    text-align: center;
+    padding: 24px;
+    background:
+      radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
+      radial-gradient(circle at 50% 35%, #0a1426, #04060c 80%);
+    z-index: 3;
+  }
+  .play-overlay .planet {
+    width: 84px; height: 84px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, var(--accent3), var(--accent) 55%, color-mix(in srgb, var(--accent) 40%, #000) 100%);
+    box-shadow: 0 0 40px -4px var(--glow-accent), inset -8px -8px 18px rgba(0,0,0,0.55);
+    position: relative;
+  }
+  .play-overlay .planet::after {
+    content: '';
+    position: absolute;
+    left: 50%; top: 50%;
+    width: 150px; height: 150px;
+    transform: translate(-50%,-50%) rotate(-18deg);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+    border-radius: 50%;
+  }
+  .play-eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent2);
+  }
+  .play-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: 0.04em;
+    padding: 13px 30px;
+    border-radius: 10px;
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #06121d;
+    cursor: pointer;
+    transition: transform var(--t-fast, .2s) ease, box-shadow var(--t-fast, .2s) ease, background .2s ease;
+    box-shadow: 0 0 28px -6px var(--glow-accent);
+  }
+  .play-btn:hover { transform: translateY(-2px); background: var(--text); box-shadow: 0 0 36px -4px var(--glow-accent); }
+  .play-size {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* Loading bar */
+  .play-loading {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 2;
+  }
+  .play-loading.active { display: flex; }
+  .play-bar-track {
+    width: 240px;
+    height: 4px;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--text) 12%, transparent);
+    overflow: hidden;
+  }
+  .play-bar-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    box-shadow: 0 0 10px var(--accent);
+    transition: width .15s linear;
+  }
+  .play-loading-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+  }
+
+  /* Toolbar under the player */
+  .player-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+  .player-toolbar .compat { color: var(--muted); }
+  .player-toolbar .compat b { color: var(--accent); font-weight: 400; }
+  .fs-btn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: border-color .2s ease, color .2s ease;
+  }
+  .fs-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .fs-btn[disabled] { opacity: .4; cursor: default; }
+
+  /* Info cards below */
+  .play-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 36px;
+  }
+  .play-info-card {
+    background: linear-gradient(180deg, var(--panel), var(--bg3));
+    border: 1px solid var(--border);
+    border-radius: var(--r-card);
+    padding: 20px 22px;
+  }
+  .play-info-card h3 {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin: 0 0 10px;
+  }
+  .play-info-card p {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    text-decoration: none;
+    margin-bottom: 26px;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  #unity-warning { position: absolute; left: 0; right: 0; top: 0; z-index: 4; }
+  #unity-warning > div { margin: 6px auto; max-width: 90%; border-radius: 6px; color: #06121d; font-family: 'Share Tech Mono', monospace; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div id="bg-glows-placeholder"></div>
+
+<!-- NAV -->
+<nav role="navigation" aria-label="Main navigation">
+  <div class="nav-logo"><a href="../../index.html" style="color:inherit;text-decoration:none;">Gal Bartouv</a></div>
+  <ul class="nav-links">
+    <li><a href="../../index.html#posts"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z"/></svg>Articles</a></li>
+    <li><a href="../../index.html#projects"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 3h8v8H3V3zm0 10h8v8H3v-8zm10-10h8v8h-8V3zm0 10h8v8h-8v-8z"/></svg>Projects</a></li>
+    <li><a href="../../index.html#about"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5zm0 2c-5.33 0-8 2.67-8 4v1h16v-1c0-1.33-2.67-4-8-4z"/></svg>About</a></li>
+    <li><a href="../../feed.xml" aria-label="RSS Feed" class="nav-rss"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg></a></li>
+  </ul>
+  <button class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="theme-switcher" id="themeSwitcher">
+    <button class="theme-toggle-btn" aria-label="Open theme selector" onclick="toggleThemePanel()" title="Switch theme">
+      <span class="theme-icon">◑</span>
+      <span class="theme-label">Theme</span>
+    </button>
+    <div class="theme-panel" id="themePanel">
+      <div class="theme-panel-title">// SELECT THEME</div>
+      <button class="theme-option" data-theme="p14" onclick="setTheme('p14')"><span class="theme-swatch" style="background:linear-gradient(135deg,#d080ff,#50f090)"></span><span>Purple &amp; Mint</span></button>
+      <button class="theme-option" data-theme="p2" onclick="setTheme('p2')"><span class="theme-swatch" style="background:linear-gradient(135deg,#1a0e1e,#e080ff,#60d0ff)"></span><span>Purple &amp; Cyan</span></button>
+      <button class="theme-option" data-theme="p3" onclick="setTheme('p3')"><span class="theme-swatch" style="background:linear-gradient(135deg,#0e1a18,#60ffb0,#ff7090)"></span><span>Teal &amp; Pink</span></button>
+      <button class="theme-option" data-theme="p4" onclick="setTheme('p4')"><span class="theme-swatch" style="background:linear-gradient(135deg,#ffc840,#a030ea)"></span><span>Gold &amp; Violet</span></button>
+      <button class="theme-option" data-theme="p5" onclick="setTheme('p5')"><span class="theme-swatch" style="background:linear-gradient(135deg,#c8ff64,#6040ff)"></span><span>Lime &amp; Violet</span></button>
+      <button class="theme-option" data-theme="p6" onclick="setTheme('p6')"><span class="theme-swatch" style="background:linear-gradient(135deg,#1e0e16,#ff60a0,#40e0c0)"></span><span>Rose &amp; Teal</span></button>
+      <button class="theme-option" data-theme="p7" onclick="setTheme('p7')"><span class="theme-swatch" style="background:linear-gradient(135deg,#ff9040,#8040ff)"></span><span>Orange &amp; Violet</span></button>
+      <button class="theme-option" data-theme="p8" onclick="setTheme('p8')"><span class="theme-swatch" style="background:linear-gradient(135deg,#0e181a,#60c8ff,#ffb040)"></span><span>Sky &amp; Orange</span></button>
+      <button class="theme-option" data-theme="p9" onclick="setTheme('p9')"><span class="theme-swatch" style="background:linear-gradient(135deg,#ffb860,#6050d0)"></span><span>Amber &amp; Indigo</span></button>
+      <button class="theme-option" data-theme="p10" onclick="setTheme('p10')"><span class="theme-swatch" style="background:linear-gradient(135deg,#e0ff50,#7050ff)"></span><span>Lemon &amp; Violet</span></button>
+      <button class="theme-option" data-theme="p11" onclick="setTheme('p11')"><span class="theme-swatch" style="background:linear-gradient(135deg,#50f0f0,#ff60a0)"></span><span>Cyan &amp; Magenta</span></button>
+      <button class="theme-option" data-theme="p12" onclick="setTheme('p12')"><span class="theme-swatch" style="background:linear-gradient(135deg,#ff80ff,#40d0d0)"></span><span>Magenta &amp; Cyan</span></button>
+      <button class="theme-option" data-theme="p13" onclick="setTheme('p13')"><span class="theme-swatch" style="background:linear-gradient(135deg,#ffa850,#50a0ff)"></span><span>Peach &amp; Blue</span></button>
+      <button class="theme-option" data-theme="p15" onclick="setTheme('p15')"><span class="theme-swatch" style="background:linear-gradient(135deg,#182030,#4898ff,#40e0cc)"></span><span>Cobalt</span></button>
+      <button class="theme-option" data-theme="p16" onclick="setTheme('p16')"><span class="theme-swatch" style="background:linear-gradient(135deg,#1a2c2a,#38d0b4,#ffb840)"></span><span>Teal &amp; Gold</span></button>
+      <button class="theme-option" data-theme="p17" onclick="setTheme('p17')"><span class="theme-swatch" style="background:linear-gradient(135deg,#141c2c,#38c0f0,#7050f0)"></span><span>Deep Ocean</span></button>
+      <button class="theme-option" data-theme="p18" onclick="setTheme('p18')"><span class="theme-swatch" style="background:linear-gradient(135deg,#1c2630,#70d0ff,#ff7060)"></span><span>Arctic</span></button>
+    </div>
+  </div>
+</nav>
+
+<main class="page-container" role="main" id="main-content">
+
+<div class="section play-wrap">
+  <a class="back-link" href="../../index.html#projects">← Back to Projects</a>
+
+  <div class="section-header" data-reveal>
+    <h2 class="section-title">Solar System Orrery</h2>
+    <div class="section-line"></div>
+    <span class="section-count">// PLAY IN BROWSER</span>
+  </div>
+
+  <p class="play-lead" data-reveal>
+    An interactive, real-time orrery of the solar system — built in Unity and running right here in your browser.
+    Drag to orbit the camera, scroll to zoom, and watch the planets trace their paths around the sun.
+  </p>
+
+  <div class="player-frame" data-reveal>
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+
+    <div id="unity-warning"></div>
+
+    <!-- Launch overlay (gates the ~18 MB download behind a click) -->
+    <div class="play-overlay" id="playOverlay">
+      <div class="planet" aria-hidden="true"></div>
+      <div class="play-eyebrow">Unity · Real-time 3D</div>
+      <button class="play-btn" id="launchBtn" type="button">▶ Launch Simulation</button>
+      <div class="play-size">~18 MB · loads in your browser</div>
+    </div>
+
+    <!-- Loading state -->
+    <div class="play-loading" id="playLoading">
+      <div class="play-loading-label" id="loadingLabel">INITIALISING…</div>
+      <div class="play-bar-track"><div class="play-bar-fill" id="loadingFill"></div></div>
+    </div>
+  </div>
+
+  <div class="player-toolbar">
+    <span class="compat">Best experienced in <b>Chrome</b> or <b>Edge</b> · requires WebGL2 / WebGPU</span>
+    <button class="fs-btn" id="fullscreenBtn" disabled>⛶ Fullscreen</button>
+  </div>
+
+  <div class="play-info">
+    <div class="play-info-card" data-reveal>
+      <h3>// Controls</h3>
+      <p>Left-drag to orbit · scroll to zoom · right-drag to pan. Use the fullscreen button for the full view.</p>
+    </div>
+    <div class="play-info-card" data-reveal>
+      <h3>// Built with</h3>
+      <p>Unity, compiled to WebAssembly with a WebGPU/WebGL2 renderer. A port of a JavaScript orrery into a real engine.</p>
+    </div>
+    <div class="play-info-card" data-reveal>
+      <h3>// Status</h3>
+      <p>Personal project, in active development. Expect rough edges — this is the playground where new ideas get prototyped.</p>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer role="contentinfo">
+  <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
+  <div class="footer-links">
+    <a href="../../index.html#posts">Articles</a>
+    <a href="../../index.html#projects">Projects</a>
+    <a href="../../index.html#about">About</a>
+    <a href="../../feed.xml" class="footer-rss" aria-label="RSS Feed">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19.01 7.38 20 6.18 20C4.98 20 4 19.01 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg>
+      RSS
+    </a>
+  </div>
+</footer>
+
+<script src="../../js/shared-components.js"></script>
+<script src="../../js/theme.js"></script>
+<script src="../../js/mobile-nav.js"></script>
+<script src="../../js/reveal.js"></script>
+
+<!-- Unity loader -->
+<script>
+(function () {
+  var canvas      = document.querySelector("#unity-canvas");
+  var overlay     = document.querySelector("#playOverlay");
+  var loading     = document.querySelector("#playLoading");
+  var fill        = document.querySelector("#loadingFill");
+  var label       = document.querySelector("#loadingLabel");
+  var launchBtn   = document.querySelector("#launchBtn");
+  var fsBtn       = document.querySelector("#fullscreenBtn");
+
+  var buildUrl  = "Build";
+  var loaderUrl = buildUrl + "/Web.loader.js";
+  var config = {
+    arguments: [],
+    dataUrl: buildUrl + "/Web.data.unityweb",
+    frameworkUrl: buildUrl + "/Web.framework.js.unityweb",
+    codeUrl: buildUrl + "/Web.wasm.unityweb",
+    streamingAssetsUrl: "StreamingAssets",
+    companyName: "Gal Bartouv",
+    productName: "Solar System Orrery",
+    productVersion: "0.1.0",
+    showBanner: unityShowBanner,
+  };
+
+  function unityShowBanner(msg, type) {
+    var warning = document.querySelector("#unity-warning");
+    var div = document.createElement('div');
+    div.innerHTML = msg;
+    warning.appendChild(div);
+    if (type == 'error') div.style = 'background:#ff5a5a;padding:10px;';
+    else if (type == 'warning') {
+      div.style = 'background:#ffd23f;padding:10px;';
+      setTimeout(function () { if (div.parentNode) warning.removeChild(div); }, 5000);
+    }
+  }
+
+  function launch() {
+    launchBtn.disabled = true;
+    overlay.style.display = "none";
+    loading.classList.add("active");
+
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = function () {
+      createUnityInstance(canvas, config, function (progress) {
+        var pct = Math.round(progress * 100);
+        fill.style.width = pct + "%";
+        label.textContent = (pct < 100 ? "LOADING " + pct + "%" : "STARTING…");
+      }).then(function (unityInstance) {
+        loading.classList.remove("active");
+        fsBtn.disabled = false;
+        fsBtn.onclick = function () { unityInstance.SetFullscreen(1); };
+      }).catch(function (message) {
+        label.textContent = "FAILED TO LOAD";
+        unityShowBanner(String(message), 'error');
+      });
+    };
+    script.onerror = function () {
+      label.textContent = "FAILED TO LOAD LOADER";
+      unityShowBanner("Could not load the Unity loader script.", 'error');
+    };
+    document.body.appendChild(script);
+  }
+
+  launchBtn.addEventListener("click", launch);
+
+  // Mobile hint
+  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    config.devicePixelRatio = 1;
+  }
+})();
+</script>
+
+</body>
+</html>
