@@ -372,8 +372,11 @@
   var fsBtn       = document.querySelector("#fullscreenBtn");
 
   var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  // Cap DPR on mobile for performance; render at full device resolution on desktop.
-  var renderDpr = isMobile ? 1 : (window.devicePixelRatio || 1);
+  var dpr = window.devicePixelRatio || 1;
+  // Render at full device resolution on desktop. On mobile, phone screens have
+  // very high DPR (e.g. ~3 on a Galaxy S23); rendering at 1x looks pixelated,
+  // so render at up to 2x — crisp without the full perf cost of 3x.
+  var renderDpr = isMobile ? Math.min(dpr, 2) : dpr;
 
   var buildUrl  = "Build";
   var loaderUrl = buildUrl + "/Web.loader.js";
