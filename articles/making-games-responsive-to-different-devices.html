@@ -12,14 +12,14 @@
 </script>
 <link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Making Games Responsive to Different Devices — Gal Bartouv</title>
+<title>Making Games Responsive to Different Devices - Gal Bartouv</title>
 <!-- SEO Meta Tags -->
 <meta name="description" content="Building adaptive layouts that work across mobile, tablet, and desktop. Handling different aspect ratios and screen sizes gracefully.">
 <meta name="keywords" content="Unity Mobile, Responsive Design, Cross-Platform, Screen Adaptation, UI Scaling">
 
 <!-- Open Graph Tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="Making Games Responsive to Different Devices — Unity Dev Blog">
+<meta property="og:title" content="Making Games Responsive to Different Devices - Unity Dev Blog">
 <meta property="og:description" content="Building adaptive layouts that work across mobile, tablet, and desktop. Handling different aspect ratios and screen sizes gracefully.">
 <meta property="og:url" content="https://bartouv.github.io/articles/making-games-responsive-to-different-devices.html">
 <meta property="og:image" content="https://bartouv.github.io/images/Avatar.png">
@@ -30,7 +30,7 @@
 
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Making Games Responsive to Different Devices — Unity Dev Blog">
+<meta name="twitter:title" content="Making Games Responsive to Different Devices - Unity Dev Blog">
 <meta name="twitter:description" content="Building adaptive layouts that work across mobile, tablet, and desktop. Handling different aspect ratios and screen sizes gracefully.">
 <meta name="twitter:image" content="https://bartouv.github.io/images/Avatar.png">
 
@@ -106,9 +106,9 @@ The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z
 
 <p>You’ll encounter these problems in almost every project. Device-specific positioning code, lookup tables for different aspect ratios, and magic numbers for every new device. It’s a maintenance nightmare and not scalable. On last check, Google Play Console has 17,000+ Android devices, each with countless different aspect ratios.</p>
 
-<p>The root cause? Unity’s UI adapts automatically, but your 3D content doesn’t. It exists in world space, completely unaware of screen dimensions. The solution isn’t device-specific code or lookup tables — it’s one elegant mathematical concept.</p>
+<p>The root cause? Unity’s UI adapts automatically, but your 3D content doesn’t. It exists in world space, completely unaware of screen dimensions. The solution isn’t device-specific code or lookup tables, it’s one elegant mathematical concept.</p>
 
-<p>Math. You might not like it, but in game development, math is your friend. And good news — since you’re probably not writing a graphics engine from scratch, a lot of it isn’t as difficult as you’d think.</p>
+<p>Math. You might not like it, but in game development, math is your friend. And good news, since you’re probably not writing a graphics engine from scratch, a lot of it isn’t as difficult as you’d think.</p>
 
 <p>In our case, we need just one simple formula: the remap function.</p>
 
@@ -121,7 +121,7 @@ The Remap Function<figure><img src="https://cdn-images-1.medium.com/max/800/1*z
 
 <p>This maps any value<code>x</code>from range<code>[a, b]</code>to the equivalent position in range<code>[c, d]</code>.</p>
 
-<p>If you’ve used Shader Graph, you’ll recognize this — it’s the same as the <a href="https://docs.unity3d.com/Packages/com.unity.shadergraph@6.9/manual/Remap-Node.html" target="_blank" rel="noopener">Remap Node</a>. Unity recognizes that this function is useful enough to warrant its own node.</p>
+<p>If you’ve used Shader Graph, you’ll recognize this, it’s the same as the <a href="https://docs.unity3d.com/Packages/com.unity.shadergraph@6.9/manual/Remap-Node.html" target="_blank" rel="noopener">Remap Node</a>. Unity recognizes that this function is useful enough to warrant its own node.</p>
 
 <p>A simple use case for this would be converting temperature from Celsius [0, 100] to Fahrenheit [32, 212].</p>
 

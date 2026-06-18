@@ -12,14 +12,14 @@
 </script>
 <link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fighting Entropy In Unity — Seeded Random for Debugging — Gal Bartouv</title>
+<title>Fighting Entropy In Unity, Seeded Random for Debugging - Gal Bartouv</title>
 <!-- SEO Meta Tags -->
 <meta name="description" content="Making randomness reproducible for testing. Using seeded RNG to create deterministic gameplay that's easy to debug and test.">
 <meta name="keywords" content="Unity Debugging, Random Number Generation, Seeded RNG, Game Testing, Reproducible Bugs">
 
 <!-- Open Graph Tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="Seeded Random for Debugging — Unity Dev Blog">
+<meta property="og:title" content="Seeded Random for Debugging - Unity Dev Blog">
 <meta property="og:description" content="Making randomness reproducible for testing. Using seeded RNG to create deterministic gameplay that's easy to debug and test.">
 <meta property="og:url" content="https://bartouv.github.io/articles/fighting-entropy-in-unity-seeded-random-for-debugging.html">
 <meta property="og:image" content="https://bartouv.github.io/images/Avatar.png">
@@ -30,7 +30,7 @@
 
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Seeded Random for Debugging — Unity Dev Blog">
+<meta name="twitter:title" content="Seeded Random for Debugging - Unity Dev Blog">
 <meta name="twitter:description" content="Making randomness reproducible for testing. Using seeded RNG to create deterministic gameplay that's easy to debug and test.">
 <meta name="twitter:image" content="https://bartouv.github.io/images/Avatar.png">
 
@@ -79,7 +79,7 @@
   <div class="article-header">
     <a href="../index.html#posts" class="back-link">← Back to Articles</a>
     <div class="article-tag">// UNITY DEV</div>
-    <h1 class="article-title">Fighting Entropy In Unity — Seeded Random for Debugging</h1>
+    <h1 class="article-title">Fighting Entropy In Unity, Seeded Random for Debugging</h1>
     <div class="article-meta">
       <span class="article-date">TBD</span>
       <span class="article-read-time">5 min read</span>
@@ -98,7 +98,7 @@
 
 <p>Random number generation is a great way to create dynamic and engaging gameplay. Whether it’s enemy spawn patterns, loot drops, or AI behavior, randomness adds the unpredictability that makes games fun. Let’s look at a classic example. We have an enemy spawner that randomly selects enemy types and positions. When the game runs, different enemies spawn in different locations, creating varied gameplay experiences. This is exactly what we want and it works great for players. But let’s zoom out a little.</p>
 
-<p>When we’re debugging our game, we encounter a critical bug where the game crashes whenever a specific combination of enemies spawns near the player. However, this bug only happens “sometimes” — maybe one in every twenty playthroughs. We spend hours restarting the game, hoping to reproduce the exact conditions that trigger the crash. Each time we hit play, Unity generates different random numbers, creating different enemy configurations, and the bug remains elusive.</p>
+<p>When we’re debugging our game, we encounter a critical bug where the game crashes whenever a specific combination of enemies spawns near the player. However, this bug only happens “sometimes”, maybe one in every twenty playthroughs. We spend hours restarting the game, hoping to reproduce the exact conditions that trigger the crash. Each time we hit play, Unity generates different random numbers, creating different enemy configurations, and the bug remains elusive.</p>
 
 <p>If we simply rely on Unity’s standard random system, we will have a chaotic debugging experience that confuses and frustrates us as developers. Instead, we want to be able to reproduce the exact same sequence of random events that caused our bug. As it stands, this is nearly impossible to implement with standard randomness.</p>
 
@@ -110,7 +110,7 @@
 
 <h2 class="section-heading">What is seeded random number generation?</h2>
 
-<p>Seeded random number generation is a way of controlling randomness by providing an initial value (called a seed) that determines the entire sequence of random numbers that follow. This allows for predictable randomness — the same seed will always produce the exact same sequence of “random” numbers, making bugs reproducible while maintaining the appearance of chaos for players.</p>
+<p>Seeded random number generation is a way of controlling randomness by providing an initial value (called a seed) that determines the entire sequence of random numbers that follow. This allows for predictable randomness, the same seed will always produce the exact same sequence of “random” numbers, making bugs reproducible while maintaining the appearance of chaos for players.</p>
 
 <p>If we take a look at what seeded randomness looks like:</p>
 

@@ -12,14 +12,14 @@
 </script>
 <link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fighting Entropy In Development — Taming the PR Chaos — Gal Bartouv</title>
+<title>Fighting Entropy In Development, Taming the PR Chaos - Gal Bartouv</title>
 <!-- SEO Meta Tags -->
 <meta name="description" content="Managing pull requests in game development teams. Strategies for code review, merge conflicts, and keeping development velocity high.">
 <meta name="keywords" content="Code Review, Pull Requests, Team Development, Git Workflow, Development Process">
 
 <!-- Open Graph Tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="Taming the PR Chaos — Unity Dev Blog">
+<meta property="og:title" content="Taming the PR Chaos - Unity Dev Blog">
 <meta property="og:description" content="Managing pull requests in game development teams. Strategies for code review, merge conflicts, and keeping development velocity high.">
 <meta property="og:url" content="https://bartouv.github.io/articles/fighting-entropy-in-development-taming-the-pr-chaos.html">
 <meta property="og:image" content="https://bartouv.github.io/images/Avatar.png">
@@ -30,7 +30,7 @@
 
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Taming the PR Chaos — Unity Dev Blog">
+<meta name="twitter:title" content="Taming the PR Chaos - Unity Dev Blog">
 <meta name="twitter:description" content="Managing pull requests in game development teams. Strategies for code review, merge conflicts, and keeping development velocity high.">
 <meta name="twitter:image" content="https://bartouv.github.io/images/Avatar.png">
 
@@ -79,7 +79,7 @@
   <div class="article-header">
     <a href="../index.html#posts" class="back-link">← Back to Articles</a>
     <div class="article-tag">// UNITY DEV</div>
-    <h1 class="article-title">Fighting Entropy In Development — Taming the PR Chaos</h1>
+    <h1 class="article-title">Fighting Entropy In Development, Taming the PR Chaos</h1>
     <div class="article-meta">
       <span class="article-date">TBD</span>
       <span class="article-read-time">5 min read</span>
@@ -96,13 +96,13 @@
 
 <p>As a development team grows, so does the chaos. Pull requests pile up, reviewers forget to respond, authors lose track of feedback, and that critical bug fix sits in limbo for days. Sound familiar? If you've ever found yourself scrolling through endless GitHub notifications trying to figure out which PRs need attention, you're not alone.</p>
 
-<p>In this post, I'll show you how we built a custom PR notification system that transforms GitHub chaos into organized Slack clarity — and how a few hundred lines of Python can save your team hours of confusion every week.</p>
+<p>In this post, I'll show you how we built a custom PR notification system that transforms GitHub chaos into organized Slack clarity, and how a few hundred lines of Python can save your team hours of confusion every week.</p>
 
 <h2 class="section-heading">Why GitHub's Built-in Notifications Fail Teams</h2>
 
 <p>GitHub's notification system works fine for individual developers, but it crumbles under team pressure. Here's what we were dealing with:</p>
 
-<p><strong>The Scattered Information Problem</strong>: PR status is spread across multiple places — the PR page, review comments, check statuses, and draft flags. No single view shows you what actually needs your attention.</p>
+<p><strong>The Scattered Information Problem</strong>: PR status is spread across multiple places, the PR page, review comments, check statuses, and draft flags. No single view shows you what actually needs your attention.</p>
 
 <p><strong>The Context Switching Nightmare</strong>: Team members constantly switch between GitHub, Slack, and their IDE trying to understand what needs to be done. Each context switch costs precious mental bandwidth.</p>
 
@@ -120,7 +120,7 @@
 
 <h2 class="section-heading">1. Intelligent PR Classification</h2>
 
-<p>The script doesn't just list PRs — it categorizes them by actionable status:</p>
+<p>The script doesn't just list PRs, it categorizes them by actionable status:</p>
 
 <ul><li><strong>Ready for review</strong>: Fresh PRs that need initial attention</li>
 <li><strong>In review with feedback</strong>: PRs with comments but no formal review decision</li>
@@ -173,10 +173,10 @@ def build_plaintext_section(title, emoji, pr_list, include_reviewer=False):
 
 <p>The heart of the system is the PR classification algorithm. For each PR, we:</p>
 
-<strong>Check if it's a draft</strong>— Skip drafts entirely since they're not ready</li>
-<strong>Analyze review status</strong>— Look at the most recent review decision</li>
-<strong>Count comments</strong>— Differentiate between fresh PRs and those with feedback</li>
-<strong>Combine signals</strong>— Use multiple data points to determine true status</li>
+<strong>Check if it's a draft</strong>, Skip drafts entirely since they're not ready</li>
+<strong>Analyze review status</strong>, Look at the most recent review decision</li>
+<strong>Count comments</strong>, Differentiate between fresh PRs and those with feedback</li>
+<strong>Combine signals</strong>, Use multiple data points to determine true status</li>
 <pre class="language-python"><code class="language-python">if latest == "APPROVED":
     waiting_to_be_merged.append(pr)
 elif latest == "CHANGES_REQUESTED":
@@ -186,7 +186,7 @@ elif comments_count == 0:
 elif comments_count > 0:
     in_review_feedback.append(pr)</code></pre>
 
-<p>This logic handles the complex reality that a PR's status isn't just about its last review — it's about the combination of reviews, comments, and current state.</p>
+<p>This logic handles the complex reality that a PR's status isn't just about its last review, it's about the combination of reviews, comments, and current state.</p>
 
 <h2 class="section-heading">The Proactive Messaging System</h2>
 
@@ -198,7 +198,7 @@ for author, prs in stuck_by_author.items():
     for pr in sort_prs(prs):
         reviewer = get_change_requester(owner, repo, pr['number'])
         if reviewer:
-            line += f" — reviewer: {emoji_icon}{slack_mention(reviewer)}"</code></pre>
+            line += f", reviewer: {emoji_icon}{slack_mention(reviewer)}"</code></pre>
 
 <p>Instead of letting PRs languish in review purgatory, we proactively notify authors and tell them exactly who requested changes. This simple feature alone has cut our average PR resolution time in half.</p>
 

@@ -12,14 +12,14 @@
 </script>
 <link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Taming Polymorphic Serialization — Gal Bartouv</title>
+<title>Taming Polymorphic Serialization - Gal Bartouv</title>
 <!-- SEO Meta Tags -->
 <meta name="description" content="Handling complex inheritance hierarchies in Unity's serialization system. Learn how to serialize polymorphic types cleanly without losing data or breaking the Inspector.">
 <meta name="keywords" content="Unity, Serialization, Polymorphism, Unity Inspector, Game Development">
 
 <!-- Open Graph Tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="Taming Polymorphic Serialization — Unity Dev Blog">
+<meta property="og:title" content="Taming Polymorphic Serialization - Unity Dev Blog">
 <meta property="og:description" content="Handling complex inheritance hierarchies in Unity's serialization system. Learn how to serialize polymorphic types cleanly without losing data or breaking the Inspector.">
 <meta property="og:url" content="https://bartouv.github.io/articles/taming-polymorphic-serialization.html">
 <meta property="og:image" content="https://bartouv.github.io/images/Avatar.png">
@@ -30,7 +30,7 @@
 
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Taming Polymorphic Serialization — Unity Dev Blog">
+<meta name="twitter:title" content="Taming Polymorphic Serialization - Unity Dev Blog">
 <meta name="twitter:description" content="Handling complex inheritance hierarchies in Unity's serialization system. Learn how to serialize polymorphic types cleanly without losing data or breaking the Inspector.">
 <meta name="twitter:image" content="https://bartouv.github.io/images/Avatar.png">
 
@@ -93,7 +93,7 @@
 <article class="article-body">
   <div class="article-container">
 
-    <p>Handling complex inheritance hierarchies in Unity's serialization system is a recurring challenge in production game development. When you need to serialize polymorphic objects — objects that share a base type but have different implementations — Unity's default serialization system can feel limiting.</p>
+    <p>Handling complex inheritance hierarchies in Unity's serialization system is a recurring challenge in production game development. When you need to serialize polymorphic objects, objects that share a base type but have different implementations, Unity's default serialization system can feel limiting.</p>
 
     <h2 class="section-heading">The Challenge</h2>
     <p>Unity's serialization system was designed for simplicity and performance, but it struggles with polymorphism out of the box. When you have a base class or interface and multiple derived types, you need a strategy to persist that data while maintaining type information.</p>
@@ -112,7 +112,7 @@
 
 <figure><img src="https://cdn-images-1.medium.com/max/800/1*8xMRZ0I5aSL_Jr7GrmVygA.png" alt="Unity Inspector showing a List of CardAction with empty object slots, unable to display polymorphic type properties"></figure>
 
-<p>You’re making a card game about a goblin developers struggling with bugs and deadlines. Your “Coffee” card should give your goblin focus while also causing anxiety (because, well, it’s coffee). You’ve built a clean system where each card has a list of actions — some reduce anxiety, others add focus, and a few apply debuffs like “Call of the Bathroom.”</p>
+<p>You’re making a card game about a goblin developers struggling with bugs and deadlines. Your “Coffee” card should give your goblin focus while also causing anxiety (because, well, it’s coffee). You’ve built a clean system where each card has a list of actions, some reduce anxiety, others add focus, and a few apply debuffs like “Call of the Bathroom.”</p>
 <p>Your polymorphic design is solid. Each action type has its own class with specific properties. The code compiles beautifully. Then you try to configure your cards in Unity’s inspector.</p>
 <p>The<code>List<CardAction></code>field appears, but then the reality hits… Unity can't show you the individual action properties. You’re left staring at a list of empty object slots, unable to set up even a simple coffee card. How do you serialize a list of polymorphic objects on a ScriptableObject without losing your sanity?</p>
 <h2 class="section-heading">Approach 1: The Monolithic Class</h2>
@@ -259,10 +259,10 @@ public class CardConfig : ScriptableObject
 <p>Unity assigns each SerializeReference object a unique ID and stores the full type name (class, namespace, assembly) to recreate the correct type during deserialization.</p>
 <p>This enables:</p>
 
-<ul><li><strong>True polymorphism</strong>— each object retains its runtime type</li>
-<li><strong>Inline editing</strong>— edit derived class fields directly in the inspector</li>
-<li><strong>Object identity</strong>— references are preserved, not copied</li>
-<li><strong>Clean architecture</strong>— separate classes for separate concerns</li>
+<ul><li><strong>True polymorphism</strong>, each object retains its runtime type</li>
+<li><strong>Inline editing</strong>, edit derived class fields directly in the inspector</li>
+<li><strong>Object identity</strong>, references are preserved, not copied</li>
+<li><strong>Clean architecture</strong>, separate classes for separate concerns</li>
 </ul>
 
 <p>But there’s a catch. There’s always a catch.</p>
@@ -331,7 +331,7 @@ public class CardConfigEditor : UnityEditor.Editor
 <p><strong>When to use:</strong>Teams that want clean architecture without workflow sacrifices, where refactoring safety is paramount. And that have the time to create custom editors.</p>
 <h2 class="section-heading">The Entropy Management Principle</h2>
 <p>Each approach represents a different strategy for managing complexity in your Unity project. Monolithic classes concentrate complexity in one place but violate clean code principles. Individual ScriptableObjects distribute complexity across many files but burden the workflow. SerializeReference attempts to eliminate complexity but introduces fragility. The hybrid approach adds editor complexity to reduce workflow complexity.</p>
-<p>There’s no perfect solution — only different places to put the pain. The key is choosing consciously based on your team’s strengths and project constraints, rather than stumbling into a pattern by accident.</p>
+<p>There’s no perfect solution, only different places to put the pain. The key is choosing consciously based on your team’s strengths and project constraints, rather than stumbling into a pattern by accident.</p>
 <p>Unity’s serialization limitations force us to make trade-offs. Understanding these trade-offs helps us fight entropy more effectively, making informed decisions about where to place complexity rather than letting it spread chaos throughout our codebase.</p>
 <p>The next time Unity’s serializer breaks your beautiful polymorphic design, you’ll know exactly which weapon to reach for.</p>
 

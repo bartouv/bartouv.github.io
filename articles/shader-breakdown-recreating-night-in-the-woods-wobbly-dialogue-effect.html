@@ -12,14 +12,14 @@
 </script>
 <link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shader Breakdown: Recreating Night in the Woods’ Wobbly Dialogue Effect — Gal Bartouv</title>
+<title>Shader Breakdown: Recreating Night in the Woods’ Wobbly Dialogue Effect - Gal Bartouv</title>
 <!-- SEO Meta Tags -->
 <meta name="description" content="Recreating the distinctive wobbly text shader from Night in the Woods. A deep dive into vertex displacement and shader graph techniques.">
 <meta name="keywords" content="Unity Shaders, Shader Graph, Text Effects, Vertex Displacement, Game Effects">
 
 <!-- Open Graph Tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="Shader Breakdown: Night in the Woods' Wobbly Dialogue Effect — Unity Dev Blog">
+<meta property="og:title" content="Shader Breakdown: Night in the Woods' Wobbly Dialogue Effect - Unity Dev Blog">
 <meta property="og:description" content="Recreating the distinctive wobbly text shader from Night in the Woods. A deep dive into vertex displacement and shader graph techniques.">
 <meta property="og:url" content="https://bartouv.github.io/articles/shader-breakdown-recreating-night-in-the-woods-wobbly-dialogue-effect.html">
 <meta property="og:image" content="https://bartouv.github.io/images/Avatar.png">
@@ -30,7 +30,7 @@
 
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Shader Breakdown: Night in the Woods' Wobbly Dialogue Effect — Unity Dev Blog">
+<meta name="twitter:title" content="Shader Breakdown: Night in the Woods' Wobbly Dialogue Effect - Unity Dev Blog">
 <meta name="twitter:description" content="Recreating the distinctive wobbly text shader from Night in the Woods. A deep dive into vertex displacement and shader graph techniques.">
 <meta name="twitter:image" content="https://bartouv.github.io/images/Avatar.png">
 
@@ -96,7 +96,7 @@
 
 <figure><img src="https://cdn-images-1.medium.com/max/800/1*7SpTu3gXQHd6O5qH8_YaEg.gif" alt="Night in the Woods gameplay showing the wobbly dialogue bubble effect"></figure>
 
-<p>When looking at this effect, the first thing that came to mind was to use a vertex offset to move the sprite around. This is similar to how we use shaders to animate tree foliage. But a sprite has very few vertices — typically just four corners forming a quad. The effect with the tree foliage works because there are many vertices you can move around to create organic motion. The sprite vertices look like this basic quad structure, which severely limits what vertex manipulation can achieve.</p>
+<p>When looking at this effect, the first thing that came to mind was to use a vertex offset to move the sprite around. This is similar to how we use shaders to animate tree foliage. But a sprite has very few vertices, typically just four corners forming a quad. The effect with the tree foliage works because there are many vertices you can move around to create organic motion. The sprite vertices look like this basic quad structure, which severely limits what vertex manipulation can achieve.</p>
 
 <figure><img src="https://cdn-images-1.medium.com/max/800/1*G_8hVraDHhw5Cy9gvtlNsA.png" alt="Diagram of a sprite quad showing its four vertices, illustrating the limitation of vertex-based animation for sprites"></figure>
 
@@ -116,7 +116,7 @@
 
 <figure><img src="https://cdn-images-1.medium.com/max/800/1*uiASF3JY790Miurp8PhKcQ.gif" alt="Animation demonstrating the UV cutoff problem when noise intensity is increased above zero"></figure>
 
-<p>The problem becomes immediately apparent — when we move the noise intensity above zero, parts of the shape get cut off. This happens because we’re uniformly shifting the entire UV space. When we add positive noise values, we move the entire image toward the top-right. When we add negative values, we move it toward the bottom-left. The texture sampling goes outside the 0–1 UV range, causing the cutoff.</p>
+<p>The problem becomes immediately apparent, when we move the noise intensity above zero, parts of the shape get cut off. This happens because we’re uniformly shifting the entire UV space. When we add positive noise values, we move the entire image toward the top-right. When we add negative values, we move it toward the bottom-left. The texture sampling goes outside the 0–1 UV range, causing the cutoff.</p>
 
 <p>To solve this, we need to apply the noise directionally rather than uniformly. The key insight is to divide the UV space into four quadrants and apply noise that pushes each quadrant toward its center, creating the wobble effect while keeping the shape intact.</p>
 
@@ -150,7 +150,7 @@
 
 <figure><img src="https://cdn-images-1.medium.com/max/800/1*ddWv23hE4lIvrPngjjjXUQ.gif" alt="Final animation showing the completed wobbly dialogue bubble effect recreating the Night in the Woods aesthetic"></figure>
 
-<p>This technique can be extended beyond dialogue bubbles — any UI element or sprite that needs organic, breathing motion can benefit from this approach. The key is understanding how UV manipulation can create the illusion of complex deformation without requiring complex geometry.</p>
+<p>This technique can be extended beyond dialogue bubbles, any UI element or sprite that needs organic, breathing motion can benefit from this approach. The key is understanding how UV manipulation can create the illusion of complex deformation without requiring complex geometry.</p>
 
 
 

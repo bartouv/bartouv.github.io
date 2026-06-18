@@ -1,6 +1,6 @@
 // Hero page dynamic effects
 
-// "Dev Blog" role text — all letters flicker off and back on together
+// "Dev Blog" role text, all letters flicker off and back on together
 function initRoleGlitch() {
   const role = document.querySelector('.hero h1 .role');
   if (!role) return;
@@ -11,7 +11,7 @@ function initRoleGlitch() {
     char === ' ' ? ' ' : `<span class="role-char">${char}</span>`
   ).join('');
 
-  // Spans: [D, e, v, B, l, o, g] — pick "e" (1) and "o" (5)
+  // Spans: [D, e, v, B, l, o, g], pick "e" (1) and "o" (5)
   const all = role.querySelectorAll('.role-char');
   const chars = [all[1], all[5]];
   if (!chars[0] || !chars[1]) return;

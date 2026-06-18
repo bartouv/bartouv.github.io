@@ -1054,12 +1054,12 @@
    DYNAMIC VISUAL EFFECTS
    ============================================================ */
 
-/* Name neon glow — uses theme accent color */
+/* Name neon glow, uses theme accent color */
 .hero h1 .name {
   text-shadow: 0 0 22px var(--glow-accent);
 }
 
-/* "Dev Blog" outline text — cohesive theme-aware neon glow */
+/* "Dev Blog" outline text, cohesive theme-aware neon glow */
 .hero h1 .role {
   -webkit-text-stroke: 1px var(--accent);
   filter: drop-shadow(0 0 10px var(--glow-soft));
@@ -1070,7 +1070,7 @@
   display: inline-block;
 }
 
-/* "B" in "Blog" — normally dim, neon-style ignition then back off */
+/* "B" in "Blog", normally dim, neon-style ignition then back off */
 @keyframes charGlitch {
   0%    { opacity: 1; }      /* fully on resting state */
   1.5%  { opacity: 0.15; }   /* snaps dark */
@@ -1110,7 +1110,7 @@
   93%  { opacity: 0.8; }
 }
 
-/* Latest badge + CTA button — shared scanning beam setup */
+/* Latest badge + CTA button, shared scanning beam setup */
 .featured-badge,
 .btn-primary {
   position: relative;
@@ -1176,7 +1176,7 @@
 }
 
 /* ============================================================
-   SCROLL REVEAL (progressive — only active when JS adds .js-reveal)
+   SCROLL REVEAL (progressive, only active when JS adds .js-reveal)
    ============================================================ */
 html.js-reveal [data-reveal] {
   opacity: 0;
@@ -1194,7 +1194,7 @@ html.js-reveal [data-reveal].revealed {
    GRACEFUL IMAGE LOADING
    ============================================================ */
 
-/* Subtle tech placeholder behind every thumbnail — shows while loading
+/* Subtle tech placeholder behind every thumbnail, shows while loading
    or if a remote image fails, so cards never look broken. */
 .post-image,
 .project-image,

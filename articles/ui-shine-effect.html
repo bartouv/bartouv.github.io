@@ -12,14 +12,14 @@
 </script>
 <link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UI Shine Effect — Gal Bartouv</title>
+<title>UI Shine Effect - Gal Bartouv</title>
 <!-- SEO Meta Tags -->
 <meta name="description" content="Creating sweeping shine effects for Unity UI. Learn how to add polished, eye-catching visual feedback to your game's interface elements.">
 <meta name="keywords" content="Unity UI, Shader Effects, UI Animation, Visual Effects, Unity">
 
 <!-- Open Graph Tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="UI Shine Effect — Unity Dev Blog">
+<meta property="og:title" content="UI Shine Effect - Unity Dev Blog">
 <meta property="og:description" content="Creating sweeping shine effects for Unity UI. Learn how to add polished, eye-catching visual feedback to your game's interface elements.">
 <meta property="og:url" content="https://bartouv.github.io/articles/ui-shine-effect.html">
 <meta property="og:image" content="https://bartouv.github.io/images/Avatar.png">
@@ -30,7 +30,7 @@
 
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="UI Shine Effect — Unity Dev Blog">
+<meta name="twitter:title" content="UI Shine Effect - Unity Dev Blog">
 <meta name="twitter:description" content="Creating sweeping shine effects for Unity UI. Learn how to add polished, eye-catching visual feedback to your game's interface elements.">
 <meta name="twitter:image" content="https://bartouv.github.io/images/Avatar.png">
 
@@ -100,11 +100,11 @@
 
 <p>This causes performance problems and scalability headaches. Masks force Unity to render additional draw calls and create overdraw issues where pixels get drawn multiple times. Each masked element requires its own rendering pass, which quickly adds up when you have multiple UI elements with shine effects.</p>
 
-<p>Beyond performance, this approach doesn’t scale well — when you resize buttons or change layouts, you need to manually adjust animation curves and timing for each element. It’s a maintenance nightmare that becomes exponentially worse as your UI grows in complexity.</p>
+<p>Beyond performance, this approach doesn’t scale well, when you resize buttons or change layouts, you need to manually adjust animation curves and timing for each element. It’s a maintenance nightmare that becomes exponentially worse as your UI grows in complexity.</p>
 
-<p>When trying to work around these issues by creating the effect via shader, I ran into a different problem. Shine effects work by creating a line that sweeps across the UI element from one edge to the other. To do this properly, the shader needs to know “where am I on this button?” — is this pixel at the left edge (0%), the middle (50%), or the right edge (100%)?</p>
+<p>When trying to work around these issues by creating the effect via shader, I ran into a different problem. Shine effects work by creating a line that sweeps across the UI element from one edge to the other. To do this properly, the shader needs to know “where am I on this button?”, is this pixel at the left edge (0%), the middle (50%), or the right edge (100%)?</p>
 
-<p>This is what UV coordinates do — they tell each pixel where it sits on the texture, typically in a 0–1 range. For a shine effect to sweep smoothly from left to right, it needs these coordinates to be uniform and predictable. But since we use atlases to optimize UI performance, the UV coordinates aren’t uniform anymore.</p>
+<p>This is what UV coordinates do, they tell each pixel where it sits on the texture, typically in a 0–1 range. For a shine effect to sweep smoothly from left to right, it needs these coordinates to be uniform and predictable. But since we use atlases to optimize UI performance, the UV coordinates aren’t uniform anymore.</p>
 
 <h2 class="section-heading">The Atlas UV Problem</h2>
 
@@ -124,7 +124,7 @@
 
 <h2 class="section-heading">Part 1: The UV Coordinate Fixer</h2>
 
-<p>Here’s our first piece of the puzzle — a script that calculates clean, uniform UV coordinates for our atlased images:</p>
+<p>Here’s our first piece of the puzzle, a script that calculates clean, uniform UV coordinates for our atlased images:</p>
 
 
 <pre class="language-csharp"><code class="language-csharp">[ExecuteAlways]
@@ -174,7 +174,7 @@ public class ImageUVCreator : BaseMeshEffect
 
 <p>What this script does is pretty clever. Instead of relying on Unity’s atlas-constrained UV coordinates, it looks at where each vertex sits in 3D space and creates brand new UV coordinates based on that.</p>
 
-<p>The key part is the <code>InverseLerp</code> function, which takes a position and figures out where it sits between the minimum and maximum bounds as a percentage. So if a pixel is exactly in the middle of our UI element, it gets UV coordinates of (0.5, 0.5) — nice and predictable.</p>
+<p>The key part is the <code>InverseLerp</code> function, which takes a position and figures out where it sits between the minimum and maximum bounds as a percentage. So if a pixel is exactly in the middle of our UI element, it gets UV coordinates of (0.5, 0.5), nice and predictable.</p>
 
 <p>The <code>ModifyMesh</code> function only executes when the UI element is built or modified - not every frame. This happens during layout rebuilds, which typically occur when you change the UI (resize, enable/disable, etc.). For static UI elements, this means zero ongoing performance cost.</p>
 

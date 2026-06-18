@@ -8,7 +8,7 @@
     if (nav) nav.classList.toggle('nav-scrolled', window.scrollY > 12);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
-  // nav is injected asynchronously by shared-components.js — re-check shortly after load
+  // nav is injected asynchronously by shared-components.js, re-check shortly after load
   onScroll();
   setTimeout(onScroll, 60);
   setTimeout(onScroll, 300);

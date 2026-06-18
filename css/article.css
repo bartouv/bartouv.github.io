@@ -1,9 +1,9 @@
 /* Article-Specific Styles */
 
-/* Disable smooth scroll on articles — prevents animated scroll restoration moving the panel */
+/* Disable smooth scroll on articles, prevents animated scroll restoration moving the panel */
 html { scroll-behavior: auto; }
 
-/* ARTICLE PAGE PANEL — narrows to 900px and adds a bg panel over the canvas */
+/* ARTICLE PAGE PANEL, narrows to 900px and adds a bg panel over the canvas */
 main.page-container {
   max-width: 900px;
   background: var(--bg2);

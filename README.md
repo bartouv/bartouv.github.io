@@ -81,7 +81,7 @@ Unity development blog by Gal Bartouv. 9+ years shipping mobile games. Real-worl
 ```json
 {
   "your-article.html": {
-    "title": "Your Article Title — Unity Dev Blog",
+    "title": "Your Article Title - Unity Dev Blog",
     "description": "Article description (150-160 chars)",
     "category": "Category Name",
     "date": "2026-02",

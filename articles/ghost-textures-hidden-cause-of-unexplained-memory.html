@@ -12,14 +12,14 @@
 </script>
 <link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ghost Textures and the Dependencies You Didn't Ask For — Gal Bartouv</title>
+<title>Ghost Textures and the Dependencies You Didn't Ask For - Gal Bartouv</title>
 <!-- SEO Meta Tags -->
 <meta name="description" content="Stale texture references inside .mat files silently drag unintended asset bundles into memory at runtime. Learn how to detect and eliminate ghost textures with a simple editor tool.">
 <meta name="keywords" content="Unity, Asset Bundles, Memory Optimization, Textures, Performance">
 
 <!-- Open Graph Tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ghost Textures and the Dependencies You Didn't Ask For — Unity Dev Blog">
+<meta property="og:title" content="Ghost Textures and the Dependencies You Didn't Ask For - Unity Dev Blog">
 <meta property="og:description" content="Stale texture references inside .mat files silently drag unintended asset bundles into memory at runtime. Learn how to detect and eliminate ghost textures with a simple editor tool.">
 <meta property="og:url" content="https://bartouv.github.io/articles/ghost-textures-hidden-cause-of-unexplained-memory.html">
 <meta property="og:image" content="https://bartouv.github.io/images/ghost-textures.png">
@@ -30,7 +30,7 @@
 
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ghost Textures and the Dependencies You Didn't Ask For — Unity Dev Blog">
+<meta name="twitter:title" content="Ghost Textures and the Dependencies You Didn't Ask For - Unity Dev Blog">
 <meta name="twitter:description" content="Stale texture references inside .mat files silently drag unintended asset bundles into memory at runtime. Learn how to detect and eliminate ghost textures with a simple editor tool.">
 <meta name="twitter:image" content="https://bartouv.github.io/images/ghost-textures.png">
 
@@ -138,7 +138,7 @@
 
     <p>One ghost texture on its own is barely worth caring about. In a real project, it compounds fast.</p>
 
-    <p>Materials get duplicated, artists swap shaders, projects migrate from Built in to URP, asset store imports land with materials configured for pipelines you don't use — any of it can leave stale references behind, and none of it produces a visible error.</p>
+    <p>Materials get duplicated, artists swap shaders, projects migrate from Built in to URP, asset store imports land with materials configured for pipelines you don't use, any of it can leave stale references behind, and none of it produces a visible error.</p>
 
     <p>In a project with hundreds of asset bundles, bundles start pulling in other bundles for no obvious reason. Your memory profiler shows allocations you can't explain. You spend hours auditing your loading code looking for a bug that isn't there.</p>
 
@@ -194,7 +194,7 @@
     }
 }</code></pre>
 
-    <p>It asks the shader what properties it actually declares via <code>ShaderUtil.GetPropertyCount</code> and <code>ShaderUtil.GetPropertyName</code> — that's the ground truth. Then it checks what the material has serialized using <code>Material.GetTexturePropertyNames()</code>, which returns everything: properties the current shader uses, and ones it doesn't. Any property in the second list but not the first is a ghost. Null it out, mark the material dirty, let Unity serialize it clean.</p>
+    <p>It asks the shader what properties it actually declares via <code>ShaderUtil.GetPropertyCount</code> and <code>ShaderUtil.GetPropertyName</code>, that's the ground truth. Then it checks what the material has serialized using <code>Material.GetTexturePropertyNames()</code>, which returns everything: properties the current shader uses, and ones it doesn't. Any property in the second list but not the first is a ghost. Null it out, mark the material dirty, let Unity serialize it clean.</p>
 
     <p>After running this and rebuilding bundles, those unexplained entries in the memory profiler were gone.</p>
 
@@ -210,7 +210,7 @@
 
     <h2 class="section-heading">The Pattern Is Broader</h2>
 
-    <p>Materials aren't the only place this happens. ScriptableObjects and Prefabs have the same issue, and <code>[Flags]</code> enum conditionals are a common trigger — a field that only appears when a certain flag is set:</p>
+    <p>Materials aren't the only place this happens. ScriptableObjects and Prefabs have the same issue, and <code>[Flags]</code> enum conditionals are a common trigger, a field that only appears when a certain flag is set:</p>
 
     <pre class="language-csharp"><code class="language-csharp">[Flags]
 public enum GameMode { None = 0, Singleplayer = 1, Multiplayer = 2, Coop = 4 }

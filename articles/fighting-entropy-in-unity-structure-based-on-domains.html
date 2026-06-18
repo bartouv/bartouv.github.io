@@ -12,14 +12,14 @@
 </script>
 <link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fighting Entropy In Unity — Structure based on Domains — Gal Bartouv</title>
+<title>Fighting Entropy In Unity, Structure based on Domains - Gal Bartouv</title>
 <!-- SEO Meta Tags -->
 <meta name="description" content="Organizing Unity projects by business domains instead of technical layers. A scalable approach to project structure for growing teams.">
 <meta name="keywords" content="Unity Project Structure, Domain-Driven Design, Software Architecture, Team Scaling, Unity">
 
 <!-- Open Graph Tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="Structure Based on Domains — Unity Dev Blog">
+<meta property="og:title" content="Structure Based on Domains - Unity Dev Blog">
 <meta property="og:description" content="Organizing Unity projects by business domains instead of technical layers. A scalable approach to project structure for growing teams.">
 <meta property="og:url" content="https://bartouv.github.io/articles/fighting-entropy-in-unity-structure-based-on-domains.html">
 <meta property="og:image" content="https://bartouv.github.io/images/Avatar.png">
@@ -30,7 +30,7 @@
 
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Structure Based on Domains — Unity Dev Blog">
+<meta name="twitter:title" content="Structure Based on Domains - Unity Dev Blog">
 <meta name="twitter:description" content="Organizing Unity projects by business domains instead of technical layers. A scalable approach to project structure for growing teams.">
 <meta name="twitter:image" content="https://bartouv.github.io/images/Avatar.png">
 
@@ -79,7 +79,7 @@
   <div class="article-header">
     <a href="../index.html#posts" class="back-link">← Back to Articles</a>
     <div class="article-tag">// UNITY DEV</div>
-    <h1 class="article-title">Fighting Entropy In Unity — Structure based on Domains</h1>
+    <h1 class="article-title">Fighting Entropy In Unity, Structure based on Domains</h1>
     <div class="article-meta">
       <span class="article-date">TBD</span>
       <span class="article-read-time">5 min read</span>
@@ -132,28 +132,28 @@
 
 <p>When I was presented with the opportunity to start a project from scratch I was delighted, I could finally build a project that wouldn’t have the pitfalls the previous ones had. I could structure the project as I pleased. So I sat down and started to list the many problems that the former projects have presented to me.</p>
 
-<p>🧭<strong>Complex Project navigation</strong>— Navigating the type-based structure in small projects was easy, unfortunately, as projects become bigger it became a nightmare to traverse them. When a new team member joined the project he couldn’t tell what it was from looking at the project structure. The onboarding for the project was very difficult and confusing. What is this project? What feature does it have? Where do I place new files I create? Where do I find the files I’m looking for? Where are these files used?</p>
+<p>🧭<strong>Complex Project navigation</strong>, Navigating the type-based structure in small projects was easy, unfortunately, as projects become bigger it became a nightmare to traverse them. When a new team member joined the project he couldn’t tell what it was from looking at the project structure. The onboarding for the project was very difficult and confusing. What is this project? What feature does it have? Where do I place new files I create? Where do I find the files I’m looking for? Where are these files used?</p>
 
-<p>🍝<strong>Code Coupling</strong>— The structure of the project leads to coupling. You might think that the two have nothing to do with each other but you would be mistaken. Since the folders don’t describe the dependencies of the project nobody knows the dependencies and quickly you find yourself in a place where everything is coupled and no way of enforcing the order. When you change code in one feature another one breaks. You get merge conflicts when people don’t even work on the same features. And in the end, it causes tons and tons of bugs and headaches.</p>
+<p>🍝<strong>Code Coupling</strong>, The structure of the project leads to coupling. You might think that the two have nothing to do with each other but you would be mistaken. Since the folders don’t describe the dependencies of the project nobody knows the dependencies and quickly you find yourself in a place where everything is coupled and no way of enforcing the order. When you change code in one feature another one breaks. You get merge conflicts when people don’t even work on the same features. And in the end, it causes tons and tons of bugs and headaches.</p>
 
-<p>🐢<strong>Slow work iterations</strong>— In Unity, it’s a best practice to use more than one scene at a time. This way you can separate your features between the different scenes. Each time you need a new one you can add it <a href="https://docs.unity3d.com/ScriptReference/SceneManagement.LoadSceneMode.Additive.html" target="_blank" rel="noopener">additively</a>If you happen to be using a single scene in your game I urge you to reconsider.</p>
+<p>🐢<strong>Slow work iterations</strong>, In Unity, it’s a best practice to use more than one scene at a time. This way you can separate your features between the different scenes. Each time you need a new one you can add it <a href="https://docs.unity3d.com/ScriptReference/SceneManagement.LoadSceneMode.Additive.html" target="_blank" rel="noopener">additively</a>If you happen to be using a single scene in your game I urge you to reconsider.</p>
 
 <p>Unfortunately, as a result of the coupling in the code, there was no way of opening a single scene and working on it alone. This was because each scene had dependencies on other scenes. Eventually, all scenes are dependent on each other. If you try to open a scene you would be faced with tens of exceptions and the scene wouldn’t load properly. That meant that if I created a scene I would have to load the whole game. This would cause long work iterations. The larger the project became the more time-consuming it became.</p>
 
-<p>🗑<strong>Hard to discard features</strong>— Because the feature files were scattered around the project, I had no way of knowing what files were unique to the feature. That meant that either I deleted something that was used in other features and broke them by accident, or I had to leave a ton of junk in the project that wasn’t used but no one had any way of knowing.</p>
+<p>🗑<strong>Hard to discard features</strong>, Because the feature files were scattered around the project, I had no way of knowing what files were unique to the feature. That meant that either I deleted something that was used in other features and broke them by accident, or I had to leave a ton of junk in the project that wasn’t used but no one had any way of knowing.</p>
 
-<p>😨<strong>Fear of change</strong>— Changing files like materials, animation, sprites, and others would cause continuous bugs. This was because there was no way to know in what features the files were used. So you would change a material that was used on a popup and a particle effect would break. It was like playing whack-a-mole. Sometimes bugs caused by this would persist for weeks because they were hard to spot.</p>
+<p>😨<strong>Fear of change</strong>, Changing files like materials, animation, sprites, and others would cause continuous bugs. This was because there was no way to know in what features the files were used. So you would change a material that was used on a popup and a particle effect would break. It was like playing whack-a-mole. Sometimes bugs caused by this would persist for weeks because they were hard to spot.</p>
 
-<p>💱<strong>Hard to share code between projects</strong>— As a result of this mess, code isn’t easily extractable from the project. Moreover, this structure doesn’t lend itself well to causing the team to create code with the thought of sharing it with other projects and making it decoupled from the game itself.</p>
+<p>💱<strong>Hard to share code between projects</strong>, As a result of this mess, code isn’t easily extractable from the project. Moreover, this structure doesn’t lend itself well to causing the team to create code with the thought of sharing it with other projects and making it decoupled from the game itself.</p>
 
-<p>🖼<strong>Hard to manage UI Atlases</strong>— Atlases are how we improve the UI performance. Atlases have a size limit so you can't just place all the sprites in the project in a single atlas and be done with it. You need to create several or tens of atlases wisely to get the best bang for your buck. But since you have no way of knowing where your sprites are used in the project this would cause several problems.</p>
+<p>🖼<strong>Hard to manage UI Atlases</strong>, Atlases are how we improve the UI performance. Atlases have a size limit so you can't just place all the sprites in the project in a single atlas and be done with it. You need to create several or tens of atlases wisely to get the best bang for your buck. But since you have no way of knowing where your sprites are used in the project this would cause several problems.</p>
 
 <ul><li>There was no simple way of choosing what sprites should be atlased together.</li>
 <li>And even when you did think you knew, then you would create an atlas and discover later on that putting sprite “x” in that atlas caused more draw calls elsewhere since the sprite was used in several other places with a combination of different sprites than those in the atlas you created.</li>
 <li>In places, only a single sprite in a large atlas was used causing big textures to be loaded into memory even though there was no actual need for 99% of its content.</li>
 </ul>
 
-<p>🧘<strong>The project is not flexible to change</strong>— As an aggregation of all of the above, the project was not malleable and broke easily and frequently.</p>
+<p>🧘<strong>The project is not flexible to change</strong>, As an aggregation of all of the above, the project was not malleable and broke easily and frequently.</p>
 
 <h2 class="section-heading">🌔How do we define a better structure</h2>
 
@@ -282,21 +282,21 @@
 
 <h2 class="section-heading">🌑Reexamining the requirements</h2>
 
-<p>🧭<strong>Easy Project navigation</strong>— The structure speaks for itself. Just by looking at the project structure, you will be able to tell what features it has and where things should go. A new team member should be easily able to navigate the project domains and see where to put things.</p>
+<p>🧭<strong>Easy Project navigation</strong>, The structure speaks for itself. Just by looking at the project structure, you will be able to tell what features it has and where things should go. A new team member should be easily able to navigate the project domains and see where to put things.</p>
 
-<p>🍝<strong>Decoupled Code</strong>— By separating the code into domains and then wrapping them up in assemblies we make the code as separated as possible. There literally can be no dependencies between the different parts of the project. Well not unless someone just gives the domains assemblies access to each other (totally not based on a true story).</p>
+<p>🍝<strong>Decoupled Code</strong>, By separating the code into domains and then wrapping them up in assemblies we make the code as separated as possible. There literally can be no dependencies between the different parts of the project. Well not unless someone just gives the domains assemblies access to each other (totally not based on a true story).</p>
 
-<p>🐢<strong>Faster work Iterations</strong>— Since we now have no dependencies between domains. We can have a scene for each domain and the only things it should depend on are the game core and the company core. So you should have no problem running one domain’s scene without having to load other domain scenes. This way you can check that a single feature is working without loading the entire game.</p>
+<p>🐢<strong>Faster work Iterations</strong>, Since we now have no dependencies between domains. We can have a scene for each domain and the only things it should depend on are the game core and the company core. So you should have no problem running one domain’s scene without having to load other domain scenes. This way you can check that a single feature is working without loading the entire game.</p>
 
-<p>🗑<strong>Easy to discard features</strong>— There should now be very clear points of access to a domain. And the domain has no access to other domains. So if you decide to remove that domain you can just delete the folder. All the assets in that folder should not have been used by any other domain. The only code that will break is the few access points you had in the game core.</p>
+<p>🗑<strong>Easy to discard features</strong>, There should now be very clear points of access to a domain. And the domain has no access to other domains. So if you decide to remove that domain you can just delete the folder. All the assets in that folder should not have been used by any other domain. The only code that will break is the few access points you had in the game core.</p>
 
-<p>😨<strong>No Fear of change</strong>— This is mostly the same as “easy to discard a feature”. If you change something in a domain then you know that you can only affect things in that domain or its subdomains. This is also helpful for QA, since you know if you only changed things in a specific domain you only need to check that domain and its children.</p>
+<p>😨<strong>No Fear of change</strong>, This is mostly the same as “easy to discard a feature”. If you change something in a domain then you know that you can only affect things in that domain or its subdomains. This is also helpful for QA, since you know if you only changed things in a specific domain you only need to check that domain and its children.</p>
 
-<p>🖼<strong>Easy to manage UI Atlases</strong>— We now know by the placement of the assets where it is used. And so we can create better atlases.</p>
+<p>🖼<strong>Easy to manage UI Atlases</strong>, We now know by the placement of the assets where it is used. And so we can create better atlases.</p>
 
-<p>💱<strong>Easy to share code between projects</strong>— Since the Company Core can have no dependencies on the rest of the project you can ensure that everything inside it can be used across other projects. Each time you write new functionalities that are not dependent on the game you can put them in the company core and just like that they should be ready for other projects’ use.</p>
+<p>💱<strong>Easy to share code between projects</strong>, Since the Company Core can have no dependencies on the rest of the project you can ensure that everything inside it can be used across other projects. Each time you write new functionalities that are not dependent on the game you can put them in the company core and just like that they should be ready for other projects’ use.</p>
 
-<p>🧘<strong>The Project is flexible to change</strong>— As an aggregation of all of the above, the project can be much easier to change and manipulate.</p>
+<p>🧘<strong>The Project is flexible to change</strong>, As an aggregation of all of the above, the project can be much easier to change and manipulate.</p>
 
 <h2 class="section-heading">🌚Summary</h2>
 

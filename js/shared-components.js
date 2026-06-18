@@ -151,7 +151,7 @@ const SharedComponents = {
   // Footer
   footer: `<!-- FOOTER -->
 <footer role="contentinfo">
-  <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
+  <div class="footer-copy">© 2024 Gal Bartouv - Unity Dev Blog</div>
   <div class="footer-links">
     <a href="../index.html#posts">Articles</a>
     <a href="../index.html#about">About</a>
@@ -194,7 +194,7 @@ const SharedComponents = {
   // Footer for index page (with local anchors)
   footerIndex: `<!-- FOOTER -->
 <footer role="contentinfo">
-  <div class="footer-copy">© 2024 Gal Bartouv — Unity Dev Blog</div>
+  <div class="footer-copy">© 2024 Gal Bartouv - Unity Dev Blog</div>
   <div class="footer-links">
     <a href="#posts">Articles</a>
     <a href="#about">About</a>
@@ -270,7 +270,7 @@ function initBgCanvas() {
   const SPEED = TILE / (60 * 60) * 0.7;
   let offset = 0;
 
-  // Cached theme colors — recomputed once on init and on theme change
+  // Cached theme colors, recomputed once on init and on theme change
   let cachedAccentRgb = '56,192,240';
   let cachedBgColors  = { center: 'rgb(31,52,73)', dark: 'rgb(12,17,26)' };
 

@@ -12,14 +12,14 @@
 </script>
 <link rel="alternate" type="application/rss+xml" title="GB/DEV Blog" href="https://bartouv.github.io/feed.xml">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fighting Entropy In Unity — Taming Git Chaos with Custom Commands — Gal Bartouv</title>
+<title>Fighting Entropy In Unity, Taming Git Chaos with Custom Commands - Gal Bartouv</title>
 <!-- SEO Meta Tags -->
 <meta name="description" content="Advanced git workflows for Unity projects. Handle binary files, solve merge conflicts, and maintain clean commit history in team environments.">
 <meta name="keywords" content="Git, Unity Git Workflow, Binary Files, Merge Conflicts, Version Control">
 
 <!-- Open Graph Tags -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="Taming Git Chaos with Custom Commands — Unity Dev Blog">
+<meta property="og:title" content="Taming Git Chaos with Custom Commands - Unity Dev Blog">
 <meta property="og:description" content="Advanced git workflows for Unity projects. Handle binary files, solve merge conflicts, and maintain clean commit history in team environments.">
 <meta property="og:url" content="https://bartouv.github.io/articles/fighting-entropy-in-unity-taming-git-chaos-with-custom-commands.html">
 <meta property="og:image" content="https://bartouv.github.io/images/Avatar.png">
@@ -30,7 +30,7 @@
 
 <!-- Twitter Card Tags -->
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Taming Git Chaos with Custom Commands — Unity Dev Blog">
+<meta name="twitter:title" content="Taming Git Chaos with Custom Commands - Unity Dev Blog">
 <meta name="twitter:description" content="Advanced git workflows for Unity projects. Handle binary files, solve merge conflicts, and maintain clean commit history in team environments.">
 <meta name="twitter:image" content="https://bartouv.github.io/images/Avatar.png">
 
@@ -79,7 +79,7 @@
   <div class="article-header">
     <a href="../index.html#posts" class="back-link">← Back to Articles</a>
     <div class="article-tag">// UNITY DEV</div>
-    <h1 class="article-title">Fighting Entropy In Unity — Taming Git Chaos with Custom Commands</h1>
+    <h1 class="article-title">Fighting Entropy In Unity, Taming Git Chaos with Custom Commands</h1>
     <div class="article-meta">
       <span class="article-date">TBD</span>
       <span class="article-read-time">5 min read</span>
@@ -94,13 +94,13 @@
     <!-- ARTICLE CONTENT GOES HERE -->
 <p>You’re working on a feature branch in Unity when you need to quickly switch to<code>develop</code>to check something. Your working directory has uncommitted changes and experimental code.</p>
 
-<p>Most Unity developers reach for their Git GUI — Fork, SourceTree, GitKraken, or Unity’s built-in version control. Click through the interface: stash changes, switch branch, pull latest, deal with any conflicts. These tools are great for visualizing your repository state and handling complex merges, but they still require you to manually orchestrate multi-step workflows.</p>
+<p>Most Unity developers reach for their Git GUI, Fork, SourceTree, GitKraken, or Unity’s built-in version control. Click through the interface: stash changes, switch branch, pull latest, deal with any conflicts. These tools are great for visualizing your repository state and handling complex merges, but they still require you to manually orchestrate multi-step workflows.</p>
 
 <p>Even with a slick interface, you’re still performing the same ritual: stash, switch, pull, clean up. The GUI makes individual Git operations easier, but it doesn’t eliminate the cognitive overhead of remembering and executing sequences of operations.</p>
 
 <p>What if switching to a clean<code>develop</code>branch was as simple as typing<code>git dev</code>?</p>
 
-<p>Custom Git commands let you encapsulate complex workflows into simple, memorable aliases. Instead of fighting Git’s verbosity every day, you can create your own domain-specific language for version control — one that matches how you actually work with Unity projects.</p>
+<p>Custom Git commands let you encapsulate complex workflows into simple, memorable aliases. Instead of fighting Git’s verbosity every day, you can create your own domain-specific language for version control, one that matches how you actually work with Unity projects.</p>
 
 <h2 class="section-heading">The Solution: Automating Git Workflows with Custom Commands</h2>
 
@@ -121,7 +121,7 @@ git status</code></pre>
 
 <pre class="language-bash"><code class="language-bash">git dev</code></pre>
 
-<p>These aren’t just aliases — they’re full bash scripts (or batch files on Windows) that can include logic, error handling, and Unity-specific operations. You can pass parameters, check for conditions, and even integrate with Unity’s project structure.</p>
+<p>These aren’t just aliases, they’re full bash scripts (or batch files on Windows) that can include logic, error handling, and Unity-specific operations. You can pass parameters, check for conditions, and even integrate with Unity’s project structure.</p>
 
 <p>The beauty is that once you’ve created these commands, they become part of your Git vocabulary. Your entire team can use the same commands, ensuring everyone follows the same safe workflows without having to remember multi-step procedures.</p>
 
@@ -152,7 +152,7 @@ git status</code></pre>
 <pre class="language-bash"><code class="language-bash">git reset --hard
 git clean -fd</code></pre>
 
-<p>This command obliterates any local changes and removes untracked files. It’s the Git equivalent of Unity’s “Reimport All” — destructive but effective when you need a clean slate.</p>
+<p>This command obliterates any local changes and removes untracked files. It’s the Git equivalent of Unity’s “Reimport All”, destructive but effective when you need a clean slate.</p>
 
 <p><strong>When to use:</strong>You’ve been experimenting with code changes and want to discard everything to return to the last commit. Perfect for when Unity generates artifacts you don’t want to keep, or when you’ve made experimental changes that didn’t pan out.</p>
 
@@ -195,7 +195,7 @@ git reset --hard
 git clean -fd
 git pull</code></pre>
 
-<p>This combines the safety of the previous approach with the flexibility to switch to any branch. It’s the Swiss Army knife of Git commands — one tool that handles most common scenarios.</p>
+<p>This combines the safety of the previous approach with the flexibility to switch to any branch. It’s the Swiss Army knife of Git commands, one tool that handles most common scenarios.</p>
 
 <p><strong>When to use:</strong>You need to switch between multiple branches throughout the day (feature branches,<code>develop</code>,<code>main</code>, hotfix branches) and want a consistent, safe way to do it.</p>
 
@@ -288,7 +288,7 @@ git status</code></pre>
 
 <p>The key is identifying the workflows you repeat most often and the failure modes that cause you the most pain. If you find yourself typing the same sequence of Git commands multiple times per day, that’s a candidate for automation.</p>
 
-<p>Your custom commands become part of your development language — a domain-specific vocabulary that matches how you think about version control in the context of Unity development.</p>
+<p>Your custom commands become part of your development language, a domain-specific vocabulary that matches how you think about version control in the context of Unity development.</p>
 
 <p>Custom Git commands won’t solve all your version control problems, but they’ll eliminate the most common sources of friction and error. When switching branches becomes as simple as<code>git dev</code>, you can focus on what matters: building your game instead of fighting your tools.</p>
 
