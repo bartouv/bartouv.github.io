@@ -63,6 +63,7 @@
     width: 100%;
     height: 100%;
     background: transparent;
+    image-rendering: auto;
   }
 
   /* Launch overlay */
@@ -370,6 +371,10 @@
   var launchBtn   = document.querySelector("#launchBtn");
   var fsBtn       = document.querySelector("#fullscreenBtn");
 
+  var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  // Cap DPR on mobile for performance; render at full device resolution on desktop.
+  var renderDpr = isMobile ? 1 : (window.devicePixelRatio || 1);
+
   var buildUrl  = "Build";
   var loaderUrl = buildUrl + "/Web.loader.js";
   var config = {
@@ -382,7 +387,26 @@
     productName: "Solar System Orrery",
     productVersion: "0.1.0",
     showBanner: unityShowBanner,
+    // We size the canvas drawing buffer ourselves (see fitCanvas) so it always
+    // matches the displayed size × devicePixelRatio — otherwise Unity can leave
+    // a tiny framebuffer stretched up, which looks like pixel art.
+    matchWebGLToCanvasSize: false,
+    devicePixelRatio: renderDpr,
   };
+
+  // Match the canvas drawing-buffer resolution to its on-screen size × DPR.
+  // In fullscreen the canvas rect equals the screen, so this gives a crisp
+  // full-resolution render there too.
+  function fitCanvas() {
+    var rect = canvas.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    var w = Math.max(1, Math.round(rect.width * renderDpr));
+    var h = Math.max(1, Math.round(rect.height * renderDpr));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+  }
 
   function unityShowBanner(msg, type) {
     var warning = document.querySelector("#unity-warning");
@@ -401,6 +425,8 @@
     overlay.style.display = "none";
     loading.classList.add("active");
 
+    fitCanvas();
+
     var script = document.createElement("script");
     script.src = loaderUrl;
     script.onload = function () {
@@ -412,6 +438,16 @@
         loading.classList.remove("active");
         fsBtn.disabled = false;
         fsBtn.onclick = function () { unityInstance.SetFullscreen(1); };
+
+        // Keep the render resolution in sync with the displayed size.
+        fitCanvas();
+        var ro = ("ResizeObserver" in window) ? new ResizeObserver(fitCanvas) : null;
+        if (ro) ro.observe(canvas);
+        window.addEventListener("resize", fitCanvas);
+        // When leaving fullscreen, re-fit to the windowed frame.
+        document.addEventListener("fullscreenchange", function () {
+          setTimeout(fitCanvas, 50);
+        });
       }).catch(function (message) {
         label.textContent = "FAILED TO LOAD";
         unityShowBanner(String(message), 'error');
@@ -425,11 +461,6 @@
   }
 
   launchBtn.addEventListener("click", launch);
-
-  // Mobile hint
-  if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-    config.devicePixelRatio = 1;
-  }
 })();
 </script>
 
